@@ -1,9 +1,9 @@
 // Archivo central para las llamadas al backend
-// Exporta BASE_URL, una instancia de axios llamada API y helpers útiles
+// Exporta BASE_URL, una instancia de axiosllamada API y helpers útiles
 import axios from 'axios';
 
 // URL fija del backend solicitada por el usuario (útil para fetch global)
-export const API_URL = 'http://98.93.249.183:3001';
+export const API_URL = 'http://52.200.32.89:3001';
 
 // BASE_URL y BASE_API se derivan de API_URL para compatibilidad con el resto del código
 export const BASE_URL = API_URL;
