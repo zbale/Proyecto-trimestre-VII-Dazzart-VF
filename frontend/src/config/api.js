@@ -2,21 +2,11 @@
 // Exporta BASE_URL, una instancia de axios llamada API y helpers útiles
 import axios from 'axios';
 
-// Resuelve la URL del backend preferentemente desde Vite (import.meta.env),
-// luego desde variables de entorno antiguas (process.env), y por último fallback
-// a localhost para desarrollo local.
-let viteUrl = null;
-try {
-  // import.meta exists in ESM environments (Vite). En algunos contextos puede lanzar,
-  // por eso lo hacemos en try/catch para evitar errores durante la ejecución en Node.
-  viteUrl = import.meta?.env?.VITE_BACKEND_URL ?? null;
-} catch (e) {
-  viteUrl = null;
-}
+// URL fija del backend solicitada por el usuario (útil para fetch global)
+export const API_URL = 'http://98.93.249.183:3001';
 
-const resolvedEnvUrl = viteUrl || ((typeof process !== 'undefined' && process.env && process.env.REACT_APP_BACKEND_URL) || 'http://localhost:3001');
-
-export const BASE_URL = resolvedEnvUrl;
+// BASE_URL y BASE_API se derivan de API_URL para compatibilidad con el resto del código
+export const BASE_URL = API_URL;
 
 // Exportar también la versión con /api para compatibilidad con archivos que
 // tenían `const BASE_URL = 'http://.../api'` y no quieran cambiar sus llamadas.

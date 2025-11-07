@@ -5,6 +5,7 @@ import { faUser, faLock, faSignInAlt, faCrown, faBan } from '@fortawesome/free-s
 import '../../css/CSS/ModalProducto.css';
 import '../../css/CSS/ModalLogin.css';
 import axios from 'axios';
+import { API_URL } from '../../config/api';
 
 export default function ModalLogin({ visible, onClose, onLoginSuccess }) {
   const [correo, setCorreo] = useState('');
@@ -38,7 +39,7 @@ export default function ModalLogin({ visible, onClose, onLoginSuccess }) {
     setError('');
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:3001/api/login/login', {
+      const res = await axios.post(`${API_URL}/api/login/login`, {
         correo_electronico: correo,
         contrasena
       });

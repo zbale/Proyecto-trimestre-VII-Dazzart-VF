@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from '../../config/api';
 
 export default function PedidosUser() {
   const [pedidos, setPedidos] = useState([]);
@@ -21,7 +22,7 @@ export default function PedidosUser() {
     const cargarPedidosUsuario = async () => {
       try {
         // Suponiendo que tu backend tiene ruta para pedidos por usuario
-        const res = await fetch(`http://localhost:3001/api/pedidos/usuario/${parsedUsuario.id_usuario}`);
+  const res = await fetch(`${API_URL}/api/pedidos/usuario/${parsedUsuario.id_usuario}`);
         const data = await res.json();
         if (Array.isArray(data)) {
           setPedidos(data);

@@ -12,8 +12,9 @@ import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import SidebarAdmin from "../../components/SideBarAdmin.jsx";
+import { API_URL } from '../../config/api';
 
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = API_URL;
 
 export default function ProductosAdmin() {
   const [productos, setProductos] = useState([]);

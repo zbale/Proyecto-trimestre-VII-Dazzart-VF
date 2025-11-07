@@ -12,6 +12,7 @@ import Footer from '../../components/cliente/Footer';
 import MenuLateral from '../../components/cliente/MenuLateral';
 import ModalConfirmacion from '../../components/cliente/ModalConfirmacion';
 import fondoGif from '../../assets/giphy.gif';
+import { API_URL } from '../../config/api';
 
 export default function MisDatos() {
   const navigate = useNavigate();
@@ -88,7 +89,7 @@ export default function MisDatos() {
     };
 
     try {
-      const res = await fetch(`http://localhost:3001/api/usuarios/${usuario.id_usuario}`, {
+      const res = await fetch(`${API_URL}/api/usuarios/${usuario.id_usuario}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datosEnviar),

@@ -11,9 +11,10 @@ import ModalProducto from '../../components/cliente/ModalProducto';
 // Importa Carrito si lo tienes disponible para mostrar
 // Carrito component filename es `carrito.jsx` (lowercase) — importa con la misma capitalización
 import Carrito from '../../components/cliente/carrito';
+import { API_URL } from '../../config/api';
 
-const API_BASE = 'http://localhost:3001/api';
-const IMG_BASE = 'http://localhost:3001/productos/img';
+const API_BASE = `${API_URL}/api`;
+const IMG_BASE = `${API_URL}/productos/img`;
 
 export default function VistaBusqueda() {
   const { termino: terminoUrl } = useParams();

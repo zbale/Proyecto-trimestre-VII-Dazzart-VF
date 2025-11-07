@@ -10,7 +10,7 @@ import ModalLogin from '../../components/cliente/ModalLogin';
 
 import '../../css/CSS/carritopage.css';
 
-export default function CarritoPage() {
+export default function Carritopage() {
   const navigate = useNavigate();
 
   // Usuario desde localStorage

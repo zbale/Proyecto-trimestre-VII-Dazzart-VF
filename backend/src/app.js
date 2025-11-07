@@ -24,19 +24,22 @@ const createApp = () => {
       console.log('\nORIGEN Request:', origin);
       // Lista de orígenes permitidos
       const allowedOrigins = [
-        'http://localhost:5173',  // Vite dev server
-        'http://localhost:3000',  // Alternativo
-        'https://main.d3t813q1o1kf7z.amplifyapp.com', // Tu dominio de Amplify
-      ];
+        'http://localhost:5173',     // Vite dev server
+        'http://localhost:3000',     // Alternativo
+        'https://main.d3t813q1o1kf7z.amplifyapp.com',  // Amplify
+        process.env.FRONTEND_URL,    // URL del frontend en AWS
+        process.env.MOBILE_URL       // URL de la app móvil si existe
+      ].filter(Boolean); // Eliminar valores undefined/null
       
-      // En desarrollo permitimos sin origen (Postman/curl)
-      if (!origin) {
+      // En desarrollo o para Postman/curl
+      if (!origin || process.env.NODE_ENV === 'development') {
         return callback(null, true);
       }
       
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.warn(`Origen bloqueado por CORS: ${origin}`);
         callback(new Error('No permitido por CORS'));
       }
     },

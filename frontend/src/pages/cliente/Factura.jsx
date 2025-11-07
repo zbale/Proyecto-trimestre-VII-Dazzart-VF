@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { API } from "../../config/api";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import SimpleHeader from "../../components/cliente/SimpleHeader.jsx";
@@ -25,9 +26,7 @@ export default function Factura() {
 
     const cargarFactura = async () => {
       try {
-        const res = await fetch(`http://localhost:3001/api/pedidos/${id_factura}`);
-        if (!res.ok) throw new Error("Factura no encontrada");
-        const data = await res.json();
+          const { data } = await API.get(`/pedidos/${id_factura}`);
 
         if (typeof data.productos === "string") {
           try {

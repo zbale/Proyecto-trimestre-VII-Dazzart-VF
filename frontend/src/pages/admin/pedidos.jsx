@@ -6,6 +6,7 @@ import SidebarAdmin from "../../components/SideBarAdmin.jsx";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
+import { API_URL } from '../../config/api';
 
 export default function Pedidos() {
   const [pedidos, setPedidos] = useState([]);
@@ -22,7 +23,7 @@ export default function Pedidos() {
 
 const cargarPedidos = async () => {
   try {
-    const res = await fetch("http://localhost:3001/api/pedidos");
+  const res = await fetch(`${API_URL}/api/pedidos`);
     const data = await res.json();
 
     if (Array.isArray(data)) {
@@ -97,7 +98,7 @@ const cargarPedidos = async () => {
   // Cargar pedidos en papelera
   const cargarPapelera = async () => {
     try {
-      const res = await fetch("http://localhost:3001/api/pedidos?papelera=1");
+    const res = await fetch(`${API_URL}/api/pedidos?papelera=1`);
       const data = await res.json();
       // Filtrar solo los pedidos con estado cancelado o entregado
       const filtrados = Array.isArray(data)
@@ -201,7 +202,7 @@ const cargarPedidos = async () => {
                 className="btn btn-danger mb-3"
                 onClick={async () => {
                   if (window.confirm('¿Vaciar papelera? Esta acción eliminará definitivamente los pedidos con más de 7 días.')) {
-                    await fetch('http://localhost:3001/api/pedidos/vaciar-papelera', { method: 'DELETE' });
+                    await fetch(`${API_URL}/api/pedidos/vaciar-papelera`, { method: 'DELETE' });
                     cargarPapelera();
                   }
                 }}

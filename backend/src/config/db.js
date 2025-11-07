@@ -1,10 +1,17 @@
 const mysql = require('mysql2/promise');
 
+// Configuración de la base de datos - usar variables de entorno para producción
 const pool = mysql.createPool({
-  host: 'localhost',
-  user: 'root',
-  password: 'valecita',
-  database: 'dazzart',
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'valecita',
+  database: process.env.DB_NAME || 'dazzart',
+  // Opciones adicionales para mejor rendimiento y manejo de desconexiones
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0,
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 0
 });
 
 (async () => {

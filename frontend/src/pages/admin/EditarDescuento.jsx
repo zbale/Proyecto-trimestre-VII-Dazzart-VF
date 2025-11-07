@@ -5,6 +5,7 @@ import SidebarAdmin from "../../components/SideBarAdmin.jsx";
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "../../css/CSSA/actualizardescuento.css";
+import { API_URL } from '../../config/api';
 
 export default function EditarDescuento() {
   const { id } = useParams();
@@ -18,7 +19,7 @@ export default function EditarDescuento() {
   });
 
   useEffect(() => {
-    axios.get(`http://localhost:3001/api/descuentos/${id}`)
+    axios.get(`${API_URL}/api/descuentos/${id}`)
       .then(res => {
         const descuento = res.data;
         setForm({
@@ -56,7 +57,7 @@ export default function EditarDescuento() {
       return;
     }
 
-    axios.put(`http://localhost:3001/api/descuentos/${id}`, form)
+    axios.put(`${API_URL}/api/descuentos/${id}`, form)
       .then(() => {
         alert("Descuento actualizado correctamente.");
         navigate("/admin-descuento");

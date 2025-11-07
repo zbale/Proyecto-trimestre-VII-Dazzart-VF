@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 
 import SidebarAdmin from '../../components/SideBarAdmin.jsx';
+import { API_URL } from '../../config/api';
 
 export default function EditarUsuario() {
   const { id } = useParams();
@@ -36,7 +37,7 @@ export default function EditarUsuario() {
   useEffect(() => {
     const cargarUsuario = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/usuarios/usuario/${id}`);
+  const res = await axios.get(`${API_URL}/api/usuarios/usuario/${id}`);
         setFormData({
           nombre: res.data.nombre,
           nombre_usuario: res.data.nombre_usuario,
@@ -78,7 +79,7 @@ export default function EditarUsuario() {
     }
 
     try {
-      const res = await axios.put(`http://localhost:3001/api/usuarios/${id}`, formData);
+  const res = await axios.put(`${API_URL}/api/usuarios/${id}`, formData);
       if (res.status === 200) {
         Swal.fire({
           icon: 'success',

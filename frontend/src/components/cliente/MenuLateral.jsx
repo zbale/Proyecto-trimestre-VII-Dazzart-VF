@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../../css/CSS/MenuLateral.css";
+import { API_URL } from '../../config/api';
 
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = API_URL;
 
 export default function MenuLateral({ onClose }) {
   const [categorias, setCategorias] = useState([]);

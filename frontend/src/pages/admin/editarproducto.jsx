@@ -3,8 +3,9 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
 import SidebarAdmin from "../../components/SideBarAdmin.jsx";
+import { API_URL } from '../../config/api';
 
-const BASE_URL = "http://localhost:3001";
+const BASE_URL = API_URL;
 
 export default function EditarProducto() {
   const { id } = useParams();

@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import SidebarAdmin from "../../components/SideBarAdmin";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { API_URL } from '../../config/api';
 
 export default function UsuariosAdmin() {
   const [usuarios, setUsuarios] = useState([]);
@@ -18,7 +19,7 @@ export default function UsuariosAdmin() {
 
   const cargarUsuarios = () => {
     axios
-      .get("http://localhost:3001/api/usuarios")
+      .get(`${API_URL}/api/usuarios`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setUsuarios(res.data);
@@ -81,7 +82,7 @@ export default function UsuariosAdmin() {
 
     try {
       const response = await axios.put(
-        `http://localhost:3001/api/usuarios/${id}/estado`,
+        `${API_URL}/api/usuarios/${id}/estado`,
         { estado: nuevoEstado }
       );
 

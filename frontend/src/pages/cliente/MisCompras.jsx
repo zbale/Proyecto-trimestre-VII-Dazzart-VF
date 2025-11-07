@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { API_URL } from '../../config/api';
 import { useNavigate } from 'react-router-dom';
 
 import Header from '../../components/cliente/Header';
@@ -34,7 +35,7 @@ export default function MisCompras() {
 
   const cargarCompras = () => {
     if (!usuario) return;
-    fetch(`http://localhost:3001/api/pedidos/usuario/${usuario.id_usuario}`)
+      fetch(`${API_URL}/api/pedidos/usuario/${usuario.id_usuario}`)
       .then(res => {
         if (!res.ok) throw new Error('Error al obtener las compras');
         return res.json();
@@ -58,7 +59,7 @@ export default function MisCompras() {
     if (!confirmacion) return;
 
     try {
-      const res = await fetch(`http://localhost:3001/api/pedidos/cancelar/${id_factura}`, { method: 'PUT' });
+        const res = await fetch(`${API_URL}/api/pedidos/cancelar/${id_factura}`, { method: 'PUT' });
       if (!res.ok) throw new Error();
 
       cargarCompras(); // Refrescar datos tras cancelación

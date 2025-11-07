@@ -3,6 +3,7 @@ import axios from "axios";
 import SidebarAdmin from '../../components/SideBarAdmin.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoneyBillWave, faShoppingCart, faUsers, faBoxOpen, faStar, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { API_URL } from '../../config/api';
 
 export default function EstadisticasAdmin() {
   const [estadisticas, setEstadisticas] = useState({
@@ -20,8 +21,8 @@ export default function EstadisticasAdmin() {
     const cargarEstadisticas = async () => {
       try {
         const [productosRes, pedidosRes] = await Promise.all([
-          axios.get("http://localhost:3001/api/productos/listar"),
-          axios.get("http://localhost:3001/api/pedidos"),
+          axios.get(`${API_URL}/api/productos/listar`),
+          axios.get(`${API_URL}/api/pedidos`),
         ]);
 
         const productos = productosRes.data;

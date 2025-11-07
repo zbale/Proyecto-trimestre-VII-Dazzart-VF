@@ -12,9 +12,10 @@ import ModalLogin from '../../components/cliente/ModalLogin';
 // using the exact casing to avoid build errors.
 import Carrito from '../../components/cliente/carrito';
 import ModalProducto from '../../components/cliente/ModalProducto';
+import { API_URL } from '../../config/api';
 
-const API_BASE = 'http://localhost:3001/api';
-const IMG_BASE = 'http://localhost:3001/productos/img';
+const API_BASE = `${API_URL}/api`;
+const IMG_BASE = `${API_URL}/productos/img`;
 
 export default function VistaProductos() {
   const { id_categoria, id_subcategoria } = useParams();

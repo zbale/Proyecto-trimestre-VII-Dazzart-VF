@@ -10,6 +10,7 @@ import SidebarAdmin from "../../components/SideBarAdmin.jsx";
 import { useNavigate } from "react-router-dom";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { API_URL } from '../../config/api';
 
 export default function DescuentosAdmin() {
   const [descuentos, setDescuentos] = useState([]);
@@ -17,7 +18,7 @@ export default function DescuentosAdmin() {
 
   const cargarDescuentos = async () => {
     try {
-      const res = await axios.get("http://localhost:3001/api/descuentos");
+  const res = await axios.get(`${API_URL}/api/descuentos`);
       setDescuentos(Array.isArray(res.data) ? res.data : []);
 
       setTimeout(() => {
@@ -64,7 +65,7 @@ export default function DescuentosAdmin() {
     if (!confirm.isConfirmed) return;
 
     try {
-      await axios.delete(`http://localhost:3001/api/descuentos/${id}`);
+  await axios.delete(`${API_URL}/api/descuentos/${id}`);
       Swal.fire("Eliminado", "El descuento ha sido eliminado.", "success");
       if ($.fn.DataTable.isDataTable("#tablaDescuentos")) {
         $("#tablaDescuentos").DataTable().destroy();

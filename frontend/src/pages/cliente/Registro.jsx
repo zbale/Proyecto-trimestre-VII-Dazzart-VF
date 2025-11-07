@@ -6,6 +6,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2'; //  Asegúrate de tenerlo instalado: npm install sweetalert2
 import '../../css/CSS/Registro.css';
 import fondoGif from '../../assets/giphy.gif';
+import { API_URL } from '../../config/api';
 
 const RegistroDazzart = () => {
   const [formData, setFormData] = useState({
@@ -83,7 +84,7 @@ const RegistroDazzart = () => {
     if (!validate()) return;
 
     try {
-      const response = await axios.post('http://localhost:3001/api/usuarios/register', {
+  const response = await axios.post(`${API_URL}/api/usuarios/register`, {
         nombre: formData.nombre,
         nombre_usuario: formData.usuario,
         correo_electronico: formData.email,

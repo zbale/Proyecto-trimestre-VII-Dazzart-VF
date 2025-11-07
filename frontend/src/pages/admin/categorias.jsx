@@ -12,6 +12,7 @@ import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import SidebarAdmin from "../../components/SideBarAdmin.jsx";
+import { API_URL } from '../../config/api';
 
 export default function CategoriasAdmin() {
   const [categorias, setCategorias] = useState([]);
@@ -22,7 +23,7 @@ export default function CategoriasAdmin() {
 
   const cargarCategorias = () => {
     axios
-      .get("http://localhost:3001/api/categorias/listar")
+      .get(`${API_URL}/api/categorias/listar`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setCategorias(res.data);
@@ -81,7 +82,7 @@ export default function CategoriasAdmin() {
     if (!form.nombre || !form.descripcion) return;
 
     try {
-      await axios.post("http://localhost:3001/api/categorias/agregar", form);
+  await axios.post(`${API_URL}/api/categorias/agregar`, form);
       Swal.fire("Agregado", "Categoría agregada con éxito", "success");
       setForm({ nombre: "", descripcion: "" });
       if ($.fn.DataTable.isDataTable("#tablaCategorias")) {
@@ -107,7 +108,7 @@ export default function CategoriasAdmin() {
     if (!confirm.isConfirmed) return;
 
     try {
-      const response = await axios.delete(`http://localhost:3001/api/categorias/eliminar/${id}`);
+  const response = await axios.delete(`${API_URL}/api/categorias/eliminar/${id}`);
       if (response.status === 200) {
         await Swal.fire({
           icon: "success",
@@ -153,7 +154,7 @@ const guardarEdicion = async (e) => {
 
   try {
     // Enviamos las claves correctas según espera el backend
-    await axios.put(`http://localhost:3001/api/categorias/editar/${id_categoria}`, {
+    await axios.put(`${API_URL}/api/categorias/editar/${id_categoria}`, {
       nombre: nombre,
       descripcion: descripcion,
     });
