@@ -17,8 +17,7 @@ export const API = axios.create({
   baseURL: `${BASE_URL.replace(/\/$/, '')}/api`,
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
-    'Access-Control-Allow-Origin': BASE_URL,
+    'Accept': 'application/json'
   },
   withCredentials: true,
 });
