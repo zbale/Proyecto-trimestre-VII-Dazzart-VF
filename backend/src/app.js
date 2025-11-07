@@ -26,7 +26,9 @@ const createApp = () => {
       const allowedOrigins = [
         'http://localhost:5173',     // Vite dev server
         'http://localhost:3000',     // Alternativo
+        'http://localhost:3001',
         'https://main.d3t813q1o1kf7z.amplifyapp.com',  // Amplify
+        'http://98.93.249.183:3001', // Server URL
         process.env.FRONTEND_URL,    // URL del frontend en AWS
         process.env.MOBILE_URL       // URL de la app móvil si existe
       ].filter(Boolean); // Eliminar valores undefined/null
@@ -44,7 +46,7 @@ const createApp = () => {
       }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
     credentials: true,
     optionsSuccessStatus: 204
   };

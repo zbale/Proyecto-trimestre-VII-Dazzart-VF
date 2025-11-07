@@ -15,7 +15,11 @@ export const BASE_API = `${BASE_URL.replace(/\/$/, '')}/api`;
 // Instancia de axios configurada con la ruta base de la API
 export const API = axios.create({
   baseURL: `${BASE_URL.replace(/\/$/, '')}/api`,
-  headers: { 'Content-Type': 'application/json' },
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+    'Access-Control-Allow-Origin': BASE_URL,
+  },
   withCredentials: true,
 });
 
