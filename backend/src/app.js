@@ -18,35 +18,22 @@ const authRouter = require('./routes/authRouter');
 const createApp = () => {
   const app = express();
 
-  // CORS
+  // CORS - Configuración más permisiva para desarrollo
   const corsOptions = {
-    origin: (origin, callback) => {
-      console.log('\nORIGEN Request:', origin);
-      // Lista de orígenes permitidos
-      const allowedOrigins = [
-        'http://localhost:5173',     // Vite dev server
-        'http://localhost:3000',     // Alternativo
-        'http://localhost:3001',
-        'https://main.d3t813q1o1kf7z.amplifyapp.com',  // Amplify
-        'http://98.93.249.183:3001', // Server URL
-        process.env.FRONTEND_URL,    // URL del frontend en AWS
-        process.env.MOBILE_URL       // URL de la app móvil si existe
-      ].filter(Boolean); // Eliminar valores undefined/null
-      
-      // En desarrollo o para Postman/curl
-      if (!origin || process.env.NODE_ENV === 'development') {
-        return callback(null, true);
-      }
-      
-      if (allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        console.warn(`Origen bloqueado por CORS: ${origin}`);
-        callback(new Error('No permitido por CORS'));
-      }
-    },
+    origin: true, // Permite cualquier origen
+    credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept', 'Origin', 'X-Requested-With'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'Origin',
+      'X-Requested-With',
+      'Access-Control-Allow-Origin',
+      'Access-Control-Allow-Headers',
+      'Access-Control-Allow-Methods',
+      'Access-Control-Allow-Credentials'
+    ],
     credentials: true,
     optionsSuccessStatus: 204
   };
