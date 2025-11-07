@@ -3,9 +3,9 @@ const mysql = require('mysql2/promise');
 // Configuración de la base de datos - usar variables de entorno para producción
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
+  user: process.env.DB_USER || 'dazzart',
   password: process.env.DB_PASSWORD || 'Elcoste2024.',
-  database: process.env.DB_NAME || 'dazzart',
+  database: process.env.DB_NAME || 'DAZZART',
   // Opciones adicionales para mejor rendimiento y manejo de desconexiones
   waitForConnections: true,
   connectionLimit: 10,
@@ -16,7 +16,6 @@ const pool = mysql.createPool({
 
 (async () => {
   try {
-    // Prueba simple para ver si la conexión funciona:
     const connection = await pool.getConnection();
     console.log('Conectado a MySQL correctamente.');
     connection.release();
