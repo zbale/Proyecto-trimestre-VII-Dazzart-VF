@@ -18,9 +18,13 @@ const authRouter = require('./routes/authRouter');
 const createApp = () => {
   const app = express();
 
-  // CORS - Configuración más permisiva para desarrollo
+  // CORS - Configuración específica para Amplify
   const corsOptions = {
-    origin: true, // Permite cualquier origen
+    origin: [
+      'https://main.d3t813q1o1kf7z.amplifyapp.com',  // Tu dominio de Amplify
+      'http://localhost:5173',  // Para desarrollo local
+      'http://localhost:3000'   // Para desarrollo local alternativo
+    ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
     allowedHeaders: [
@@ -28,13 +32,8 @@ const createApp = () => {
       'Authorization',
       'Accept',
       'Origin',
-      'X-Requested-With',
-      'Access-Control-Allow-Origin',
-      'Access-Control-Allow-Headers',
-      'Access-Control-Allow-Methods',
-      'Access-Control-Allow-Credentials'
+      'X-Requested-With'
     ],
-    credentials: true,
     optionsSuccessStatus: 204
   };
 
