@@ -90,7 +90,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
     const total = calcularTotalRaw();
 
     try {
-  const res = await fetch(`${API_URL}/pedidos`, {
+  const res = await fetch(`${API_URL}/api/pedidos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
