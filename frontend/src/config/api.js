@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// URL base del servidor
-export const API_URL = 'http://54.147.46.244:3001/api';
+// Solo la URL base
+export const API_URL = '/api';
 
 // Instancia Axios
 export const API = axios.create({
