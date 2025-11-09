@@ -106,10 +106,9 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
 
       if (res.ok) {
         setCarrito([]);
-  await fetch(`${API_URL}/api/carrito/vaciar/${id_usuario}`, { method: 'DELETE' });
-        const pedidoFinal = data.pedido || data;
-        sessionStorage.setItem("ultimaFactura", JSON.stringify(pedidoFinal));
-        navigate(`/factura/${pedidoFinal.id_factura}`);
+        await fetch(`${API_URL}/api/carrito/vaciar/${id_usuario}`, { method: 'DELETE' });
+        sessionStorage.setItem("ultimaFactura", JSON.stringify(data));
+        navigate(`/factura/${data.id_factura}`);
       } else {
         setModalMensaje(data.error || 'Error al realizar la compra');
         setMostrarModal(true);
