@@ -27,8 +27,7 @@ export default function Factura() {
     const cargarFactura = async () => {
       try {
         console.log('Intentando cargar factura con ID:', id_factura);
-        console.log('URL de la petición:', `${API_URL}/pedidos/${id_factura}`);
-        const response = await API.get(`pedidos/${id_factura}`);
+        const response = await API.get(`/pedidos/${id_factura}`);
         console.log('Respuesta del servidor:', response);
         
         const { data } = response;
