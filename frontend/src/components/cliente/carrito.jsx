@@ -90,7 +90,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
     const total = calcularTotalRaw();
 
     try {
-  const res = await fetch(`${API_URL}/api/pedidos`, {
+  const res = await fetch(`${API_URL}/pedidos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -106,7 +106,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
 
       if (res.ok) {
         setCarrito([]);
-        await fetch(`${API_URL}/api/carrito/vaciar/${id_usuario}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/carrito/vaciar/${id_usuario}`, { method: 'DELETE' });
         sessionStorage.setItem("ultimaFactura", JSON.stringify(data));
         navigate(`/factura/${data.id_factura}`);
       } else {
