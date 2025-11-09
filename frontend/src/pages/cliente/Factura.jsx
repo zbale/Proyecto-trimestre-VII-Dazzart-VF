@@ -27,22 +27,12 @@ export default function Factura() {
     const cargarFactura = async () => {
       try {
         console.log('Intentando cargar factura con ID:', id_factura);
-        // Usar la URL completa del servidor
-        const response = await fetch(`http://54.147.46.244:3001/api/pedidos/${id_factura}`);
-        const data = await response.json();
-        console.log('Respuesta del servidor:', data);
-        
-        if (!response.ok) {
-          throw new Error(`Error al cargar la factura: ${response.status}`);
-        }
-
+        const { data } = await API.get(`/api/pedidos/${id_factura}`);
         console.log('Datos recibidos:', data);
 
         if (!data) {
           throw new Error('No se recibieron datos del servidor');
-        }
-
-        if (typeof data.productos === "string") {
+        }        if (typeof data.productos === "string") {
           try {
             data.productos = JSON.parse(data.productos);
           } catch (e) {
@@ -54,6 +44,11 @@ export default function Factura() {
         setPedido(data);
       } catch (error) {
         console.error('Error al cargar la factura:', error);
+        console.error('Detalles completos del error:', {
+          mensaje: error.message,
+          respuesta: error.response,
+          estado: error.response?.status
+        });
         setPedido(null);
       } finally {
         setLoading(false);
