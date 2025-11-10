@@ -3,6 +3,10 @@
 # dependencies
 node_modules/
 
+# Python virtual environment (por si existe en el proyecto raíz)
+venv/
+../venv/
+
 # Expo
 .expo/
 dist/
@@ -21,10 +25,11 @@ expo-env.d.ts
 # Metro
 .metro-health-check*
 
-# debug
+# Debug
 npm-debug.*
 yarn-debug.*
 yarn-error.*
+
 # Node modules
 node_modules/
 
@@ -32,10 +37,6 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# Expo
-.expo/
-.expo-shared/
 
 # VSCode
 .vscode/
@@ -51,19 +52,15 @@ Thumbs.db
 # Environment
 .env
 .env.*
+.env*.local
 
 # Others
 package-lock.json
 yarn.lock
-
-# macOS
-.DS_Store
 *.pem
 
-# local env files
-.env*.local
-
-# typescript
+# TypeScript
 *.tsbuildinfo
 
+# Example folder
 app-example
