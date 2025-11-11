@@ -6,12 +6,14 @@
     "preview": {
       "android": {
         "buildType": "apk"
-      }
+      },
+      "node": "22.18.0"
     },
     "production": {
       "android": {
         "gradleCommand": ":app:bundleRelease"
-      }
+      },
+      "node": "22.18.0"
     }
   },
   "submit": {
