@@ -103,7 +103,7 @@ export default function VistaProductos({ navigation, route }) {
           setProductos(filtrados);
         })
         .catch(() => setProductos([]));
-    } else if (idCategoria && idSubcategoria) {
+  } else if (idCategoria && idSubcategoria) {
       API.get('/productos/listar')
         .then(res => {
           let filtrados = res.data.filter(
@@ -121,6 +121,26 @@ export default function VistaProductos({ navigation, route }) {
           setProductos(filtrados);
         })
         .catch(() => setProductos([]));
+    } else {
+      // Caso por defecto: cargar todos los productos cuando no hay búsqueda ni filtro
+      API.get('/productos/listar')
+        .then(res => {
+          let listado = Array.isArray(res.data) ? res.data : [];
+          if (soloOferta) listado = listado.filter(p => p.oferta === true);
+          if (orden === 'popularidad') {
+            listado.sort((a, b) => (b.popularidad || 0) - (a.popularidad || 0));
+          } else if (orden === 'precio_asc') {
+            listado.sort((a, b) => a.precio - b.precio);
+          } else if (orden === 'precio_desc') {
+            listado.sort((a, b) => b.precio - a.precio);
+          }
+          listado = listado.slice(0, mostrarCantidad);
+          setProductos(listado);
+        })
+        .catch(err => {
+          console.error('Error cargando productos por defecto:', err);
+          setProductos([]);
+        });
     }
   }, [idCategoria, idSubcategoria, soloOferta, orden, mostrarCantidad, searchParam]);
 
