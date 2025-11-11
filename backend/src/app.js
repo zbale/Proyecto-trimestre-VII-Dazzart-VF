@@ -19,28 +19,25 @@ const createApp = () => {
   const app = express();
 
   // CORS - Configuración específica para Amplify
-const corsOptions = {
-  origin: [
-    'http://localhost:5173',   // Desarrollo local
-    'http://localhost:3000',   // Alternativo local
-    'http://67.202.48.5' ,
-    'http://67.202.48.5:3001'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
-  allowedHeaders: [
-    'Content-Type',
-    'Authorization',
-    'Accept',
-    'Origin',
-    'X-Requested-With'
-  ],
-  optionsSuccessStatus: 204
-};
+  const corsOptions = {
+    origin: [
+      'http://localhost:5173',  // Para desarrollo local
+      'http://localhost:3000'   // Para desarrollo local alternativo
+    ],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'Origin',
+      'X-Requested-With'
+    ],
+    optionsSuccessStatus: 204
+  };
 
-// Aplicar CORS a todas las rutas
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+  // Aplicar CORS a todas las rutas
+  app.use(cors(corsOptions));
 
   // Manejar OPTIONS para preflight en todas las rutas
   app.use((req, res, next) => {
