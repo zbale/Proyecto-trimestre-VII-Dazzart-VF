@@ -23,6 +23,12 @@ API.interceptors.request.use(
       const token = await AsyncStorage.getItem("token");
       config.headers = config.headers || {};
       if (token) config.headers.Authorization = `Bearer ${token}`;
+      // Log request method and URL for debugging in Metro/Expo
+      try {
+        console.log('[API request]', (config && config.method && config.url) ? `${config.method.toUpperCase()} ${config.baseURL || ''}${config.url}` : config);
+      } catch (e) {
+        // ignore logging errors
+      }
       return config;
     } catch (error) {
       console.log("Error obteniendo token:", error);
@@ -36,6 +42,16 @@ API.interceptors.request.use(
 API.interceptors.response.use(
   (res) => res,
   async (err) => {
+    // Log response errors for debugging
+    try {
+      if (err && err.config) {
+        console.error('[API response error]', err.config.method ? err.config.method.toUpperCase() : '', err.config.url, err.response ? err.response.status : err.message);
+      } else {
+        console.error('[API response error]', err && err.message ? err.message : err);
+      }
+    } catch (e) {
+      // ignore logging errors
+    }
     if (err.response && err.response.status === 401) {
       try { await AsyncStorage.removeItem("token"); } catch (e) {}
     }
