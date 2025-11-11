@@ -1,16 +1,42 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BACKEND_URL, EXPO_PUBLIC_API_URL } from "@env";
+import Constants from "expo-constants";
+let BACKEND_URL = "", EXPO_PUBLIC_API_URL = "";
 
-// Normalizar la URL del backend: preferir EXPO_PUBLIC_API_URL (expo public),
+try {
+  // Intenta importar desde @env (para desarrollo local)
+  const envVars = require("@env");
+  BACKEND_URL = envVars.BACKEND_URL;
+  EXPO_PUBLIC_API_URL = envVars.EXPO_PUBLIC_API_URL;
+} catch (e) {
+  // Si no está disponible, no hace nada (será undefined)
+}
+
+// Normalizar la URL del backend: preferir EXPO_PUBLIC_API_URL (expo public o app.json),
 // luego BACKEND_URL, y finalmente el fallback a la IP pública.
-const RAW_BACKEND = EXPO_PUBLIC_API_URL || BACKEND_URL || "http://67.202.48.5:3001";
+const getRawBackend = () => {
+  // 1. Intenta desde @env (desarrollo)
+  if (EXPO_PUBLIC_API_URL) return EXPO_PUBLIC_API_URL;
+  if (BACKEND_URL) return BACKEND_URL;
+  
+  // 2. Intenta desde app.json.extra (APK/release)
+  try {
+    const extra = Constants.expoConfig?.extra || {};
+    if (extra.EXPO_PUBLIC_API_URL) return extra.EXPO_PUBLIC_API_URL;
+  } catch (e) {}
+  
+  // 3. Fallback a IP por defecto
+  return "http://67.202.48.5:3001";
+};
+
+const RAW_BACKEND = getRawBackend();
 const BASE_HOST = RAW_BACKEND.replace(/\/+$/, "").replace(/\/api$/i, "");
 const BASE = BASE_HOST; // base sin sufijo /api
 
 // Logear la baseURL final que usará Axios (ayuda a depuración)
 try {
   console.log('[API baseURL]', `${BASE}/api`);
+  console.log('[API RAW_BACKEND]', RAW_BACKEND);
 } catch (e) {}
 
 // Instancia de Axios
