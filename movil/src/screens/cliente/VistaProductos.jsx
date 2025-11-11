@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, StyleSheet, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
@@ -18,6 +18,7 @@ export default function VistaProductos({ navigation, route }) {
   const [feedbackMsg, setFeedbackMsg] = useState('');
   const [productos, setProductos] = useState([]);
   const [usuario, setUsuario] = useState(null);
+  const [debugMsg, setDebugMsg] = useState('Cargando...');
   const searchParam = route?.params?.search || '';
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
@@ -85,63 +86,36 @@ export default function VistaProductos({ navigation, route }) {
   }, [idCategoria]);
 
   useEffect(() => {
-    if (searchParam && searchParam.trim().length > 0) {
-      API.get('/productos/listar')
-        .then(res => {
-          let filtrados = res.data.filter(
-            p => p.nombre && p.nombre.toLowerCase().includes(searchParam.toLowerCase())
-          );
-          if (soloOferta) filtrados = filtrados.filter(p => p.oferta === true);
-          if (orden === 'popularidad') {
-            filtrados.sort((a, b) => (b.popularidad || 0) - (a.popularidad || 0));
-          } else if (orden === 'precio_asc') {
-            filtrados.sort((a, b) => a.precio - b.precio);
-          } else if (orden === 'precio_desc') {
-            filtrados.sort((a, b) => b.precio - a.precio);
-          }
-          filtrados = filtrados.slice(0, mostrarCantidad);
-          setProductos(filtrados);
-        })
-        .catch(() => setProductos([]));
-  } else if (idCategoria && idSubcategoria) {
-      API.get('/productos/listar')
-        .then(res => {
-          let filtrados = res.data.filter(
-            p => p.id_categoria === idCategoria && p.id_subcategoria === idSubcategoria
-          );
-          if (soloOferta) filtrados = filtrados.filter(p => p.oferta === true);
-          if (orden === 'popularidad') {
-            filtrados.sort((a, b) => (b.popularidad || 0) - (a.popularidad || 0));
-          } else if (orden === 'precio_asc') {
-            filtrados.sort((a, b) => a.precio - b.precio);
-          } else if (orden === 'precio_desc') {
-            filtrados.sort((a, b) => b.precio - a.precio);
-          }
-          filtrados = filtrados.slice(0, mostrarCantidad);
-          setProductos(filtrados);
-        })
-        .catch(() => setProductos([]));
-    } else {
-      // Caso por defecto: cargar todos los productos cuando no hay búsqueda ni filtro
-      API.get('/productos/listar')
-        .then(res => {
-          let listado = Array.isArray(res.data) ? res.data : [];
-          if (soloOferta) listado = listado.filter(p => p.oferta === true);
-          if (orden === 'popularidad') {
-            listado.sort((a, b) => (b.popularidad || 0) - (a.popularidad || 0));
-          } else if (orden === 'precio_asc') {
-            listado.sort((a, b) => a.precio - b.precio);
-          } else if (orden === 'precio_desc') {
-            listado.sort((a, b) => b.precio - a.precio);
-          }
-          listado = listado.slice(0, mostrarCantidad);
-          setProductos(listado);
-        })
-        .catch(err => {
-          console.error('Error cargando productos por defecto:', err);
-          setProductos([]);
-        });
-    }
+    const cargarProductos = async () => {
+      try {
+        setDebugMsg('Iniciando carga de productos...');
+        
+        const res = await API.get('/productos/listar');
+        setDebugMsg(`✅ Conectado! Respuesta: ${JSON.stringify(res.data).substring(0, 100)}`);
+        Alert.alert('DEBUG', `✅ Backend conectado!\n${res.data?.length || 0} productos recibidos`);
+        
+        let listado = Array.isArray(res.data) ? res.data : [];
+        if (soloOferta) listado = listado.filter(p => p.oferta === true);
+        if (orden === 'popularidad') {
+          listado.sort((a, b) => (b.popularidad || 0) - (a.popularidad || 0));
+        } else if (orden === 'precio_asc') {
+          listado.sort((a, b) => a.precio - b.precio);
+        } else if (orden === 'precio_desc') {
+          listado.sort((a, b) => b.precio - a.precio);
+        }
+        listado = listado.slice(0, mostrarCantidad);
+        setProductos(listado);
+        setDebugMsg(`✅ Cargados: ${listado.length} productos`);
+      } catch (err) {
+        const errorMsg = err?.message || 'Error desconocido';
+        setDebugMsg(`❌ Error: ${errorMsg}`);
+        Alert.alert('ERROR', `No se pudo conectar al backend:\n${errorMsg}\n\nVerifica que 67.202.48.5:3001 esté en línea`);
+        console.error('Error cargando productos:', err);
+        setProductos([]);
+      }
+    };
+    
+    cargarProductos();
   }, [idCategoria, idSubcategoria, soloOferta, orden, mostrarCantidad, searchParam]);
 
   const handleVerDetalle = producto => {
@@ -272,7 +246,10 @@ export default function VistaProductos({ navigation, route }) {
       </Modal>
       <ScrollView style={{ flex: 1 }}>
         {productos.length === 0 ? (
-          <Text style={styles.noProductos}>No hay productos disponibles en esta categoría y subcategoría.</Text>
+          <View style={{ padding: 20, alignItems: 'center' }}>
+            <Text style={styles.noProductos}>No hay productos disponibles en esta categoría y subcategoría.</Text>
+            <Text style={{ marginTop: 20, fontSize: 14, color: '#666', textAlign: 'center' }}>DEBUG: {debugMsg}</Text>
+          </View>
         ) : (
           <View style={styles.productosGrid}>
             {productos.map(prod => (
