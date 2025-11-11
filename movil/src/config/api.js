@@ -2,7 +2,15 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BACKEND_URL } from "@env";
 
-const BASE = BACKEND_URL || "http://67.202.48.5:3001";
+// Normalizar la URL del backend: eliminar slashes finales y evitar doble "/api"
+const RAW_BACKEND = BACKEND_URL || "http://67.202.48.5:3001";
+const BASE_HOST = RAW_BACKEND.replace(/\/+$/, "").replace(/\/api$/i, "");
+const BASE = BASE_HOST; // base sin sufijo /api
+
+// Logear la baseURL final que usará Axios (ayuda a depuración)
+try {
+  console.log('[API baseURL]', `${BASE}/api`);
+} catch (e) {}
 
 // Instancia de Axios
 const API = axios.create({
