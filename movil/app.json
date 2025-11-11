@@ -1,15 +1,16 @@
 {
   "expo": {
-  "name": "Dazzart Components",
-  "slug": "movil",
+    "name": "Dazzart Components",
+    "slug": "movil",
     "version": "1.0.0",
     "orientation": "portrait",
-  "icon": "./src/assets/logo.png",
-  "scheme": "dazzart-components",
+    "icon": "./src/assets/logo.png",
+    "scheme": "dazzart-components",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zbale.movil"
     },
     "android": {
       "adaptiveIcon": {
