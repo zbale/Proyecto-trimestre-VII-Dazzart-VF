@@ -28,15 +28,26 @@ const Index = () => {
   React.useEffect(() => {
     const testBackend = async () => {
       try {
-        setDebugMsg('Conectando al backend...');
+        setDebugMsg('📡 Paso 1: Iniciando conexión...');
+        
+        setDebugMsg('📡 Paso 2: Llamando /api/productos/listar...');
         const res = await API.get('/productos/listar');
+        
+        setDebugMsg('📡 Paso 3: Respuesta recibida');
         const count = Array.isArray(res.data) ? res.data.length : 0;
-        setDebugMsg(`✅ CONECTADO! ${count} productos disponibles`);
-        Alert.alert('DEBUG', `✅ Backend conectado exitosamente!\n${count} productos en BD`);
+        const firstProd = res.data?.[0]?.nombre || 'N/A';
+        
+        setDebugMsg(`✅ EXITO!\n${count} productos\nPrimero: ${firstProd}`);
+        Alert.alert('✅ CONECTADO', `Backend OK!\n${count} productos\nPrimero: ${firstProd}`);
       } catch (err) {
-        const errorMsg = err?.message || 'Error desconocido';
-        setDebugMsg(`❌ Error de conexión: ${errorMsg}`);
-        Alert.alert('ERROR DE CONEXIÓN', `No se pudo conectar al backend en 67.202.48.5:3001\n\nError: ${errorMsg}`);
+        const errorMsg = err?.message || 'Desconocido';
+        const errorCode = err?.code || 'N/A';
+        const status = err?.response?.status || 'N/A';
+        const config = err?.config?.url || 'N/A';
+        
+        setDebugMsg(`❌ ERROR\nMsg: ${errorMsg}\nCode: ${errorCode}\nStatus: ${status}\nURL: ${config}`);
+        Alert.alert('❌ FALLO', `Error: ${errorMsg}\nCode: ${errorCode}\nStatus: ${status}`);
+        console.error('Full error:', err);
       }
     };
     
@@ -152,9 +163,41 @@ const Index = () => {
           }}
         />
         {showDebug && (
-          <View style={{ backgroundColor: '#f0f0f0', padding: 10, marginHorizontal: 10, marginTop: 5, borderRadius: 5 }}>
-            <Text style={{ fontSize: 12, color: '#333', fontWeight: 'bold' }}>DEBUG: {debugMsg}</Text>
-            <Text style={{ fontSize: 10, color: '#666', marginTop: 3 }} onPress={() => setShowDebug(false)}>Toca para cerrar</Text>
+          <View style={{ 
+            backgroundColor: '#1a1a1a', 
+            padding: 12, 
+            marginHorizontal: 10, 
+            marginTop: 5, 
+            marginBottom: 10,
+            borderRadius: 8,
+            borderLeftWidth: 4,
+            borderLeftColor: '#ff6b6b'
+          }}>
+            <Text style={{ 
+              fontSize: 11, 
+              color: '#00ff00', 
+              fontFamily: 'monospace',
+              fontWeight: 'bold',
+              marginBottom: 8
+            }}>▶ DEBUG LOG:</Text>
+            <Text style={{ 
+              fontSize: 10, 
+              color: '#00ff00', 
+              fontFamily: 'monospace',
+              lineHeight: 16,
+              marginBottom: 8
+            }}>{debugMsg}</Text>
+            <Text 
+              style={{ 
+                fontSize: 9, 
+                color: '#888', 
+                marginTop: 5,
+                textDecorationLine: 'underline'
+              }} 
+              onPress={() => setShowDebug(false)}
+            >
+              [TAP TO CLOSE]
+            </Text>
           </View>
         )}
         <ModalDetalleProducto

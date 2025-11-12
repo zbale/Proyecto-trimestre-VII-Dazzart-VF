@@ -35,9 +35,17 @@ const BASE = BASE_HOST; // base sin sufijo /api
 
 // Logear la baseURL final que usará Axios (ayuda a depuración)
 try {
-  console.log('[API baseURL]', `${BASE}/api`);
+  console.log('========== API CONFIG ==========');
+  console.log('[API MODE] DEV/PROD');
+  console.log('[API BACKEND_URL]', BACKEND_URL || 'NOT SET');
+  console.log('[API EXPO_PUBLIC_API_URL]', EXPO_PUBLIC_API_URL || 'NOT SET');
   console.log('[API RAW_BACKEND]', RAW_BACKEND);
-} catch (e) {}
+  console.log('[API BASE_HOST]', BASE_HOST);
+  console.log('[API baseURL]', `${BASE}/api`);
+  console.log('==============================');
+} catch (e) {
+  console.error('Error logging API config:', e);
+}
 
 // Instancia de Axios
 const API = axios.create({
@@ -60,13 +68,14 @@ API.interceptors.request.use(
       if (token) config.headers.Authorization = `Bearer ${token}`;
       // Log request method and URL for debugging in Metro/Expo
       try {
-        console.log('[API request]', (config && config.method && config.url) ? `${config.method.toUpperCase()} ${config.baseURL || ''}${config.url}` : config);
+        const fullUrl = `${config.baseURL || ''}${config.url}`;
+        console.log(`[API →] ${config.method?.toUpperCase()} ${fullUrl}`);
       } catch (e) {
         // ignore logging errors
       }
       return config;
     } catch (error) {
-      console.log("Error obteniendo token:", error);
+      console.log("[API ERROR] Token fetch:", error?.message);
       return config;
     }
   },
@@ -75,17 +84,22 @@ API.interceptors.request.use(
 
 // Interceptor response: elimina token si 401
 API.interceptors.response.use(
-  (res) => res,
+  (res) => {
+    try {
+      const fullUrl = `${res.config.baseURL || ''}${res.config.url}`;
+      console.log(`[API ←] ${res.config.method?.toUpperCase()} ${fullUrl} → Status ${res.status}`);
+    } catch (e) {}
+    return res;
+  },
   async (err) => {
     // Log response errors for debugging
     try {
-      if (err && err.config) {
-        console.error('[API response error]', err.config.method ? err.config.method.toUpperCase() : '', err.config.url, err.response ? err.response.status : err.message);
-      } else {
-        console.error('[API response error]', err && err.message ? err.message : err);
-      }
+      const fullUrl = `${err?.config?.baseURL || ''}${err?.config?.url}`;
+      const status = err?.response?.status || 'NO_RESPONSE';
+      const errorMsg = err?.message || 'Unknown error';
+      console.error(`[API ERROR ✗] ${err?.config?.method?.toUpperCase() || 'UNKNOWN'} ${fullUrl} → ${status} (${errorMsg})`);
     } catch (e) {
-      // ignore logging errors
+      console.error('[API ERROR] Error logging error:', e?.message);
     }
     if (err.response && err.response.status === 401) {
       try { await AsyncStorage.removeItem("token"); } catch (e) {}
