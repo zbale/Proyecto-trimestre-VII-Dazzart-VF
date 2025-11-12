@@ -5,9 +5,13 @@
   "build": {
     "preview": {
       "android": {
-        "buildType": "apk"
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
       },
-      "node": "22.18.0"
+      "node": "22.18.0",
+      "env": {
+        "EXPO_USE_EAS_BUILD": "1"
+      }
     },
     "production": {
       "android": {

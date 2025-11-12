@@ -4,6 +4,7 @@ node_modules/
 dist/
 build/
 .DS_Store
-movil/android/
+movil/android/build/
+movil/android/.gradle/
 movil/ios/
 venv/
