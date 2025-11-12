@@ -7,13 +7,21 @@
       "android": {
         "buildType": "apk"
       },
-      "node": "22.18.0"
+      "node": "22.18.0",
+      "env": {
+        "BACKEND_URL": "http://67.202.48.5:3001",
+        "EXPO_PUBLIC_API_URL": "http://67.202.48.5:3001"
+      }
     },
     "production": {
       "android": {
         "gradleCommand": ":app:bundleRelease"
       },
-      "node": "22.18.0"
+      "node": "22.18.0",
+      "env": {
+        "BACKEND_URL": "http://67.202.48.5:3001",
+        "EXPO_PUBLIC_API_URL": "http://67.202.48.5:3001"
+      }
     }
   },
   "submit": {
