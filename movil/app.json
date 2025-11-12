@@ -1,33 +1,18 @@
-{{
-
-  "expo": {  "expo": {
-
-    "name": "Dazzart Components",    "name": "Dazzart Components",
-
-    "slug": "movil",    "slug": "movil",
-
-    "version": "1.0.0",    "version": "1.0.0",
-
-    "orientation": "portrait",    "orientation": "portrait",
-
-    "icon": "./src/assets/logo.png",    "icon": "./src/assets/logo.png",
-
-    "userInterfaceStyle": "automatic",    "scheme": "dazzart-components",
-
-    "splash": {    "userInterfaceStyle": "automatic",
-
-      "image": "./src/assets/logo.png",    "newArchEnabled": true,
-
-      "resizeMode": "contain",    "ios": {
-
-      "backgroundColor": "#ffffff"      "supportsTablet": true,
-
-    }      "bundleIdentifier": "com.zbale.movil"
-
-  }    },
-
-}    "android": {
-
+{
+  "expo": {
+    "name": "Dazzart Components",
+    "slug": "movil",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./src/assets/logo.png",
+    "scheme": "dazzart-components",
+    "userInterfaceStyle": "automatic",
+    "newArchEnabled": true,
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.zbale.movil"
+    },
+    "android": {
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/logo.png",
         "backgroundColor": "#ffffff"
@@ -55,6 +40,14 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
       ]
     ],
     "experiments": {
@@ -64,8 +57,7 @@
       "router": {},
       "eas": {
         "projectId": "60a085e2-f299-4b11-b258-6dae20f85fab"
-      },
-      "EXPO_PUBLIC_API_URL": "http://67.202.48.5:3001"
+      }
     }
   }
 }
