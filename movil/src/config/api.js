@@ -436,5 +436,4 @@ export const cambiarEstadoUsuario = async (id, estado) => {
   }
 };
 
-export { apiWithRetry };
 export default API;
