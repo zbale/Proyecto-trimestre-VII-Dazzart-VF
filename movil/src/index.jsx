@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import API from './config/api';
-import { View, StyleSheet, SafeAreaView, TouchableWithoutFeedback } from 'react-native';
+import { View, StyleSheet, SafeAreaView, TouchableWithoutFeedback, Alert, Text } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 
@@ -21,6 +21,28 @@ const Index = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
   const [usuario, setUsuario] = useState(null);
+  const [debugMsg, setDebugMsg] = useState('Iniciando...');
+  const [showDebug, setShowDebug] = useState(true);
+  
+  // DEBUG: Verificar conexión al backend al iniciar
+  React.useEffect(() => {
+    const testBackend = async () => {
+      try {
+        setDebugMsg('Conectando al backend...');
+        const res = await API.get('/productos/listar');
+        const count = Array.isArray(res.data) ? res.data.length : 0;
+        setDebugMsg(`✅ CONECTADO! ${count} productos disponibles`);
+        Alert.alert('DEBUG', `✅ Backend conectado exitosamente!\n${count} productos en BD`);
+      } catch (err) {
+        const errorMsg = err?.message || 'Error desconocido';
+        setDebugMsg(`❌ Error de conexión: ${errorMsg}`);
+        Alert.alert('ERROR DE CONEXIÓN', `No se pudo conectar al backend en 67.202.48.5:3001\n\nError: ${errorMsg}`);
+      }
+    };
+    
+    testBackend();
+  }, []);
+  
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
       const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
@@ -129,6 +151,12 @@ const Index = () => {
             }
           }}
         />
+        {showDebug && (
+          <View style={{ backgroundColor: '#f0f0f0', padding: 10, marginHorizontal: 10, marginTop: 5, borderRadius: 5 }}>
+            <Text style={{ fontSize: 12, color: '#333', fontWeight: 'bold' }}>DEBUG: {debugMsg}</Text>
+            <Text style={{ fontSize: 10, color: '#666', marginTop: 3 }} onPress={() => setShowDebug(false)}>Toca para cerrar</Text>
+          </View>
+        )}
         <ModalDetalleProducto
           visible={modalDetalleVisible}
           producto={productoDetalle}
