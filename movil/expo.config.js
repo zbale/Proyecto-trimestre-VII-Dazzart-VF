@@ -19,8 +19,6 @@ module.exports = {
       },
       edgeToEdgeEnabled: true,
       package: 'com.zbale.movil',
-      // Network security config se maneja via android/ folder
-      // Ver: android/app/src/main/res/xml/network_security_config.xml
     },
     web: {
       bundler: 'metro',
@@ -41,6 +39,14 @@ module.exports = {
           imageWidth: 300,
           resizeMode: 'contain',
           backgroundColor: '#ffffff',
+        },
+      ],
+      [
+        'expo-build-properties',
+        {
+          android: {
+            usesCleartextTraffic: true,
+          },
         },
       ],
     ],
