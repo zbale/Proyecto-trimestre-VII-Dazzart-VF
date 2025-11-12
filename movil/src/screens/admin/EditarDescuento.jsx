@@ -9,7 +9,7 @@ import {
   SafeAreaView,
   Modal,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome6";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import API from "../../config/api"; 
 import MenuLateral from "../../Components/Admin/MenuLateral";
 import { useNavigation, useRoute } from "@react-navigation/native";

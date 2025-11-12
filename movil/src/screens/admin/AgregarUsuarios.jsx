@@ -10,7 +10,7 @@ import {
   Modal,
   ScrollView,
 } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome6";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import API from "../../config/api"; // tu instancia axios con baseURL
 import MenuLateral from "../../Components/Admin/MenuLateral";
 import { useNavigation } from "@react-navigation/native";

@@ -2,7 +2,7 @@
 // Cambios para navegación directa al Index desde el menú lateral.
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from "react-native";
-import Icon from "react-native-vector-icons/FontAwesome6";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import { useNavigation } from "@react-navigation/native";
 
 export default function MenuLateral() {

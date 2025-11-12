@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import API from "../../config/api";  // 🔹 corregido
 import MenuLateral from "../../Components/Admin/MenuLateral";
-import Icon from "react-native-vector-icons/FontAwesome6";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import { useFocusEffect } from "@react-navigation/native";
 
 export default function SubcategoriasAdmin() {

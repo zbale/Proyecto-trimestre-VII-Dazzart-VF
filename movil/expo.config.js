@@ -31,7 +31,7 @@ module.exports = {
       backgroundColor: '#ffffff',
     },
     plugins: [
-      'expo-router',
+      // 'expo-router',  // Deshabilitado: usando react-navigation directamente
       [
         'expo-splash-screen',
         {

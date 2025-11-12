@@ -12,7 +12,7 @@ import {
   Modal,
 } from "react-native";
 import API from "../../config/api";
-import Icon from "react-native-vector-icons/FontAwesome6";
+import Icon from "react-native-vector-icons/FontAwesome5";
 import MenuLateral from "../../Components/Admin/MenuLateral";
 
 export default function ProductosAdmin() {
