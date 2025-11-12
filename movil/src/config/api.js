@@ -1,69 +1,9 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Constants from "expo-constants";
-let BACKEND_URL = "", EXPO_PUBLIC_API_URL = "";
 
-try {
-  // Intenta importar desde @env (para desarrollo local)
-  const envVars = require("@env");
-  BACKEND_URL = envVars.BACKEND_URL;
-  EXPO_PUBLIC_API_URL = envVars.EXPO_PUBLIC_API_URL;
-} catch (e) {
-  // Si no está disponible, no hace nada (será undefined)
-}
-
-// Normalizar la URL del backend: preferir EXPO_PUBLIC_API_URL (expo public o app.json),
-// luego BACKEND_URL, y finalmente el fallback a la IP pública.
-const getRawBackend = () => {
-  console.log('[API DEBUG] getRawBackend() called');
-  console.log('[API DEBUG] Constants.expoConfig:', Constants.expoConfig);
-  console.log('[API DEBUG] Constants.expoConfig?.extra:', Constants.expoConfig?.extra);
-  
-  // 1. Intenta desde @env (desarrollo)
-  if (EXPO_PUBLIC_API_URL) {
-    console.log('[API] Using EXPO_PUBLIC_API_URL from @env:', EXPO_PUBLIC_API_URL);
-    return EXPO_PUBLIC_API_URL;
-  }
-  if (BACKEND_URL) {
-    console.log('[API] Using BACKEND_URL from @env:', BACKEND_URL);
-    return BACKEND_URL;
-  }
-  
-  // 2. Intenta desde app.json.extra (APK/release)
-  try {
-    const extra = Constants.expoConfig?.extra || {};
-    console.log('[API DEBUG] extra object:', extra);
-    if (extra.EXPO_PUBLIC_API_URL) {
-      console.log('[API] Using EXPO_PUBLIC_API_URL from app.json:', extra.EXPO_PUBLIC_API_URL);
-      return extra.EXPO_PUBLIC_API_URL;
-    }
-  } catch (e) {
-    console.error('[API] Error reading app.json.extra:', e?.message);
-  }
-  
-  // 3. Fallback a IP por defecto
-  const fallback = "http://67.202.48.5:3001";
-  console.log('[API] Using fallback URL:', fallback);
-  return fallback;
-};
-
-const RAW_BACKEND = getRawBackend();
-const BASE_HOST = RAW_BACKEND.replace(/\/+$/, "").replace(/\/api$/i, "");
-const BASE = BASE_HOST; // base sin sufijo /api
-
-// Logear la baseURL final que usará Axios (ayuda a depuración)
-try {
-  console.log('========== API CONFIG ==========');
-  console.log('[API MODE] DEV/PROD');
-  console.log('[API BACKEND_URL]', BACKEND_URL || 'NOT SET');
-  console.log('[API EXPO_PUBLIC_API_URL]', EXPO_PUBLIC_API_URL || 'NOT SET');
-  console.log('[API RAW_BACKEND]', RAW_BACKEND);
-  console.log('[API BASE_HOST]', BASE_HOST);
-  console.log('[API baseURL]', `${BASE}/api`);
-  console.log('==============================');
-} catch (e) {
-  console.error('Error logging API config:', e);
-}
+// BACKEND URL - Hardcoded para garantizar que funciona en APK
+const BACKEND_URL = "http://67.202.48.5:3001";
+const BASE = BACKEND_URL;
 
 // Instancia de Axios
 const API = axios.create({
