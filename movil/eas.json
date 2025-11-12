@@ -11,6 +11,10 @@
       "env": {
         "BACKEND_URL": "http://67.202.48.5:3001",
         "EXPO_PUBLIC_API_URL": "http://67.202.48.5:3001"
+      },
+      "npm": {
+        "install": true,
+        "ci": false
       }
     },
     "production": {
@@ -21,6 +25,10 @@
       "env": {
         "BACKEND_URL": "http://67.202.48.5:3001",
         "EXPO_PUBLIC_API_URL": "http://67.202.48.5:3001"
+      },
+      "npm": {
+        "install": true,
+        "ci": false
       }
     }
   },
