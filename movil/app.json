@@ -18,7 +18,8 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.zbale.movil"
+      "package": "com.zbale.movil",
+      "usesCleartextTraffic": true
     },
     "web": {
       "bundler": "metro",
