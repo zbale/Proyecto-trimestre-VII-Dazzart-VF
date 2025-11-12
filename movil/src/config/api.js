@@ -15,6 +15,10 @@ try {
 // Normalizar la URL del backend: preferir EXPO_PUBLIC_API_URL (expo public o app.json),
 // luego BACKEND_URL, y finalmente el fallback a la IP pública.
 const getRawBackend = () => {
+  console.log('[API DEBUG] getRawBackend() called');
+  console.log('[API DEBUG] Constants.expoConfig:', Constants.expoConfig);
+  console.log('[API DEBUG] Constants.expoConfig?.extra:', Constants.expoConfig?.extra);
+  
   // 1. Intenta desde @env (desarrollo)
   if (EXPO_PUBLIC_API_URL) {
     console.log('[API] Using EXPO_PUBLIC_API_URL from @env:', EXPO_PUBLIC_API_URL);
@@ -28,6 +32,7 @@ const getRawBackend = () => {
   // 2. Intenta desde app.json.extra (APK/release)
   try {
     const extra = Constants.expoConfig?.extra || {};
+    console.log('[API DEBUG] extra object:', extra);
     if (extra.EXPO_PUBLIC_API_URL) {
       console.log('[API] Using EXPO_PUBLIC_API_URL from app.json:', extra.EXPO_PUBLIC_API_URL);
       return extra.EXPO_PUBLIC_API_URL;

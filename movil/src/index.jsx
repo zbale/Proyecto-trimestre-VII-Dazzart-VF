@@ -28,8 +28,20 @@ const Index = () => {
   React.useEffect(() => {
     const testBackend = async () => {
       try {
-        setDebugMsg('📡 Paso 1: Iniciando conexión...');
+        setDebugMsg('📡 Paso 1: Verificando network...');
         console.log('[DEBUG INDEX] Starting backend test');
+        
+        // Test directo a la URL
+        setDebugMsg('📡 Paso 1.5: Test fetch directo...');
+        try {
+          const testRes = await fetch('http://67.202.48.5:3001/api/productos/listar', {
+            timeout: 5000
+          });
+          console.log('[DEBUG FETCH] Fetch status:', testRes.status);
+          console.log('[DEBUG FETCH] Fetch ok:', testRes.ok);
+        } catch (fetchErr) {
+          console.error('[DEBUG FETCH] Fetch failed:', fetchErr.message);
+        }
         
         setDebugMsg('📡 Paso 2: Llamando /api/productos/listar con reintentos...');
         console.log('[DEBUG INDEX] About to call API.get with retry');
@@ -52,6 +64,7 @@ const Index = () => {
         const baseURL = err?.config?.baseURL || 'N/A';
         
         console.error('[DEBUG INDEX] Error:', { errorMsg, errorCode, status, url: config, baseURL });
+        console.error('[DEBUG INDEX] Full error object:', err);
         
         setDebugMsg(`❌ ERROR\nMsg: ${errorMsg}\nCode: ${errorCode}\nStatus: ${status}\nURL: ${baseURL}${config}`);
         Alert.alert('❌ FALLO', `Error: ${errorMsg}\nCode: ${errorCode}\nStatus: ${status}\nURL: ${baseURL}${config}`);
