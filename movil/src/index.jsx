@@ -29,14 +29,18 @@ const Index = () => {
     const testBackend = async () => {
       try {
         setDebugMsg('📡 Paso 1: Iniciando conexión...');
+        console.log('[DEBUG INDEX] Starting backend test');
         
         setDebugMsg('📡 Paso 2: Llamando /api/productos/listar...');
+        console.log('[DEBUG INDEX] About to call API.get(/productos/listar)');
+        
         const res = await API.get('/productos/listar');
         
         setDebugMsg('📡 Paso 3: Respuesta recibida');
         const count = Array.isArray(res.data) ? res.data.length : 0;
         const firstProd = res.data?.[0]?.nombre || 'N/A';
         
+        console.log(`[DEBUG INDEX] Success! Got ${count} products`);
         setDebugMsg(`✅ EXITO!\n${count} productos\nPrimero: ${firstProd}`);
         Alert.alert('✅ CONECTADO', `Backend OK!\n${count} productos\nPrimero: ${firstProd}`);
       } catch (err) {
@@ -44,10 +48,12 @@ const Index = () => {
         const errorCode = err?.code || 'N/A';
         const status = err?.response?.status || 'N/A';
         const config = err?.config?.url || 'N/A';
+        const baseURL = err?.config?.baseURL || 'N/A';
         
-        setDebugMsg(`❌ ERROR\nMsg: ${errorMsg}\nCode: ${errorCode}\nStatus: ${status}\nURL: ${config}`);
-        Alert.alert('❌ FALLO', `Error: ${errorMsg}\nCode: ${errorCode}\nStatus: ${status}`);
-        console.error('Full error:', err);
+        console.error('[DEBUG INDEX] Error:', { errorMsg, errorCode, status, url: config, baseURL });
+        
+        setDebugMsg(`❌ ERROR\nMsg: ${errorMsg}\nCode: ${errorCode}\nStatus: ${status}\nURL: ${baseURL}${config}`);
+        Alert.alert('❌ FALLO', `Error: ${errorMsg}\nCode: ${errorCode}\nStatus: ${status}\nURL: ${baseURL}${config}`);
       }
     };
     

@@ -16,17 +16,30 @@ try {
 // luego BACKEND_URL, y finalmente el fallback a la IP pública.
 const getRawBackend = () => {
   // 1. Intenta desde @env (desarrollo)
-  if (EXPO_PUBLIC_API_URL) return EXPO_PUBLIC_API_URL;
-  if (BACKEND_URL) return BACKEND_URL;
+  if (EXPO_PUBLIC_API_URL) {
+    console.log('[API] Using EXPO_PUBLIC_API_URL from @env:', EXPO_PUBLIC_API_URL);
+    return EXPO_PUBLIC_API_URL;
+  }
+  if (BACKEND_URL) {
+    console.log('[API] Using BACKEND_URL from @env:', BACKEND_URL);
+    return BACKEND_URL;
+  }
   
   // 2. Intenta desde app.json.extra (APK/release)
   try {
     const extra = Constants.expoConfig?.extra || {};
-    if (extra.EXPO_PUBLIC_API_URL) return extra.EXPO_PUBLIC_API_URL;
-  } catch (e) {}
+    if (extra.EXPO_PUBLIC_API_URL) {
+      console.log('[API] Using EXPO_PUBLIC_API_URL from app.json:', extra.EXPO_PUBLIC_API_URL);
+      return extra.EXPO_PUBLIC_API_URL;
+    }
+  } catch (e) {
+    console.error('[API] Error reading app.json.extra:', e?.message);
+  }
   
   // 3. Fallback a IP por defecto
-  return "http://67.202.48.5:3001";
+  const fallback = "http://67.202.48.5:3001";
+  console.log('[API] Using fallback URL:', fallback);
+  return fallback;
 };
 
 const RAW_BACKEND = getRawBackend();
