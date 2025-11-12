@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import API from './config/api';
+import API, { apiWithRetry } from './config/api';
 import { View, StyleSheet, SafeAreaView, TouchableWithoutFeedback, Alert, Text } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
@@ -31,10 +31,11 @@ const Index = () => {
         setDebugMsg('📡 Paso 1: Iniciando conexión...');
         console.log('[DEBUG INDEX] Starting backend test');
         
-        setDebugMsg('📡 Paso 2: Llamando /api/productos/listar...');
-        console.log('[DEBUG INDEX] About to call API.get(/productos/listar)');
+        setDebugMsg('📡 Paso 2: Llamando /api/productos/listar con reintentos...');
+        console.log('[DEBUG INDEX] About to call API.get with retry');
         
-        const res = await API.get('/productos/listar');
+        // Usar apiWithRetry para manejar ERR_NETWORK
+        const res = await apiWithRetry(() => API.get('/productos/listar'), 3, 1500);
         
         setDebugMsg('📡 Paso 3: Respuesta recibida');
         const count = Array.isArray(res.data) ? res.data.length : 0;

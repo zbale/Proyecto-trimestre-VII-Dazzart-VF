@@ -63,7 +63,11 @@ try {
 // Instancia de Axios
 const API = axios.create({
   baseURL: `${BASE}/api`,
-  timeout: 10000,
+  timeout: 15000, // Increased timeout for Android devices
+  validateStatus: function (status) {
+    // Aceptar cualquier status para que el error llegue al interceptor
+    return status < 500;
+  }
 });
 
 // Función para construir URLs de imágenes
@@ -83,6 +87,7 @@ API.interceptors.request.use(
       try {
         const fullUrl = `${config.baseURL || ''}${config.url}`;
         console.log(`[API →] ${config.method?.toUpperCase()} ${fullUrl}`);
+        console.log(`[API Config] baseURL=${config.baseURL}, url=${config.url}, timeout=${config.timeout}`);
       } catch (e) {
         // ignore logging errors
       }
@@ -111,6 +116,12 @@ API.interceptors.response.use(
       const status = err?.response?.status || 'NO_RESPONSE';
       const errorMsg = err?.message || 'Unknown error';
       console.error(`[API ERROR ✗] ${err?.config?.method?.toUpperCase() || 'UNKNOWN'} ${fullUrl} → ${status} (${errorMsg})`);
+      
+      // Agregar información adicional para debugging
+      if (err.code === 'ERR_NETWORK') {
+        console.error('[API DEBUG] ERR_NETWORK detected - possible DNS/connectivity issue');
+        console.error('[API DEBUG] Retrying with full URL instead of baseURL...');
+      }
     } catch (e) {
       console.error('[API ERROR] Error logging error:', e?.message);
     }
@@ -120,6 +131,26 @@ API.interceptors.response.use(
     return Promise.reject(err);
   }
 );
+
+// Función con reintentos para manejar ERR_NETWORK
+export const apiWithRetry = async (fn, retries = 2, delayMs = 1000) => {
+  let lastError;
+  for (let i = 0; i <= retries; i++) {
+    try {
+      console.log(`[API RETRY] Attempt ${i + 1}/${retries + 1}`);
+      return await fn();
+    } catch (err) {
+      lastError = err;
+      if (i < retries && err.code === 'ERR_NETWORK') {
+        console.log(`[API RETRY] ERR_NETWORK on attempt ${i + 1}, waiting ${delayMs}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delayMs));
+      } else {
+        throw err;
+      }
+    }
+  }
+  throw lastError;
+};
 
 /////////////////////////
 // AUTH
@@ -405,4 +436,5 @@ export const cambiarEstadoUsuario = async (id, estado) => {
   }
 };
 
+export { apiWithRetry };
 export default API;
