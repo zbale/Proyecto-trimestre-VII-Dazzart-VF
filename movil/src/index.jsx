@@ -21,25 +21,6 @@ const Index = () => {
   const [menuVisible, setMenuVisible] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
   const [usuario, setUsuario] = useState(null);
-  const [debugMsg, setDebugMsg] = useState('Iniciando...');
-  const [showDebug, setShowDebug] = useState(true);
-  
-  // DEBUG: Verificar conexión al backend al iniciar
-  React.useEffect(() => {
-    const testBackend = async () => {
-      try {
-        const res = await apiWithRetry(() => API.get('/productos/listar'), 3, 1000);
-        const count = Array.isArray(res.data) ? res.data.length : 0;
-        const firstProd = res.data?.[0]?.nombre || 'N/A';
-        setDebugMsg(` OK\n${count} productos`);
-      } catch (err) {
-        const msg = err?.message || 'Error desconocido';
-        setDebugMsg(`FALLO\n${msg}`);
-      }
-    };
-    
-    testBackend();
-  }, []);
   
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
@@ -149,44 +130,6 @@ const Index = () => {
             }
           }}
         />
-        {showDebug && (
-          <View style={{ 
-            backgroundColor: '#1a1a1a', 
-            padding: 12, 
-            marginHorizontal: 10, 
-            marginTop: 5, 
-            marginBottom: 10,
-            borderRadius: 8,
-            borderLeftWidth: 4,
-            borderLeftColor: '#ff6b6b'
-          }}>
-            <Text style={{ 
-              fontSize: 11, 
-              color: '#00ff00', 
-              fontFamily: 'monospace',
-              fontWeight: 'bold',
-              marginBottom: 8
-            }}>▶ DEBUG LOG:</Text>
-            <Text style={{ 
-              fontSize: 10, 
-              color: '#00ff00', 
-              fontFamily: 'monospace',
-              lineHeight: 16,
-              marginBottom: 8
-            }}>{debugMsg}</Text>
-            <Text 
-              style={{ 
-                fontSize: 9, 
-                color: '#888', 
-                marginTop: 5,
-                textDecorationLine: 'underline'
-              }} 
-              onPress={() => setShowDebug(false)}
-            >
-              [TAP TO CLOSE]
-            </Text>
-          </View>
-        )}
         <ModalDetalleProducto
           visible={modalDetalleVisible}
           producto={productoDetalle}
