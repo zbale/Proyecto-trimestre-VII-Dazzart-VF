@@ -22,7 +22,11 @@ const createApp = () => {
   const corsOptions = {
     origin: [
       'http://localhost:5173',  // Para desarrollo local
-      'http://localhost:3000'   // Para desarrollo local alternativo
+      'http://localhost:3000',   // Para desarrollo local alternativo
+      'http://localhost:19000', // Expo Go
+      'http://127.0.0.1:19000', // Expo Go local
+      'http://67.202.48.5:3001', // IP pública - APK
+      'http://172.31.29.194:3001' // IP privada - red local
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],

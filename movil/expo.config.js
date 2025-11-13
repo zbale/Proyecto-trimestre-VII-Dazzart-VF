@@ -19,6 +19,7 @@ module.exports = {
       },
       edgeToEdgeEnabled: true,
       package: 'com.zbale.movil',
+      usesCleartextTraffic: true,
     },
     web: {
       bundler: 'metro',
