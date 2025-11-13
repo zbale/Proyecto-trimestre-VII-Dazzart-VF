@@ -38,7 +38,7 @@ export default function AgregarProducto({ navigation }) {
         const res = await API.get("/categorias/listar");
         setCategorias(res.data || []);
       } catch (error) {
-        console.log("Error cargando categorías", error);
+        // Error cargando categorías
       }
     };
     cargarCategorias();
@@ -55,7 +55,7 @@ export default function AgregarProducto({ navigation }) {
         );
         setSubcategorias(filtradas);
       } catch (error) {
-        console.log("Error cargando subcategorías", error);
+        // Error cargando subcategorías
       }
     };
     cargarSubcategorias();

@@ -57,12 +57,9 @@ const ModalLogin = ({ visible, onClose, onLogin }) => {
 			setForgotLoading(true);
 			setForgotFeedback(null);
 			try {
-				console.log('Enviando petición a /auth/forgot-password con:', forgotEmail.trim());
 				const res = await API.post('/login/forgot-password', { correo_electronico: forgotEmail.trim() });
-				console.log('Respuesta del backend:', res.data);
 				setForgotFeedback({ success: true, message: 'Revisa tu correo para restablecer la contraseña.' });
 			} catch (err) {
-				console.log('Error recibido del backend:', err?.response?.data || err);
 				setForgotFeedback({ success: false, message: err?.response?.data?.message || 'Error al enviar el correo.' });
 			}
 			setForgotLoading(false);

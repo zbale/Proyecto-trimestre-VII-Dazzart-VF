@@ -16,7 +16,6 @@ const RestablecerContraScreen = () => {
 
   // EL TOKEN PUEDE VENIR POR PARÁMETRO EN LA RUTA
   const token = route.params?.token || '';
-  console.log('TOKEN recibido:', route.params?.token);
   const [tokenManual, setTokenManual] = useState('');
 
   // Si el usuario pega una URL completa, intentar extraer solo el token
