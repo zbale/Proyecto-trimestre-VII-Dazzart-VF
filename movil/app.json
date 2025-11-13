@@ -58,13 +58,6 @@
       "eas": {
         "projectId": ""
       }
-    "extra": {
-      "eas": {
-        "projectId": "317e54d9-4810-4dbc-8991-78252610c064"
-      }
-    },
-    "android": {
-      "package": "com.zbale.dazzartcomponents"
-   }
+    }
   }
 }
