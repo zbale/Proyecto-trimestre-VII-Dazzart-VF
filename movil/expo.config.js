@@ -36,7 +36,7 @@ module.exports = {
       [
         'expo-splash-screen',
         {
-          image: './src/assets/logo.png',
+          image: './src/assets/DAZZART SIN LETRAS_prev_ui.png',
           imageWidth: 300,
           resizeMode: 'contain',
           backgroundColor: '#ffffff',
