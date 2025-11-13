@@ -71,10 +71,14 @@ const createApp = () => {
 
   // Logging mejorado
   app.use((req, res, next) => {
-    console.log(`\n[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
-    console.log(`  IP Cliente: ${req.ip}`);
-    console.log(`  Origin: ${req.get('origin') || 'NO ESPECIFICADO'}`);
-    console.log(`  User-Agent: ${req.get('user-agent')}`);
+    const timestamp = new Date().toISOString();
+    const clientIp = req.ip || req.connection.remoteAddress;
+    console.log(`\n[${timestamp}] 📥 ENTRADA`);
+    console.log(`  ├─ Método: ${req.method}`);
+    console.log(`  ├─ Ruta: ${req.originalUrl}`);
+    console.log(`  ├─ IP Cliente: ${clientIp}`);
+    console.log(`  ├─ Origin: ${req.get('origin') || 'NO ESPECIFICADO'}`);
+    console.log(`  └─ User-Agent: ${req.get('user-agent')}`);
     next();
   });
 
