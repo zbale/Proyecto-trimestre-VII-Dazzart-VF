@@ -18,16 +18,28 @@ const authRouter = require('./routes/authRouter');
 const createApp = () => {
   const app = express();
 
-  // CORS - Configuración específica para Amplify
+  // CORS - Configuración específica para Amplify y APK nativa
   const corsOptions = {
-    origin: [
-      'http://localhost:5173',  // Para desarrollo local
-      'http://localhost:3000',   // Para desarrollo local alternativo
-      'http://localhost:19000', // Expo Go
-      'http://127.0.0.1:19000', // Expo Go local
-      'http://67.202.48.5:3001', // IP pública - APK
-      'http://172.31.29.194:3001' // IP privada - red local
-    ],
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        'http://localhost:5173',  // Frontend local Vue/React
+        'http://localhost:3000',   // Frontend local alternativo
+        'http://localhost:19000', // Expo Go
+        'http://127.0.0.1:19000', // Expo Go local
+        'http://67.202.48.5:3001', // IP pública - APK
+        'http://67.202.48.5:5173', // Frontend IP pública
+        'http://172.31.29.194:3001', // IP privada - red local
+        'http://192.168.1.3:3001'  // Desarrollo local
+      ];
+      
+      // Permitir requests sin origin (típico de APK nativa y Expo)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`[CORS] Origin no permitido: ${origin}`);
+        callback(null, true); // Permitir igual pero loguear
+      }
+    },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH', 'HEAD'],
     allowedHeaders: [
@@ -37,7 +49,8 @@ const createApp = () => {
       'Origin',
       'X-Requested-With'
     ],
-    optionsSuccessStatus: 204
+    optionsSuccessStatus: 204,
+    maxAge: 86400 // Cache preflight por 24 horas
   };
 
   // Aplicar CORS a todas las rutas
@@ -56,9 +69,12 @@ const createApp = () => {
   // Middleware
   app.use(express.json());
 
-  // Logging
+  // Logging mejorado
   app.use((req, res, next) => {
-    console.log(`PETICIÓN recibida: ${req.method} ${req.originalUrl}`);
+    console.log(`\n[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+    console.log(`  IP Cliente: ${req.ip}`);
+    console.log(`  Origin: ${req.get('origin') || 'NO ESPECIFICADO'}`);
+    console.log(`  User-Agent: ${req.get('user-agent')}`);
     next();
   });
 
