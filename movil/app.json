@@ -56,8 +56,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": ""
+        "projectId": "d9846e46-92c1-42b7-8059-7bfae8ee714d"
       }
-    }
+    },
+    "owner": "zabaleta"
   }
 }
