@@ -1,26 +1,16 @@
 {
   "cli": {
-    "version": ">= 3.13.0"
+    "version": ">= 5.0.0"
   },
   "build": {
     "preview": {
       "android": {
         "buildType": "apk"
-      },
-      "node": "22.18.0",
-      "env": {
-        "BACKEND_URL": "http://67.202.48.5:3001",
-        "EXPO_PUBLIC_API_URL": "http://67.202.48.5:3001"
       }
     },
     "production": {
       "android": {
-        "gradleCommand": ":app:bundleRelease"
-      },
-      "node": "22.18.0",
-      "env": {
-        "BACKEND_URL": "http://67.202.48.5:3001",
-        "EXPO_PUBLIC_API_URL": "http://67.202.48.5:3001"
+        "buildType": "app-bundle"
       }
     }
   },
