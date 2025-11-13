@@ -12,9 +12,7 @@ const API = axios.create({
   validateStatus: function (status) {
     // Aceptar cualquier status para que el error llegue al interceptor
     return status < 500;
-  },
-  httpAgent: require('http').Agent({ keepAlive: true, timeout: 30000 }),
-  httpsAgent: require('https').Agent({ keepAlive: true, timeout: 30000 })
+  }
 });
 
 // Función para construir URLs de imágenes
