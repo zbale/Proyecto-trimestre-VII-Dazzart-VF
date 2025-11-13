@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "Dazzart Components",
-    "slug": "movil",
+    "slug": "dazzart-movil",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/logo.png",
@@ -56,7 +56,7 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "60a085e2-f299-4b11-b258-6dae20f85fab"
+        "projectId": ""
       }
     }
   }

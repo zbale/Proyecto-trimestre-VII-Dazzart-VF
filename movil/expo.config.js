@@ -1,7 +1,7 @@
 module.exports = {
   expo: {
     name: 'Dazzart Components',
-    slug: 'movil',
+    slug: 'dazzart-movil',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './src/assets/logo.png',
