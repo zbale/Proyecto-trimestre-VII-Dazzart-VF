@@ -20,6 +20,18 @@ exports.crearDescuento = async (req, res) => {
       return res.status(400).json({ error: 'Faltan campos obligatorios en el formulario.' });
     }
 
+    // Validar que el valor sea positivo
+    if (parseFloat(valor) <= 0) {
+      return res.status(400).json({ error: 'El valor del descuento debe ser mayor a 0.' });
+    }
+
+    // Validar fechas
+    const fechaInicioDate = new Date(fecha_inicio);
+    const fechaFinDate = new Date(fecha_fin);
+    if (fechaFinDate <= fechaInicioDate) {
+      return res.status(400).json({ error: 'La fecha de fin debe ser posterior a la fecha de inicio.' });
+    }
+
     let productoId = null;
 
     //  Validaciones si el descuento es por producto
@@ -47,26 +59,26 @@ exports.crearDescuento = async (req, res) => {
         const [descuentoProductoActivo] = await db.query(
           `SELECT 1 FROM descuento d
            JOIN descuento_producto dp ON d.id_descuento = dp.id_descuento
-           WHERE dp.id_producto = ? AND d.estado_descuento = 'Activo'`,
+           WHERE dp.id_producto = ? AND d.estado_descuento = 'Activo' AND NOW() BETWEEN d.fecha_inicio AND d.fecha_fin`,
           [productoId]
         );
 
         if (descuentoProductoActivo.length > 0) {
           return res.status(400).json({
-            error: 'Ya existe un descuento activo directamente para este producto.'
+            error: 'Ya existe un descuento activo y vigente directamente para este producto.'
           });
         }
 
         const [descuentoCategoriaActivo] = await db.query(
           `SELECT 1 FROM descuento d
            JOIN descuento_categoria dc ON d.id_descuento = dc.id_descuento
-           WHERE dc.id_categoria = ? AND d.estado_descuento = 'Activo'`,
+           WHERE dc.id_categoria = ? AND d.estado_descuento = 'Activo' AND NOW() BETWEEN d.fecha_inicio AND d.fecha_fin`,
           [categoriaId]
         );
 
         if (descuentoCategoriaActivo.length > 0) {
           return res.status(400).json({
-            error: 'No se puede aplicar descuento al producto porque su categoría ya tiene un descuento activo.'
+            error: 'No se puede aplicar descuento al producto porque su categoría ya tiene un descuento activo y vigente.'
           });
         }
       }
@@ -84,12 +96,12 @@ exports.crearDescuento = async (req, res) => {
         const [existe] = await db.query(
           `SELECT 1 FROM descuento d
            JOIN descuento_categoria dc ON d.id_descuento = dc.id_descuento
-           WHERE dc.id_categoria = ? AND d.estado_descuento = 'Activo'`,
+           WHERE dc.id_categoria = ? AND d.estado_descuento = 'Activo' AND NOW() BETWEEN d.fecha_inicio AND d.fecha_fin`,
           [id_categoria]
         );
 
         if (existe.length > 0) {
-          return res.status(400).json({ error: 'Ya existe un descuento activo para esta categoría.' });
+          return res.status(400).json({ error: 'Ya existe un descuento activo y vigente para esta categoría.' });
         }
       }
     }
