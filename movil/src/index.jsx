@@ -26,20 +26,37 @@ const Index = () => {
   
   // DEBUG: Verificar conexión al backend al iniciar
   React.useEffect(() => {
+    console.log('========== INICIO APP DEBUG ==========');
+    console.log('🔍 Verificando conexión al backend...');
+    
     const testBackend = async () => {
       try {
-        setDebugMsg('⏳ Conectando...');
+        console.log('📡 Intentando conectar a API...');
+        setDebugMsg('⏳ Conectando a 67.202.48.5:3001...');
+        
+        console.log('🔗 Llamando GET /api/productos/listar');
         const res = await apiWithRetry(() => API.get('/productos/listar'), 3, 1000);
+        
+        console.log('✅ Respuesta recibida:', res.status, res.statusText);
+        console.log('📦 Datos:', res.data);
         
         const count = Array.isArray(res.data) ? res.data.length : 0;
         const firstProd = res.data?.[0]?.nombre || 'N/A';
         
-        setDebugMsg(`✅ OK\n${count} productos`);
+        console.log(`✅ Éxito: ${count} productos cargados`);
+        setDebugMsg(`✅ OK\n${count} productos\nPrimero: ${firstProd}`);
         Alert.alert('✅ EXITO', `${count} productos\n${firstProd}`);
       } catch (err) {
         const msg = err?.message || 'Error desconocido';
-        setDebugMsg(`❌ FALLO\n${msg}`);
-        Alert.alert('❌ ERROR', msg);
+        const errDetails = err?.response?.data || err?.response?.status || 'Sin detalles';
+        
+        console.error('❌ Error de conexión:', msg);
+        console.error('📋 Detalles:', errDetails);
+        console.error('🔗 URL intentada: http://67.202.48.5:3001/api/productos/listar');
+        console.error('❌ Error completo:', err);
+        
+        setDebugMsg(`❌ FALLO\n${msg}\n${JSON.stringify(errDetails).substring(0, 50)}`);
+        Alert.alert('❌ ERROR', `${msg}\n\nDetalles: ${JSON.stringify(errDetails)}`);
       }
     };
     
