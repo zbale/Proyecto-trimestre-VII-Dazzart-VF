@@ -57,8 +57,15 @@ export default function EditarDescuento() {
 
   const handleSubmit = async () => {
     const hoy = new Date().toISOString().split("T")[0]; // fecha actual YYYY-MM-DD
-    const fechaInicio = form.fecha_inicio.toISOString().split("T")[0];
-    const fechaFin = form.fecha_fin.toISOString().split("T")[0];
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+    
+    const fechaInicio = formatDate(form.fecha_inicio);
+    const fechaFin = formatDate(form.fecha_fin);
 
     //  Validación de rango
     if (fechaFin < fechaInicio) {
@@ -78,8 +85,8 @@ export default function EditarDescuento() {
     try {
       await API.put(`/descuentos/${id}`, {
         ...form,
-        fecha_inicio: form.fecha_inicio.toISOString().slice(0, 19).replace("T", " "),
-        fecha_fin: form.fecha_fin.toISOString().slice(0, 19).replace("T", " "),
+        fecha_inicio: fechaInicio,
+        fecha_fin: fechaFin,
       });
       Alert.alert("Éxito", "Descuento actualizado correctamente.", [
         { text: "OK", onPress: () => navigation.goBack() },

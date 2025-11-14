@@ -73,11 +73,19 @@ export default function FormularioDescuento() {
       return;
     }
 
+    // Convertir fechas a formato YYYY-MM-DD sin conversión de zona horaria
+    const formatDate = (date) => {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    };
+
     const data = {
       tipo_descuento: tipoDescuento,
       valor: valor.toString(),
-      fecha_inicio: fechaInicio.toISOString().slice(0, 19).replace("T", " "),
-      fecha_fin: fechaFin.toISOString().slice(0, 19).replace("T", " "),
+      fecha_inicio: formatDate(fechaInicio),
+      fecha_fin: formatDate(fechaFin),
       estado_descuento: estadoDescuento,
       aplicacion,
     };
