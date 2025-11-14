@@ -11,7 +11,7 @@ import styles from '../../css/FiltroProductos.js';
 import ModalFeedback from '../../Components/ModalFeedback';
 import PerfilDropdown from '../../Components/PerfilDropdown';
 import ModalLogin from '../../Components/ModalLogin';
-import { FontAwesome } from '@expo/vector-icons'; // Asegúrate de tener esta línea
+import { FontAwesome } from '@expo/vector-icons'; 
 
 export default function VistaProductos({ navigation, route }) {
   const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false);
@@ -91,8 +91,8 @@ export default function VistaProductos({ navigation, route }) {
         setDebugMsg('Iniciando carga de productos...');
         
         const res = await API.get('/productos/listar');
-        setDebugMsg(`✅ Conectado! Respuesta: ${JSON.stringify(res.data).substring(0, 100)}`);
-        Alert.alert('DEBUG', `✅ Backend conectado!\n${res.data?.length || 0} productos recibidos`);
+        setDebugMsg(`Conectado! Respuesta: ${JSON.stringify(res.data).substring(0, 100)}`);
+        Alert.alert('DEBUG', `Backend conectado!\n${res.data?.length || 0} productos recibidos`);
         
         let listado = Array.isArray(res.data) ? res.data : [];
         if (soloOferta) listado = listado.filter(p => p.oferta === true);
@@ -105,10 +105,10 @@ export default function VistaProductos({ navigation, route }) {
         }
         listado = listado.slice(0, mostrarCantidad);
         setProductos(listado);
-        setDebugMsg(`✅ Cargados: ${listado.length} productos`);
+        setDebugMsg(`Cargados: ${listado.length} productos`);
       } catch (err) {
         const errorMsg = err?.message || 'Error desconocido';
-        setDebugMsg(`❌ Error: ${errorMsg}`);
+        setDebugMsg(`Error: ${errorMsg}`);
         Alert.alert('ERROR', `No se pudo conectar al backend:\n${errorMsg}\n\nVerifica que 67.202.48.5:3001 esté en línea`);
         console.error('Error cargando productos:', err);
         setProductos([]);

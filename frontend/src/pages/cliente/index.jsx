@@ -53,6 +53,27 @@ export default function ClienteHome() {
       .catch(console.error);
   }, []);
 
+  // Recargar productos cuando la página recibe focus (vuelve del admin)
+  useEffect(() => {
+    const handleFocus = () => {
+      fetch(`${BASE_URL}/productos/listar`)
+        .then(res => res.json())
+        .then(data => {
+          if (!Array.isArray(data)) return;
+          const ordenados = [...data].sort(
+            (a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
+          );
+          const top10 = ordenados.slice(0, 10);
+          setProductos(top10);
+          setCicloInfinito([...top10, ...top10]);
+        })
+        .catch(console.error);
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
+
   useEffect(() => {
     if (!scrollRef.current) return;
     scrollRef.current.scrollLeft = 0;
