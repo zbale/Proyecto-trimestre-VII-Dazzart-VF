@@ -126,14 +126,26 @@ export default function ClienteHome() {
       });
   };
 
-  const abrirModalLupa = producto => {
-    const nombreImg = producto.imagen?.replace(/^\/?.*img\//, '') || '';
-    const urlImagen = nombreImg
-      ? `${IMG_URL}/${encodeURIComponent(nombreImg)}?t=${Date.now()}`
-      : '/default.png';
-    setProductoSeleccionado({ ...producto, urlImagen });
+const abrirModalLupa = (producto) => {
+  const nombreImg = producto.imagen?.replace(/^\/?.*img\//, '') || '';
+  const urlSinCache = nombreImg
+    ? `${IMG_URL}/${encodeURIComponent(nombreImg)}`
+    : '/default.png';
+
+  const img = new Image();
+  img.src = urlSinCache;
+
+  img.onload = () => {
+    setProductoSeleccionado({ ...producto, urlImagen: img.src });
     setModalLupaOpen(true);
   };
+
+  img.onerror = () => {
+    setProductoSeleccionado({ ...producto, urlImagen: '/default.png' });
+    setModalLupaOpen(true);
+  };
+};
+
 
   const cerrarModalLupa = () => {
     setModalLupaOpen(false);
