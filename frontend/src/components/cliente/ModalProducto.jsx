@@ -25,7 +25,7 @@ export default function ModalProducto({ producto, onClose, onAgregarCarrito }) {
           <img
             src={producto.urlImagen}
             alt={producto.nombre || 'Producto'}
-            style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
+            style={{ maxWidth: '100%', maxHeight: '500px', objectFit: 'contain' }}
           />
         </div>
 
