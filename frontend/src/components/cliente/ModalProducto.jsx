@@ -4,6 +4,8 @@ import '../../css/CSS/ModalProducto.css';
 
 export default function ModalProducto({ producto, onClose, onAgregarCarrito }) {
   const [cantidad, setCantidad] = useState(1);
+  const [loadingImagen, setLoadingImagen] = useState(true);
+
 
   const incrementar = () => setCantidad(prev => prev + 1);
   const decrementar = () => setCantidad(prev => (prev > 1 ? prev - 1 : 1));
