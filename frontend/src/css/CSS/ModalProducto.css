@@ -8,27 +8,26 @@
   z-index: 1050;
   backdrop-filter: blur(4px);
 }
-
 .modal-contenido {
   background: #fff;
   padding: 2rem 3rem;
   border-radius: 16px;
   width: 95%;
-  max-width: 1100px;      
+  max-width: 1300px;      /* ⭐ más ancho */
   min-height: 600px;    
   max-height: 90vh;        
   overflow-y: auto;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
   position: relative;
   animation: fadeIn 0.3s ease-in-out;
+
   display: flex;
   flex-direction: row;
   gap: 3rem;
-  justify-content: center; 
+  justify-content: space-between; 
   align-items: flex-start; 
   flex-wrap: nowrap;      
 }
-
 
 @keyframes fadeIn {
   from { opacity: 0; transform: scale(0.95); }
@@ -51,7 +50,7 @@
 }
 
 .modal-imagen {
-  flex: 1 1 40%;
+  flex: 0 0 48%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -59,20 +58,18 @@
 
 .modal-imagen img {
   width: 100%;
-  max-width: 420px;   
-  max-height: 420px;  
+  max-width: 600px;      /* antes 420 */
+  max-height: 600px;     /* antes 420 */
   object-fit: contain;
   border-radius: 8px;
 }
 
-
 .modal-detalles {
-  flex: 1 1 55%;
+  flex: 0 0 48%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;  /* ✔ mejor alineación */
+  justify-content: flex-start;
 }
-
 
 .mini-menu a {
   margin-right: 1rem;
@@ -178,4 +175,19 @@
 
 .agregar-carrito:hover {
   background-color: #0084ff;
+}
+
+
+.spinner {
+  border: 4px solid #ddd;
+  border-top: 4px solid #0084ff;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 0.9s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

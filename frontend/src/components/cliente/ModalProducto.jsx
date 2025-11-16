@@ -21,13 +21,22 @@ export default function ModalProducto({ producto, onClose, onAgregarCarrito }) {
       >
         <span className="cerrar" onClick={onClose}>&times;</span>
 
-        <div className="modal-imagen" style={{ textAlign: 'center' }}>
-          <img
-            src={producto.urlImagen}
-            alt={producto.nombre || 'Producto'}
-            style={{ maxWidth: '100%', maxHeight: '300px', objectFit: 'contain' }}
-          />
-        </div>
+<div className="modal-imagen">
+  {loadingImagen && (
+    <div className="spinner"></div>
+  )}
+
+  <img
+    src={producto.urlImagen}
+    alt={producto.nombre}
+    loading="lazy"
+    onLoad={() => setLoadingImagen(false)}
+    style={{
+      display: loadingImagen ? "none" : "block"
+    }}
+  />
+</div>
+
 
         <div className="modal-detalles">
           <div className="mini-menu" style={{ marginBottom: '1rem' }}>

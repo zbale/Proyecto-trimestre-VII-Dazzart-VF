@@ -31,6 +31,8 @@ export default function ClienteHome() {
   const [mostrarLogin, setMostrarLogin] = useState(false);
   const [usuario, setUsuario] = useState(null);
   const [busqueda, setBusqueda] = useState('');
+  const [loadingImagen, setLoadingImagen] = useState(false);
+
 
   const navigate = useNavigate();
   const scrollRef = useRef(null);
@@ -129,6 +131,8 @@ export default function ClienteHome() {
 
   
 const abrirModalLupa = (producto) => {
+  setLoadingImagen(true); // ⬅️ activar loading
+
   const nombreImg = producto.imagen?.replace(/^\/?.*img\//, '') || '';
   const urlSinCache = nombreImg
     ? `${IMG_URL}/${encodeURIComponent(nombreImg)}`
@@ -137,6 +141,7 @@ const abrirModalLupa = (producto) => {
   setProductoSeleccionado({ ...producto, urlImagen: urlSinCache });
   setModalLupaOpen(true);
 };
+
 
 
 
