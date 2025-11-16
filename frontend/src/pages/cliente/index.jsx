@@ -132,20 +132,10 @@ const abrirModalLupa = (producto) => {
   const nombreImg = producto.imagen?.replace(/^\/?.*img\//, '') || '';
   const urlSinCache = nombreImg
     ? `${IMG_URL}/${encodeURIComponent(nombreImg)}`
-    : '/default.png';
+    : "/default.png";
 
-  const img = new Image();
-  img.src = urlSinCache;
-
-  img.onload = () => {
-    setProductoSeleccionado({ ...producto, urlImagen: img.src });
-    setModalLupaOpen(true);
-  };
-
-  img.onerror = () => {
-    setProductoSeleccionado({ ...producto, urlImagen: '/default.png' });
-    setModalLupaOpen(true);
-  };
+  setProductoSeleccionado({ ...producto, urlImagen: urlSinCache });
+  setModalLupaOpen(true);
 };
 
 
