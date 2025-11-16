@@ -14,6 +14,7 @@ import ModalLogin from '../../components/cliente/ModalLogin';
 import '../../css/CSS/clienteHome.css';
 import '../../css/CSS/CardsProducto.css';
 import '../../css/CSS/ModalConfirmacion.css';
+import '../../css/CSS/ModalProducto.css';
 import { API_URL } from '../../config/api';
 
 const BASE_URL = `${API_URL}/api`;
@@ -30,8 +31,6 @@ export default function ClienteHome() {
   const [mostrarLogin, setMostrarLogin] = useState(false);
   const [usuario, setUsuario] = useState(null);
   const [busqueda, setBusqueda] = useState('');
-  const [loadingImagen, setLoadingImagen] = useState(false);
-
 
   const navigate = useNavigate();
   const scrollRef = useRef(null);
@@ -127,22 +126,14 @@ export default function ClienteHome() {
       });
   };
 
-
-  
-const abrirModalLupa = (producto) => {
-  setLoadingImagen(true); // ⬅️ activar loading
-
-  const nombreImg = producto.imagen?.replace(/^\/?.*img\//, '') || '';
-  const urlSinCache = nombreImg
-    ? `${IMG_URL}/${encodeURIComponent(nombreImg)}`
-    : "/default.png";
-
-  setProductoSeleccionado({ ...producto, urlImagen: urlSinCache });
-  setModalLupaOpen(true);
-};
-
-
-
+  const abrirModalLupa = producto => {
+    const nombreImg = producto.imagen?.replace(/^\/?.*img\//, '') || '';
+    const urlImagen = nombreImg
+      ? `${IMG_URL}/${encodeURIComponent(nombreImg)}?t=${Date.now()}`
+      : '/default.png';
+    setProductoSeleccionado({ ...producto, urlImagen });
+    setModalLupaOpen(true);
+  };
 
   const cerrarModalLupa = () => {
     setModalLupaOpen(false);
