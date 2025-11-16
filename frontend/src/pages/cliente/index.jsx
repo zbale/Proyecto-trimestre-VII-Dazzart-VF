@@ -14,7 +14,6 @@ import ModalLogin from '../../components/cliente/ModalLogin';
 import '../../css/CSS/clienteHome.css';
 import '../../css/CSS/CardsProducto.css';
 import '../../css/CSS/ModalConfirmacion.css';
-import '../../css/CSS/ModalProducto.css';
 import { API_URL } from '../../config/api';
 
 const BASE_URL = `${API_URL}/api`;
