@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
@@ -21,7 +21,7 @@ export default function VistaProductos({ navigation, route }) {
   const [debugMsg, setDebugMsg] = useState('');
   const searchParam = route?.params?.search || '';
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
       const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
       const userStr = await AsyncStorage.getItem('usuario');
@@ -39,11 +39,10 @@ export default function VistaProductos({ navigation, route }) {
   const [modalDetalleOpen, setModalDetalleOpen] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
 
-  // 🔥 IDs CORREGIDOS CON parseInt
+  // IDs correctamente formateados
   const [idCategoria, setIdCategoria] = useState(
     route?.params?.id_categoria ? parseInt(route.params.id_categoria) : null
   );
-
   const [idSubcategoria, setIdSubcategoria] = useState(
     route?.params?.id_subcategoria ? parseInt(route.params.id_subcategoria) : null
   );
@@ -70,7 +69,7 @@ export default function VistaProductos({ navigation, route }) {
       try {
         await API.post('/carrito', {
           id_usuario: usuario.id_usuario,
-          id_producto: producto._id || producto.id || producto.id_producto,
+          id_producto: producto.id_producto,
           cantidad: cantidad,
         });
         setFeedbackMsg(`Agregado al carrito: ${producto.nombre} x${cantidad}`);
@@ -81,56 +80,64 @@ export default function VistaProductos({ navigation, route }) {
     })();
   };
 
-  const handleConfirmAgregar = (producto, cantidad) => {
-    setModalAgregarOpen(false);
-    setFeedbackMsg(`Agregado al carrito: ${producto.nombre} x${cantidad}`);
-    setModalFeedbackOpen(true);
+  const handleCerrarDetalle = () => {
+    setModalDetalleOpen(false);
+    setProductoSeleccionado(null);
   };
 
-  // 🔥 CARGAR NOMBRE DE CATEGORÍA
   useEffect(() => {
-    if (idCategoria) {
-      API.get('/categorias/listar')
-        .then(res => {
-          const cat = res.data.find(c => c.id_categoria === parseInt(idCategoria));
-          setNombreCategoria(cat?.nombre_categoria || 'Categoría desconocida');
-        })
-        .catch(() => setNombreCategoria('Categoría desconocida'));
-    }
+    if (!idCategoria) return;
+
+    API.get('/categorias/listar')
+      .then(res => {
+        const cat = res.data.find(c => c.id_categoria === idCategoria);
+        setNombreCategoria(cat?.nombre_categoria || 'Categoría');
+      })
+      .catch(() => setNombreCategoria('Categoría'));
   }, [idCategoria]);
 
-  // 🔥 CARGA COMPLETA DE PRODUCTOS + FILTRO CORRECTO
+  // 🔥 FILTRADO REAL Y CORREGIDO
   useEffect(() => {
     const cargarProductos = async () => {
       try {
         const res = await API.get('/productos/listar');
         let listado = Array.isArray(res.data) ? res.data : [];
 
-        // ✔ FILTRO REAL POR CATEGORÍA
+        // 🔥 Filtrar por categoría
         if (idCategoria) {
-          listado = listado.filter(p => p.id_categoria === parseInt(idCategoria));
+          listado = listado.filter(p => p.id_categoria === idCategoria);
         }
 
-        // ✔ FILTRO REAL POR SUBCATEGORÍA
+        // 🔥 Filtrar por subcategoría
         if (idSubcategoria) {
-          listado = listado.filter(p => p.id_subcategoria === parseInt(idSubcategoria));
+          listado = listado.filter(p => p.id_subcategoria === idSubcategoria);
         }
 
-        // ✔ SOLO OFERTA
+        // 🔥 Filtrar búsqueda
+        if (searchParam) {
+          const text = searchParam.toLowerCase();
+          listado = listado.filter(
+            p =>
+              p.nombre.toLowerCase().includes(text) ||
+              p.descripcion.toLowerCase().includes(text)
+          );
+        }
+
+        // 🔥 Filtrar OFERTA (descuento real)
         if (soloOferta) {
-          listado = listado.filter(p => p.oferta === true);
+          listado = listado.filter(p => p.descuento_aplicado !== null);
         }
 
-        // ✔ ORDEN
-        if (orden === 'popularidad') {
-          listado.sort((a, b) => (b.popularidad || 0) - (a.popularidad || 0));
-        } else if (orden === 'precio_asc') {
-          listado.sort((a, b) => a.precio - b.precio);
+        // 🔥 Ordenar
+        if (orden === 'precio_asc') {
+          listado.sort((a, b) => Number(a.precio_final) - Number(b.precio_final));
         } else if (orden === 'precio_desc') {
-          listado.sort((a, b) => b.precio - a.precio);
+          listado.sort((a, b) => Number(b.precio_final) - Number(a.precio_final));
+        } else if (orden === 'popularidad') {
+          listado.sort((a, b) => (b.popularidad || 0) - (a.popularidad || 0));
         }
 
-        // ✔ CANTIDAD A MOSTRAR
+        // 🔥 Limitar cantidad
         listado = listado.slice(0, mostrarCantidad);
 
         setProductos(listado);
@@ -143,16 +150,6 @@ export default function VistaProductos({ navigation, route }) {
 
     cargarProductos();
   }, [idCategoria, idSubcategoria, soloOferta, orden, mostrarCantidad, searchParam]);
-
-  const handleVerDetalle = producto => {
-    setProductoSeleccionado(producto);
-    setModalDetalleOpen(true);
-  };
-
-  const handleCerrarDetalle = () => {
-    setModalDetalleOpen(false);
-    setProductoSeleccionado(null);
-  };
 
   const handleSelectSubcategoria = (catId, subId) => {
     setIdCategoria(catId);
@@ -173,8 +170,6 @@ export default function VistaProductos({ navigation, route }) {
 
   return (
     <View style={styles.container}>
-
-      {/* ---------- HEADER ---------- */}
       <Header
         usuario={usuario}
         onMenuPress={() => setShowMenu(true)}
@@ -189,14 +184,14 @@ export default function VistaProductos({ navigation, route }) {
           }
           navigation.navigate('Carrito', { usuario });
         }}
-        onSearch={(searchText) => {
+        onSearch={searchText => {
           if (searchText && searchText.trim().length > 0) {
             navigation.navigate('VistaProductos', { search: searchText });
           }
         }}
       />
 
-      {/* ---------- MENÚ LATERAL ---------- */}
+      {/* MENÚ LATERAL */}
       <Modal visible={showMenu} animationType="slide" transparent>
         <MenuLateral
           visible={showMenu}
@@ -205,7 +200,7 @@ export default function VistaProductos({ navigation, route }) {
         />
       </Modal>
 
-      {/* ---------- HEADER DE FILTROS ---------- */}
+      {/* CABECERA */}
       <View style={styles.headerContainer}>
         <Text style={styles.breadcrumb}>{nombreCategoria}</Text>
 
@@ -215,7 +210,7 @@ export default function VistaProductos({ navigation, route }) {
         </TouchableOpacity>
       </View>
 
-      {/* ---------- MODAL FILTROS ---------- */}
+      {/* MODAL FILTROS */}
       <Modal visible={showFiltros} animationType="slide" transparent>
         <TouchableOpacity
           activeOpacity={1}
@@ -241,12 +236,12 @@ export default function VistaProductos({ navigation, route }) {
                   onPress={() => setSoloOferta(!soloOferta)}
                 >
                   <Text style={{ fontWeight: '600', color: soloOferta ? '#1976d2' : '#444' }}>
-                    {soloOferta ? '✔ ' : ''}Mostrar sólo productos en oferta
+                    {soloOferta ? '✔ ' : ''}Mostrar solo productos en oferta
                   </Text>
                 </TouchableOpacity>
               </View>
 
-              {/* ORDENAR */}
+              {/* ORDEN */}
               <View style={styles.filtroItem}>
                 <Text style={styles.selectLabel}>Ordenar por</Text>
                 <View style={styles.pickerWrapper}>
@@ -257,8 +252,8 @@ export default function VistaProductos({ navigation, route }) {
                     mode="dropdown"
                   >
                     <Picker.Item label="Popularidad" value="popularidad" />
-                    <Picker.Item label="Precio: Menor a Mayor" value="precio_asc" />
-                    <Picker.Item label="Precio: Mayor a Menor" value="precio_desc" />
+                    <Picker.Item label="Precio: menor a mayor" value="precio_asc" />
+                    <Picker.Item label="Precio: mayor a menor" value="precio_desc" />
                   </Picker>
                 </View>
               </View>
@@ -285,15 +280,14 @@ export default function VistaProductos({ navigation, route }) {
         </TouchableOpacity>
       </Modal>
 
-      {/* ---------- LISTA DE PRODUCTOS ---------- */}
+      {/* LISTA DE PRODUCTOS */}
       <ScrollView style={{ flex: 1 }}>
         {productos.length === 0 ? (
           <View style={{ padding: 20, alignItems: 'center' }}>
             <Text style={styles.noProductos}>
-              No hay productos disponibles en esta categoría y subcategoría.
+              No hay productos en esta categoría o subcategoría.
             </Text>
-            <Text style={{ marginTop: 20, fontSize: 14, color: '#666', textAlign: 'center' }}>
-              DEBUG: {debugMsg}
+            <Text style={{ marginTop: 20, fontSize: 14, color: '#666' }}>
             </Text>
           </View>
         ) : (
@@ -302,11 +296,19 @@ export default function VistaProductos({ navigation, route }) {
               <View key={prod.id_producto} style={styles.productoCol}>
                 <ProductoCard
                   producto={prod}
-                  onVerDetalle={() => handleVerDetalle(prod)}
+                  onVerDetalle={() => {
+                    setProductoSeleccionado(prod);
+                    setModalDetalleOpen(true);
+                  }}
                   onAgregarCarrito={() => handleAgregarCarrito(prod)}
                   showIcons={true}
                   iconColor="#1976d2"
-                  onPress={() => navigation.navigate('DetalleProducto', { producto: prod, usuario })}
+                  onPress={() =>
+                    navigation.navigate('DetalleProducto', {
+                      producto: prod,
+                      usuario
+                    })
+                  }
                 />
               </View>
             ))}
@@ -316,7 +318,7 @@ export default function VistaProductos({ navigation, route }) {
 
       <Footer />
 
-      {/* ---------- MODAL DETALLE PRODUCTO ---------- */}
+      {/* MODAL DETALLE */}
       <Modal visible={modalDetalleOpen} animationType="fade" transparent>
         <ModalDetalleProducto
           producto={productoSeleccionado}
@@ -326,7 +328,7 @@ export default function VistaProductos({ navigation, route }) {
         />
       </Modal>
 
-      {/* ---------- MODALES FEEDBACK ---------- */}
+      {/* MODALES FEEDBACK */}
       <ModalFeedback
         visible={modalFeedbackOpen}
         onClose={() => setModalFeedbackOpen(false)}
@@ -345,22 +347,20 @@ export default function VistaProductos({ navigation, route }) {
         colorBoton="#1976d2"
         colorBotonSecundario="#111"
         outlineBoton={true}
-        outlineBotonSecundario={false}
-        showClose={true}
       />
 
       <ModalFeedback
         visible={modalRestringido}
         onClose={() => setModalRestringido(false)}
         titulo="Acceso restringido"
-        mensaje="Solo los usuarios pueden agregar productos al carrito. El administrador no puede hacer compras."
+        mensaje="Solo los usuarios pueden agregar productos al carrito."
         icono="error-outline"
         colorTitulo="#000"
         textoBoton="Cerrar"
         onBoton={() => setModalRestringido(false)}
       />
 
-      {/* ---------- PERFIL / LOGIN ---------- */}
+      {/* PERFIL / LOGIN */}
       {usuario && (
         <PerfilDropdown
           visible={showPerfil}
