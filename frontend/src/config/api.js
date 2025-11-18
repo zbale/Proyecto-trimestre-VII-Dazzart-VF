@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Solo la URL base
-export const API_URL = '/api';
+export const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 // Instancia Axios
 export const API = axios.create({
