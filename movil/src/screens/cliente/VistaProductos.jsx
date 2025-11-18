@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Modal, StyleSheet, Alert } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Header from '../../Components/Header';
 import Footer from '../../Components/Footer';
@@ -11,15 +11,16 @@ import styles from '../../css/FiltroProductos.js';
 import ModalFeedback from '../../Components/ModalFeedback';
 import PerfilDropdown from '../../Components/PerfilDropdown';
 import ModalLogin from '../../Components/ModalLogin';
-import { FontAwesome } from '@expo/vector-icons'; 
+import { FontAwesome } from '@expo/vector-icons';
 
 export default function VistaProductos({ navigation, route }) {
   const [modalFeedbackOpen, setModalFeedbackOpen] = useState(false);
   const [feedbackMsg, setFeedbackMsg] = useState('');
   const [productos, setProductos] = useState([]);
   const [usuario, setUsuario] = useState(null);
-  const [debugMsg, setDebugMsg] = useState('Cargando...');
+  const [debugMsg, setDebugMsg] = useState('');
   const searchParam = route?.params?.search || '';
+
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
       const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
@@ -29,6 +30,7 @@ export default function VistaProductos({ navigation, route }) {
     });
     return unsubscribe;
   }, [navigation]);
+
   const [showMenu, setShowMenu] = useState(false);
   const [soloOferta, setSoloOferta] = useState(false);
   const [orden, setOrden] = useState('popularidad');
@@ -36,23 +38,34 @@ export default function VistaProductos({ navigation, route }) {
   const [nombreCategoria, setNombreCategoria] = useState('');
   const [modalDetalleOpen, setModalDetalleOpen] = useState(false);
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
-  const [idCategoria, setIdCategoria] = useState(route?.params?.id_categoria || null);
-  const [idSubcategoria, setIdSubcategoria] = useState(route?.params?.id_subcategoria || null);
-  const [showFiltros, setShowFiltros] = useState(false);
 
+  // 🔥 IDs CORREGIDOS CON parseInt
+  const [idCategoria, setIdCategoria] = useState(
+    route?.params?.id_categoria ? parseInt(route.params.id_categoria) : null
+  );
+
+  const [idSubcategoria, setIdSubcategoria] = useState(
+    route?.params?.id_subcategoria ? parseInt(route.params.id_subcategoria) : null
+  );
+
+  const [showFiltros, setShowFiltros] = useState(false);
   const [modalAgregarOpen, setModalAgregarOpen] = useState(false);
   const [productoAgregar, setProductoAgregar] = useState(null);
   const [modalRestringido, setModalRestringido] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showPerfil, setShowPerfil] = useState(false);
+
   const handleAgregarCarrito = (producto, cantidad = 1) => {
     if (!usuario) {
       setShowLogin(true);
       return;
     }
-    // SI ES ADMIN, MOSTRAR MODAL Y NO AGREGAR
+
     if (usuario.id_rol === 1) {
       setModalRestringido(true);
       return;
     }
+
     (async () => {
       try {
         await API.post('/carrito', {
@@ -74,28 +87,41 @@ export default function VistaProductos({ navigation, route }) {
     setModalFeedbackOpen(true);
   };
 
+  // 🔥 CARGAR NOMBRE DE CATEGORÍA
   useEffect(() => {
     if (idCategoria) {
       API.get('/categorias/listar')
         .then(res => {
-          const cat = res.data.find(c => c.id_categoria === idCategoria);
+          const cat = res.data.find(c => c.id_categoria === parseInt(idCategoria));
           setNombreCategoria(cat?.nombre_categoria || 'Categoría desconocida');
         })
         .catch(() => setNombreCategoria('Categoría desconocida'));
     }
   }, [idCategoria]);
 
+  // 🔥 CARGA COMPLETA DE PRODUCTOS + FILTRO CORRECTO
   useEffect(() => {
     const cargarProductos = async () => {
       try {
-        setDebugMsg('Iniciando carga de productos...');
-        
         const res = await API.get('/productos/listar');
-        setDebugMsg(`Conectado! Respuesta: ${JSON.stringify(res.data).substring(0, 100)}`);
-        Alert.alert('DEBUG', `Backend conectado!\n${res.data?.length || 0} productos recibidos`);
-        
         let listado = Array.isArray(res.data) ? res.data : [];
-        if (soloOferta) listado = listado.filter(p => p.oferta === true);
+
+        // ✔ FILTRO REAL POR CATEGORÍA
+        if (idCategoria) {
+          listado = listado.filter(p => p.id_categoria === parseInt(idCategoria));
+        }
+
+        // ✔ FILTRO REAL POR SUBCATEGORÍA
+        if (idSubcategoria) {
+          listado = listado.filter(p => p.id_subcategoria === parseInt(idSubcategoria));
+        }
+
+        // ✔ SOLO OFERTA
+        if (soloOferta) {
+          listado = listado.filter(p => p.oferta === true);
+        }
+
+        // ✔ ORDEN
         if (orden === 'popularidad') {
           listado.sort((a, b) => (b.popularidad || 0) - (a.popularidad || 0));
         } else if (orden === 'precio_asc') {
@@ -103,18 +129,18 @@ export default function VistaProductos({ navigation, route }) {
         } else if (orden === 'precio_desc') {
           listado.sort((a, b) => b.precio - a.precio);
         }
+
+        // ✔ CANTIDAD A MOSTRAR
         listado = listado.slice(0, mostrarCantidad);
+
         setProductos(listado);
         setDebugMsg(`Cargados: ${listado.length} productos`);
       } catch (err) {
-        const errorMsg = err?.message || 'Error desconocido';
-        setDebugMsg(`Error: ${errorMsg}`);
-        Alert.alert('ERROR', `No se pudo conectar al backend:\n${errorMsg}\n\nVerifica que 67.202.48.5:3001 esté en línea`);
-        console.error('Error cargando productos:', err);
+        setDebugMsg(`Error: ${err?.message}`);
         setProductos([]);
       }
     };
-    
+
     cargarProductos();
   }, [idCategoria, idSubcategoria, soloOferta, orden, mostrarCantidad, searchParam]);
 
@@ -145,20 +171,16 @@ export default function VistaProductos({ navigation, route }) {
     });
   };
 
-  const [showLogin, setShowLogin] = useState(false);
-  const [showPerfil, setShowPerfil] = useState(false);
-
   return (
     <View style={styles.container}>
+
+      {/* ---------- HEADER ---------- */}
       <Header
         usuario={usuario}
         onMenuPress={() => setShowMenu(true)}
         onLoginPress={() => {
-          if (usuario) {
-            setShowPerfil((v) => !v);
-          } else {
-            setShowLogin(true);
-          }
+          if (usuario) setShowPerfil(v => !v);
+          else setShowLogin(true);
         }}
         onCartPress={() => {
           if (!usuario) {
@@ -173,6 +195,8 @@ export default function VistaProductos({ navigation, route }) {
           }
         }}
       />
+
+      {/* ---------- MENÚ LATERAL ---------- */}
       <Modal visible={showMenu} animationType="slide" transparent>
         <MenuLateral
           visible={showMenu}
@@ -181,13 +205,17 @@ export default function VistaProductos({ navigation, route }) {
         />
       </Modal>
 
+      {/* ---------- HEADER DE FILTROS ---------- */}
       <View style={styles.headerContainer}>
         <Text style={styles.breadcrumb}>{nombreCategoria}</Text>
+
         <TouchableOpacity style={styles.filtrarBtn} onPress={() => setShowFiltros(true)}>
           <FontAwesome name="filter" size={16} color="#333" />
           <Text style={styles.filtrarBtnTxt}>Filtrar</Text>
         </TouchableOpacity>
       </View>
+
+      {/* ---------- MODAL FILTROS ---------- */}
       <Modal visible={showFiltros} animationType="slide" transparent>
         <TouchableOpacity
           activeOpacity={1}
@@ -196,10 +224,17 @@ export default function VistaProductos({ navigation, route }) {
         >
           <View style={styles.filtrosModalCard}>
             <Text style={styles.filtrosTitle}>Filtrar productos</Text>
-            <TouchableOpacity style={styles.filtrosModalClose} onPress={() => setShowFiltros(false)}>
+
+            <TouchableOpacity
+              style={styles.filtrosModalClose}
+              onPress={() => setShowFiltros(false)}
+            >
               <Text style={{ fontSize: 22, color: '#888' }}>✖</Text>
             </TouchableOpacity>
+
             <View style={styles.filtrosRow}>
+
+              {/* SOLO OFERTA */}
               <View style={styles.filtroItem}>
                 <TouchableOpacity
                   style={styles.ofertaCheck}
@@ -210,6 +245,8 @@ export default function VistaProductos({ navigation, route }) {
                   </Text>
                 </TouchableOpacity>
               </View>
+
+              {/* ORDENAR */}
               <View style={styles.filtroItem}>
                 <Text style={styles.selectLabel}>Ordenar por</Text>
                 <View style={styles.pickerWrapper}>
@@ -225,6 +262,8 @@ export default function VistaProductos({ navigation, route }) {
                   </Picker>
                 </View>
               </View>
+
+              {/* MOSTRAR CANTIDAD */}
               <View style={styles.filtroItem}>
                 <Text style={styles.selectLabel}>Mostrar</Text>
                 <View style={styles.pickerWrapper}>
@@ -240,15 +279,22 @@ export default function VistaProductos({ navigation, route }) {
                   </Picker>
                 </View>
               </View>
+
             </View>
           </View>
         </TouchableOpacity>
       </Modal>
+
+      {/* ---------- LISTA DE PRODUCTOS ---------- */}
       <ScrollView style={{ flex: 1 }}>
         {productos.length === 0 ? (
           <View style={{ padding: 20, alignItems: 'center' }}>
-            <Text style={styles.noProductos}>No hay productos disponibles en esta categoría y subcategoría.</Text>
-            <Text style={{ marginTop: 20, fontSize: 14, color: '#666', textAlign: 'center' }}>DEBUG: {debugMsg}</Text>
+            <Text style={styles.noProductos}>
+              No hay productos disponibles en esta categoría y subcategoría.
+            </Text>
+            <Text style={{ marginTop: 20, fontSize: 14, color: '#666', textAlign: 'center' }}>
+              DEBUG: {debugMsg}
+            </Text>
           </View>
         ) : (
           <View style={styles.productosGrid}>
@@ -267,7 +313,10 @@ export default function VistaProductos({ navigation, route }) {
           </View>
         )}
       </ScrollView>
+
       <Footer />
+
+      {/* ---------- MODAL DETALLE PRODUCTO ---------- */}
       <Modal visible={modalDetalleOpen} animationType="fade" transparent>
         <ModalDetalleProducto
           producto={productoSeleccionado}
@@ -276,11 +325,13 @@ export default function VistaProductos({ navigation, route }) {
           onAgregarCarrito={handleAgregarCarrito}
         />
       </Modal>
+
+      {/* ---------- MODALES FEEDBACK ---------- */}
       <ModalFeedback
         visible={modalFeedbackOpen}
         onClose={() => setModalFeedbackOpen(false)}
         titulo="Producto agregado"
-        mensaje="Producto agregado al carrito"
+        mensaje={feedbackMsg}
         icono="check"
         colorFondo="#fff"
         colorTitulo="#222"
@@ -297,16 +348,19 @@ export default function VistaProductos({ navigation, route }) {
         outlineBotonSecundario={false}
         showClose={true}
       />
+
       <ModalFeedback
         visible={modalRestringido}
         onClose={() => setModalRestringido(false)}
         titulo="Acceso restringido"
         mensaje="Solo los usuarios pueden agregar productos al carrito. El administrador no puede hacer compras."
         icono="error-outline"
-        colorTitulo="#000000FF"
+        colorTitulo="#000"
         textoBoton="Cerrar"
         onBoton={() => setModalRestringido(false)}
       />
+
+      {/* ---------- PERFIL / LOGIN ---------- */}
       {usuario && (
         <PerfilDropdown
           visible={showPerfil}
@@ -322,6 +376,7 @@ export default function VistaProductos({ navigation, route }) {
           }}
         />
       )}
+
       <ModalLogin
         visible={showLogin}
         onClose={() => setShowLogin(false)}
@@ -330,6 +385,7 @@ export default function VistaProductos({ navigation, route }) {
           setShowLogin(false);
         }}
       />
+
     </View>
   );
 }
