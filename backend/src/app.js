@@ -30,7 +30,8 @@ const createApp = () => {
         'http://67.202.48.5:5173', // Frontend IP pública
         'http://172.31.29.194:3001', // IP privada - red local
         'http://192.168.1.3:3001',  // Desarrollo local
-        'https://main.d77g142i4qaf1.amplifyapp.com' // Amplify Dazzart
+        'https://main.d77g142i4qaf1.amplifyapp.com', // Amplify Dazzart
+        'http://main.d77g142i4qaf1.amplifyapp.com' // Amplify Dazzart (HTTP)
       ];
       
       // Permitir requests sin origin (típico de APK nativa y Expo)
