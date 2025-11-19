@@ -31,7 +31,10 @@ const createApp = () => {
         'http://172.31.29.194:3001', // IP privada - red local
         'http://192.168.1.3:3001',  // Desarrollo local
         'https://main.d77g142i4qaf1.amplifyapp.com', // Amplify Dazzart
-        'http://main.d77g142i4qaf1.amplifyapp.com' // Amplify Dazzart (HTTP)
+        'http://main.d77g142i4qaf1.amplifyapp.com', // Amplify Dazzart (HTTP)
+        'https://dazzartcomponents.shop', // Dominio personalizado
+        'https://www.dazzartcomponents.shop', // Dominio con www
+        'https://api.dazzartcomponents.shop' // API subdominio
       ];
       
       // Permitir requests sin origin (típico de APK nativa y Expo)
@@ -39,7 +42,7 @@ const createApp = () => {
         callback(null, true);
       } else {
         console.warn(`[CORS] Origin no permitido: ${origin}`);
-        callback(null, true); // Permitir igual pero loguear
+        callback(null, true);
       }
     },
     credentials: true,

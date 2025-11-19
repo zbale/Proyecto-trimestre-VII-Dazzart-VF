@@ -2,8 +2,11 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // BACKEND URL - Hardcoded para garantizar que funciona en APK
-const BACKEND_URL = "http://67.202.48.5:3001";
+
+// const BACKEND_URL = "http://67.202.48.5:3001";
+const BACKEND_URL = "https://api.dazzartcomponents.shop";
 const BASE = BACKEND_URL;
+
 
 // Instancia de Axios
 const API = axios.create({
