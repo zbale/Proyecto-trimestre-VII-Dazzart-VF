@@ -8,14 +8,14 @@
   z-index: 1050;
   backdrop-filter: blur(4px);
 }
+
 .modal-contenido {
   background: #fff;
   padding: 2rem 3rem;
   border-radius: 16px;
-  width: 100%;
-  max-width: 1900px;   
-  min-height: 600px;    
-  max-height: 90vh;        
+  width: 95%;
+  max-width: 1000px;
+  min-height: 500px; /* ✅ que tenga un mínimo, pero pueda crecer */
   overflow-y: auto;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
   position: relative;
@@ -24,9 +24,9 @@
   display: flex;
   flex-direction: row;
   gap: 3rem;
-  justify-content: space-between; 
-  align-items: flex-start; 
-  flex-wrap: nowrap;      
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center; /* ✅ centrado vertical más preciso */
 }
 
 @keyframes fadeIn {
@@ -49,8 +49,9 @@
   color: #0084ff;
 }
 
+/* Imagen alineada y centrada */
 .modal-imagen {
-  flex: 0 0 50%;   /* antes 48 */
+  flex: 1 1 40%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -58,17 +59,17 @@
 
 .modal-imagen img {
   width: 100%;
-  max-width: 500px;     /* antes 600 */
-  max-height: 500px;      /* antes 420 */
+  max-width: 300px;
+  height: auto;
   object-fit: contain;
   border-radius: 8px;
 }
 
 .modal-detalles {
-  flex: 0 0 50%;   /* antes 48 */
+  flex: 1 1 50%;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .mini-menu a {
@@ -175,19 +176,4 @@
 
 .agregar-carrito:hover {
   background-color: #0084ff;
-}
-
-
-.spinner {
-  border: 4px solid #ddd;
-  border-top: 4px solid #0084ff;
-  border-radius: 50%;
-  width: 60px;
-  height: 60px;
-  animation: spin 0.9s linear infinite;
-  margin: auto;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }

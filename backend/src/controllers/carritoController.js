@@ -22,7 +22,7 @@ exports.obtenerCarrito = async (req, res) => {
         SELECT d.tipo_descuento, d.valor
         FROM descuento d
         JOIN descuento_producto dp ON d.id_descuento = dp.id_descuento
-        WHERE dp.id_producto = ? AND d.estado_descuento = 'Activo' AND NOW() BETWEEN d.fecha_inicio AND d.fecha_fin`, [idProd]);
+        WHERE dp.id_producto = ? AND d.estado_descuento = 'Activo'`, [idProd]);
 
       if (descProducto.length > 0) {
         const { tipo_descuento, valor } = descProducto[0];
@@ -32,9 +32,9 @@ exports.obtenerCarrito = async (req, res) => {
         descuentoAplicado = { tipo_descuento, valor: val, origen: 'producto' };
 
         if (tipo === 'porcentaje') {
-          precioFinal = Math.round(precioOriginal - (precioOriginal * val / 100));
-        } else if (tipo === 'fijo' || tipo === 'valor') {
-          precioFinal = Math.max(0, precioOriginal - val);
+          precioFinal = precioOriginal - (precioOriginal * val / 100);
+        } else if (tipo === 'fijo') {
+          precioFinal = precioOriginal - val;
         }
 
       } else {
@@ -43,7 +43,7 @@ exports.obtenerCarrito = async (req, res) => {
           SELECT d.tipo_descuento, d.valor
           FROM descuento d
           JOIN descuento_categoria dc ON d.id_descuento = dc.id_descuento
-          WHERE dc.id_categoria = ? AND d.estado_descuento = 'Activo' AND NOW() BETWEEN d.fecha_inicio AND d.fecha_fin`, [idCat]);
+          WHERE dc.id_categoria = ? AND d.estado_descuento = 'Activo'`, [idCat]);
 
         if (descCategoria.length > 0) {
           const { tipo_descuento, valor } = descCategoria[0];
@@ -53,9 +53,9 @@ exports.obtenerCarrito = async (req, res) => {
           descuentoAplicado = { tipo_descuento, valor: val, origen: 'categoria' };
 
           if (tipo === 'porcentaje') {
-            precioFinal = Math.round(precioOriginal - (precioOriginal * val / 100));
-          } else if (tipo === 'fijo' || tipo === 'valor') {
-            precioFinal = Math.max(0, precioOriginal - val);
+            precioFinal = precioOriginal - (precioOriginal * val / 100);
+          } else if (tipo === 'fijo') {
+            precioFinal = precioOriginal - val;
           }
         }
       }
@@ -73,10 +73,9 @@ exports.obtenerCarrito = async (req, res) => {
 
       return {
         ...prod,
-        urlImagen: prod.imagen,
         precio_original: precioOriginal,
         precio_final: parseFloat(precioFinal.toFixed(2)),
-        descuento_aplicado: descuentoAplicado
+        descuento: descuentoAplicado
       };
     }));
 

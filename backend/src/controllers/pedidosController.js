@@ -128,7 +128,7 @@ exports.crearPedido = async (req, res) => {
         SELECT d.tipo_descuento, d.valor
         FROM descuento d
         JOIN descuento_producto dp ON d.id_descuento = dp.id_descuento
-        WHERE dp.id_producto = ? AND d.estado_descuento = 'Activo' AND NOW() BETWEEN d.fecha_inicio AND d.fecha_fin`, [item.id_producto]);
+        WHERE dp.id_producto = ? AND d.estado_descuento = 'Activo'`, [item.id_producto]);
 
       if (descProducto.length > 0) {
         const { tipo_descuento, valor } = descProducto[0];
@@ -136,9 +136,9 @@ exports.crearPedido = async (req, res) => {
         const val = parseFloat(valor);
         descuentoAplicado = { tipo_descuento, valor: val, origen: 'producto' };
         if (tipo === 'porcentaje') {
-          precioFinal = Math.round(precioOriginal - (precioOriginal * val / 100));
-        } else if (tipo === 'fijo' || tipo === 'valor') {
-          precioFinal = Math.max(0, precioOriginal - val);
+          precioFinal = precioOriginal - (precioOriginal * val / 100);
+        } else if (tipo === 'fijo') {
+          precioFinal = precioOriginal - val;
         }
       } else {
         // Buscar descuento por categoría
@@ -146,16 +146,16 @@ exports.crearPedido = async (req, res) => {
           SELECT d.tipo_descuento, d.valor
           FROM descuento d
           JOIN descuento_categoria dc ON d.id_descuento = dc.id_descuento
-          WHERE dc.id_categoria = ? AND d.estado_descuento = 'Activo' AND NOW() BETWEEN d.fecha_inicio AND d.fecha_fin`, [prod.id_categoria]);
+          WHERE dc.id_categoria = ? AND d.estado_descuento = 'Activo'`, [prod.id_categoria]);
         if (descCategoria.length > 0) {
           const { tipo_descuento, valor } = descCategoria[0];
           const tipo = tipo_descuento.toLowerCase();
           const val = parseFloat(valor);
           descuentoAplicado = { tipo_descuento, valor: val, origen: 'categoria' };
           if (tipo === 'porcentaje') {
-            precioFinal = Math.round(precioOriginal - (precioOriginal * val / 100));
-          } else if (tipo === 'fijo' || tipo === 'valor') {
-            precioFinal = Math.max(0, precioOriginal - val);
+            precioFinal = precioOriginal - (precioOriginal * val / 100);
+          } else if (tipo === 'fijo') {
+            precioFinal = precioOriginal - val;
           }
         }
       }
@@ -166,7 +166,7 @@ exports.crearPedido = async (req, res) => {
         nombre: prod.nombre || 'Desconocido',
         precio_original: precioOriginal,
         precio_final: parseFloat(precioFinal.toFixed(2)),
-        descuento_aplicado: descuentoAplicado
+        descuento: descuentoAplicado
       };
     }));
 
