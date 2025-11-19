@@ -13,7 +13,7 @@ import ModalProducto from '../../components/cliente/ModalProducto';
 import Carrito from '../../components/cliente/carrito';
 import { API_URL } from '../../config/api';
 
-const API_BASE = `${API_URL}/api`;
+const BASE_URL = API_URL; 
 const IMG_BASE = `${API_URL}/productos/img`;
 
 export default function VistaBusqueda() {
