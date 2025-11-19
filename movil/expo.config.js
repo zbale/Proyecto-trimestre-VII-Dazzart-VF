@@ -59,9 +59,7 @@ module.exports = {
       eas: {
         projectId: '',
       },
-      // EXPO_PUBLIC_API_URL: 'https://api.dazzartcomponents.shop',
-      EXPO_PUBLIC_API_URL: 'https://api.dazzartcomponents.shop',
+      EXPO_PUBLIC_API_URL: 'http://67.202.48.5:3001',
     },
   },
-};      
-    
+};
