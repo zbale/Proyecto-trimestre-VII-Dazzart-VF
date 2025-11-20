@@ -106,6 +106,58 @@ export default function VistaProductos() {
     fetchProductos();
   }, [id_categoria, id_subcategoria, soloOferta, orden, mostrarCantidad, busqueda]);
 
+  // Recargar productos al volver del admin
+  useEffect(() => {
+    const handleFocus = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/productos/listar`);
+        const all = await res.json();
+
+        let filtrados = all.filter(
+          p =>
+            p.id_categoria === parseInt(id_categoria) &&
+            p.id_subcategoria === parseInt(id_subcategoria)
+        );
+
+        if (soloOferta) filtrados = filtrados.filter(p => p.oferta === true);
+
+        if (busqueda.trim() !== '') {
+          const busqLower = busqueda.toLowerCase();
+          filtrados = filtrados.filter(p =>
+            p.nombre_producto.toLowerCase().includes(busqLower) ||
+            (p.marca?.toLowerCase().includes(busqLower)) ||
+            (p.descripcion?.toLowerCase().includes(busqLower))
+          );
+        }
+
+        if (orden === 'popularidad') {
+          filtrados.sort((a, b) => (b.popularidad || 0) - (a.popularidad || 0));
+        } else if (orden === 'precio_asc') {
+          filtrados.sort((a, b) => a.precio - b.precio);
+        } else if (orden === 'precio_desc') {
+          filtrados.sort((a, b) => b.precio - a.precio);
+        }
+
+        filtrados = filtrados.slice(0, mostrarCantidad);
+
+        const productosConImagen = filtrados.map(p => {
+          const nombreImg = p.imagen?.replace(/^\/?.*img\//, '') || '';
+          const urlImagen = nombreImg
+            ? `${IMG_BASE}/${encodeURIComponent(nombreImg)}?t=${Date.now()}`
+            : '/default.png';
+          return { ...p, urlImagen };
+        });
+
+        setProductos(productosConImagen);
+      } catch (err) {
+        console.error('Error al recargar productos:', err);
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [id_categoria, id_subcategoria, soloOferta, orden, mostrarCantidad, busqueda]);
+
   const handleAgregarCarrito = (producto, cantidad = 1) => {
     if (!usuario || usuario.id_rol !== 2) {
       setMostrarLogin(true);

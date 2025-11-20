@@ -89,6 +89,47 @@ export default function VistaBusqueda() {
     fetchProductos();
   }, [terminoUrl, soloOferta, orden, mostrarCantidad]);
 
+  // Recargar productos al volver del admin
+  useEffect(() => {
+    const handleFocus = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/productos/listar`);
+        const all = await res.json();
+
+        let filtrados = all.filter(p =>
+          p.nombre.toLowerCase().includes((terminoUrl || '').toLowerCase())
+        );
+
+        if (soloOferta) filtrados = filtrados.filter(p => p.oferta === true);
+
+        if (orden === 'popularidad') {
+          filtrados.sort((a, b) => (b.popularidad || 0) - (a.popularidad || 0));
+        } else if (orden === 'precio_asc') {
+          filtrados.sort((a, b) => a.precio - b.precio);
+        } else if (orden === 'precio_desc') {
+          filtrados.sort((a, b) => b.precio - a.precio);
+        }
+
+        filtrados = filtrados.slice(0, mostrarCantidad);
+
+        const productosConImagen = filtrados.map(p => {
+          const nombreImg = p.imagen?.replace(/^\/?.*img\//, '') || '';
+          const urlImagen = nombreImg
+            ? `${IMG_BASE}/${encodeURIComponent(nombreImg)}?t=${Date.now()}`
+            : '/default.png';
+          return { ...p, urlImagen };
+        });
+
+        setProductos(productosConImagen);
+      } catch (error) {
+        console.error('Error al recargar productos:', error);
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [terminoUrl, soloOferta, orden, mostrarCantidad]);
+
   // Agregar producto al carrito (solo usuario con rol 2)
   const handleAgregarCarrito = (producto, cantidad = 1) => {
     if (!usuario || usuario.id_rol !== 2) {

@@ -53,6 +53,27 @@ export default function ClienteHome() {
       .catch(console.error);
   }, []);
 
+  // Recargar productos cuando la página recibe focus (vuelve del admin)
+  useEffect(() => {
+    const handleFocus = () => {
+      fetch(`${BASE_URL}/productos/listar`)
+        .then(res => res.json())
+        .then(data => {
+          if (!Array.isArray(data)) return;
+          const ordenados = [...data].sort(
+            (a, b) => new Date(b.fecha_creacion) - new Date(a.fecha_creacion)
+          );
+          const top10 = ordenados.slice(0, 10);
+          setProductos(top10);
+          setCicloInfinito([...top10, ...top10]);
+        })
+        .catch(console.error);
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, []);
+
   useEffect(() => {
     if (!scrollRef.current) return;
     scrollRef.current.scrollLeft = 0;
@@ -105,14 +126,26 @@ export default function ClienteHome() {
       });
   };
 
-  const abrirModalLupa = producto => {
-    const nombreImg = producto.imagen?.replace(/^\/?.*img\//, '') || '';
-    const urlImagen = nombreImg
-      ? `${IMG_URL}/${encodeURIComponent(nombreImg)}?t=${Date.now()}`
-      : '/default.png';
-    setProductoSeleccionado({ ...producto, urlImagen });
+const abrirModalLupa = (producto) => {
+  const nombreImg = producto.imagen?.replace(/^\/?.*img\//, '') || '';
+  const urlSinCache = nombreImg
+    ? `${IMG_URL}/${encodeURIComponent(nombreImg)}`
+    : '/default.png';
+
+  const img = new Image();
+  img.src = urlSinCache;
+
+  img.onload = () => {
+    setProductoSeleccionado({ ...producto, urlImagen: img.src });
     setModalLupaOpen(true);
   };
+
+  img.onerror = () => {
+    setProductoSeleccionado({ ...producto, urlImagen: '/default.png' });
+    setModalLupaOpen(true);
+  };
+};
+
 
   const cerrarModalLupa = () => {
     setModalLupaOpen(false);

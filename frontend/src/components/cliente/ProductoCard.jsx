@@ -52,27 +52,28 @@ export default function ProductoCard({ producto, onAgregarCarrito, onVerDetalle 
       <div className="card-body text-center d-flex flex-column justify-content-between">
         <h5 className="card-title mb-1">{producto.nombre}</h5>
         <p className="descripcion-producto small mb-2">{producto.descripcion}</p>
-        {producto.descuento_aplicado ? (
+        {producto.descuento_aplicado && producto.precio_final && producto.precio_final !== producto.precio ? (
           <>
             <span className="text-muted text-decoration-line-through me-2">
-              $ {producto.precio}
+              $ {Number(producto.precio).toLocaleString('es-CO')}
             </span>
             <span className="fw-bold text-danger" style={{ fontSize: '1.2rem' }}>
-              $ {producto.precio_final}
+              $ {Number(producto.precio_final).toLocaleString('es-CO')}
             </span>
-            {producto.descuento_aplicado.tipo_descuento === 'porcentaje' && (
+            {(producto.descuento_aplicado.tipo_descuento || '').toLowerCase() === 'porcentaje' && (
               <span className="badge bg-success ms-2">
                 -{producto.descuento_aplicado.valor}%
               </span>
             )}
-            {producto.descuento_aplicado.tipo_descuento === 'valor' && (
+            {((producto.descuento_aplicado.tipo_descuento || '').toLowerCase() === 'valor' || 
+              (producto.descuento_aplicado.tipo_descuento || '').toLowerCase() === 'fijo') && (
               <span className="badge bg-success ms-2">
-                -${producto.descuento_aplicado.valor}
+                -$ {Number(producto.descuento_aplicado.valor).toLocaleString('es-CO')}
               </span>
             )}
           </>
         ) : (
-          <p className="text-muted fw-bold">$ {producto.precio}</p>
+          <p className="text-muted fw-bold">$ {Number(producto.precio).toLocaleString('es-CO')}</p>
         )}
       </div>
     </div>

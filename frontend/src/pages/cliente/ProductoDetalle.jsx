@@ -65,6 +65,28 @@ export default function ProductoDetalle({
     fetchProducto();
   }, [params.id_producto, productoProp]);
 
+  // Recargar producto cuando vuelve del admin
+  useEffect(() => {
+    const handleFocus = async () => {
+      if (!params.id_producto) return;
+      try {
+        const res = await fetch(`${BASE_URL}/api/productos/${params.id_producto}`);
+        if (!res.ok) return;
+        const data = await res.json();
+        const nombreImg = data.imagen?.replace(/^\/?..*img\//, '') || '';
+        const urlImagen = nombreImg
+          ? `${BASE_URL}/productos/img/${encodeURIComponent(nombreImg)}?t=${Date.now()}`
+          : '/default.png';
+        setProducto({ ...data, urlImagen });
+      } catch (error) {
+        console.error('Error recargando producto:', error);
+      }
+    };
+
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
+  }, [params.id_producto]);
+
   const handleAgregarCarrito = () => {
     const id_usuario = idUsuarioProp || usuario?.id_usuario;
 
@@ -160,7 +182,7 @@ export default function ProductoDetalle({
           <div className="col-md-6">
             <h1 style={{ fontWeight: '700', marginBottom: '0.5rem' }}>{producto.nombre}</h1>
             <p style={{ fontSize: '1.75rem', fontWeight: '700', color: '#3483fa', marginBottom: '1.5rem' }}>
-              {producto.descuento_aplicado ? (
+              {producto.descuento_aplicado && producto.precio_final && producto.precio_final !== producto.precio ? (
                 <>
                   <span className="text-muted text-decoration-line-through me-2" style={{ fontSize: '1.2rem' }}>
                     ${Number(producto.precio).toLocaleString('es-CO')}
@@ -168,13 +190,13 @@ export default function ProductoDetalle({
                   <span className="fw-bold text-danger" style={{ fontSize: '1.75rem' }}>
                     ${Number(producto.precio_final).toLocaleString('es-CO')}
                   </span>
-                  {producto.descuento_aplicado.tipo_descuento?.toLowerCase() === 'porcentaje' && (
+                  {(producto.descuento_aplicado.tipo_descuento || '').toLowerCase() === 'porcentaje' && (
                     <span className="badge bg-success ms-2">
                       -{producto.descuento_aplicado.valor}%
                     </span>
                   )}
-                  {(producto.descuento_aplicado.tipo_descuento?.toLowerCase() === 'valor' ||
-                    producto.descuento_aplicado.tipo_descuento?.toLowerCase() === 'fijo') && (
+                  {((producto.descuento_aplicado.tipo_descuento || '').toLowerCase() === 'valor' ||
+                    (producto.descuento_aplicado.tipo_descuento || '').toLowerCase() === 'fijo') && (
                     <span className="badge bg-success ms-2">
                       -${Number(producto.descuento_aplicado.valor).toLocaleString('es-CO')}
                     </span>

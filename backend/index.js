@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const createApp = require('../backend/src/app');
 
 const app = createApp();
