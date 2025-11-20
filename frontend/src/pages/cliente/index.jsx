@@ -35,7 +35,7 @@ export default function ClienteHome() {
   const scrollRef = useRef(null);
 
   useEffect(() => {
-    fetch(`${BASE_URL}/productos/listar`)
+    fetch(`/api/productos/listar`)
       .then(res => res.json())
       .then(data => {
         if (!Array.isArray(data)) {
@@ -55,7 +55,7 @@ export default function ClienteHome() {
   // Recargar productos cuando la página recibe focus (vuelve del admin)
   useEffect(() => {
     const handleFocus = () => {
-      fetch(`/productos/listar`)
+      fetch(`/api/productos/listar`)
         .then(res => res.json())
         .then(data => {
           if (!Array.isArray(data)) return;
@@ -101,7 +101,7 @@ export default function ClienteHome() {
       return;
     }
 
-    fetch(`/carrito`, {
+    fetch(`/api/carrito`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

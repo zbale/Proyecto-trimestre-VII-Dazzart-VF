@@ -12,7 +12,7 @@ export default function MenuLateral({ onClose }) {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`/categorias/listar`)
+    fetch(`/api/categorias/listar`)
       .then((res) => res.json())
       .then((data) => setCategorias(data))
       .catch(console.error);
@@ -20,7 +20,7 @@ export default function MenuLateral({ onClose }) {
 
   useEffect(() => {
     if (categoriaActiva) {
-      fetch(`/subcategorias/listar`)
+      fetch(`/api/subcategorias/listar`)
         .then((res) => res.json())
         .then((data) => {
           const filtradas = data.filter(
