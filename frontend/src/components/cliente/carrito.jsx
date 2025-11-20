@@ -20,7 +20,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
 
   useEffect(() => {
     if (!id_usuario) return;
-    fetch(`${API_URL}/api/carrito/${id_usuario}`)
+    fetch(`${API_URL}/carrito/${id_usuario}`)
       .then(res => res.json())
       .then(data => {
         const carritoConImagen = data.map(item => ({
@@ -35,7 +35,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
   }, [id_usuario]);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/productos/listar`)
+    fetch(`${API_URL}/productos/listar`)
       .then(res => res.json())
       .then(data => {
         const idsEnCarrito = carrito.map(item => item.id_producto);
@@ -54,7 +54,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
   }, [carrito]);
 
   const eliminarProducto = (id_carrito) => {
-  fetch(`${API_URL}/api/carrito/${id_carrito}`, { method: 'DELETE' })
+  fetch(`${API_URL}/carrito/${id_carrito}`, { method: 'DELETE' })
       .then(() => {
         setCarrito(carrito.filter(item => item.id_carrito !== id_carrito));
       })
@@ -90,7 +90,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
     const total = calcularTotalRaw();
 
     try {
-  const res = await fetch(`${API_URL}/api/pedidos`, {
+  const res = await fetch(`${API_URL}/pedidos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -106,7 +106,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
 
       if (res.ok) {
         setCarrito([]);
-        await fetch(`${API_URL}/api/carrito/vaciar/${id_usuario}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/carrito/vaciar/${id_usuario}`, { method: 'DELETE' });
         sessionStorage.setItem("ultimaFactura", JSON.stringify(data));
         navigate(`/factura/${data.id_factura}`);
       } else {
@@ -123,7 +123,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
   const volver = () => navigate(-1);
 
   const agregarAlCarrito = (producto, cantidad = 1) => {
-  fetch(`${API_URL}/api/carrito`, {
+  fetch(`${API_URL}/carrito`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id_usuario, id_producto: producto.id_producto, cantidad })
@@ -135,7 +135,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
       .then(data => {
         setModalMensaje(data.message || 'Producto agregado al carrito');
         setMostrarModal(true);
-  return fetch(`${API_URL}/api/carrito/${id_usuario}`);
+  return fetch(`${API_URL}/carrito/${id_usuario}`);
       })
       .then(res => res.json())
       .then(data => {

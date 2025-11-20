@@ -19,7 +19,7 @@ export default function UsuariosAdmin() {
 
   const cargarUsuarios = () => {
     axios
-      .get(`${API_URL}/api/usuarios`)
+      .get(`${API_URL}/usuarios`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setUsuarios(res.data);
@@ -82,7 +82,7 @@ export default function UsuariosAdmin() {
 
     try {
       const response = await axios.put(
-        `${API_URL}/api/usuarios/${id}/estado`,
+        `${API_URL}/usuarios/${id}/estado`,
         { estado: nuevoEstado }
       );
 

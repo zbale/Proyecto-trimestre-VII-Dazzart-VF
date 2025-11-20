@@ -84,7 +84,7 @@ const RegistroDazzart = () => {
     if (!validate()) return;
 
     try {
-  const response = await axios.post(`${API_URL}/api/usuarios/register`, {
+  const response = await axios.post(`${API_URL}/usuarios/register`, {
         nombre: formData.nombre,
         nombre_usuario: formData.usuario,
         correo_electronico: formData.email,

@@ -1,9 +1,11 @@
 import axios from 'axios';
 
-// URL base (sin /api) - será vacío para usar rutas relativas con /api
-const API_URL = import.meta.env.VITE_API_URL || '';
+// URL base del servidor
+const BASE_URL = import.meta.env.VITE_API_URL || '';
+// URL sin /api para endpoints
+const API_URL = BASE_URL || '';
 
-export { API_URL };
+export { API_URL, BASE_URL };
 
 // Instancia Axios
 export const API = axios.create({

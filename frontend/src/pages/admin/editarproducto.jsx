@@ -43,7 +43,7 @@ export default function EditarProducto() {
 
   // Carga datos iniciales
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/productos/${id}`).then((res) => {
+    axios.get(`${BASE_URL}/productos/${id}`).then((res) => {
       const data = res.data;
       setProducto(data);
       setForm({
@@ -60,11 +60,11 @@ export default function EditarProducto() {
       setCacheBuster(Date.now()); // Forzar recarga imagen inicial
     });
 
-    axios.get(`${BASE_URL}/api/categorias/listar`).then((res) => {
+    axios.get(`${BASE_URL}/categorias/listar`).then((res) => {
       setCategorias(res.data || []);
     });
 
-    axios.get(`${BASE_URL}/api/productos/listar-imagenes`).then((res) => {
+    axios.get(`${BASE_URL}/productos/listar-imagenes`).then((res) => {
       setImagenesExistentes(res.data.imagenes || []);
     });
   }, [id]);
@@ -72,7 +72,7 @@ export default function EditarProducto() {
   // Filtrar subcategorías cuando cambia la categoría seleccionada
   useEffect(() => {
     if (form.id_categoria) {
-      axios.get(`${BASE_URL}/api/subcategorias/listar`).then((res) => {
+      axios.get(`${BASE_URL}/subcategorias/listar`).then((res) => {
         const filtradas = res.data.filter(
           (s) => String(s.id_categoria) === String(form.id_categoria)
         );
@@ -137,7 +137,7 @@ export default function EditarProducto() {
     }
 
     try {
-      await axios.put(`${BASE_URL}/api/productos/editar/${id}`, fd, {
+      await axios.put(`${BASE_URL}/productos/editar/${id}`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       Swal.fire("Éxito", "Producto actualizado correctamente", "success");

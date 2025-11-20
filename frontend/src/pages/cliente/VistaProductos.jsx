@@ -14,7 +14,7 @@ import Carrito from '../../components/cliente/carrito';
 import ModalProducto from '../../components/cliente/ModalProducto';
 import { API_URL } from '../../config/api';
 
-const API_BASE = `${API_URL}/api`;
+const API_BASE = `${API_URL}`;
 const IMG_BASE = `${API_URL}/productos/img`;
 
 export default function VistaProductos() {

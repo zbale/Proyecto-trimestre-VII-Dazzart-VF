@@ -17,7 +17,7 @@ import '../../css/CSS/ModalConfirmacion.css';
 import '../../css/CSS/ModalProducto.css';
 import { API_URL } from '../../config/api';
 
-const BASE_URL = `${API_URL}/api`;
+const BASE_URL = `${API_URL}`;
 const IMG_URL = `${API_URL}/productos/img`;
 
 export default function ClienteHome() {

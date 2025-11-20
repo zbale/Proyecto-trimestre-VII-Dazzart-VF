@@ -37,7 +37,7 @@ export default function AgregarUsuario() {
   // Si hay un ID en la URL, se cargan los datos del usuario para editar
   useEffect(() => {
     if (id) {
-  axios.get(`${API_URL}/api/usuarios/${id}`)
+  axios.get(`${API_URL}/usuarios/${id}`)
         .then(res => {
           setFormData({
             ...res.data,
@@ -84,7 +84,7 @@ export default function AgregarUsuario() {
 
       if (id) {
         // 🔸 Actualizar usuario existente
-  res = await axios.put(`${API_URL}/api/usuarios/${id}`, formData);
+  res = await axios.put(`${API_URL}/usuarios/${id}`, formData);
         if (res.status === 200) {
           Swal.fire({
             icon: 'success',
@@ -97,7 +97,7 @@ export default function AgregarUsuario() {
         }
       } else {
         // 🔸 Crear nuevo usuario
-  res = await axios.post(`${API_URL}/api/usuarios`, formData);
+  res = await axios.post(`${API_URL}/usuarios`, formData);
         if (res.status === 201) {
           Swal.fire({
             icon: 'success',
