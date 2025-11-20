@@ -17,7 +17,7 @@ import '../../css/CSS/ModalConfirmacion.css';
 import '../../css/CSS/ModalProducto.css';
 import { API_URL, BASE_URL } from '../../config/api';
 
-const IMG_URL = `${BASE_URL}/productos/img`;
+const IMG_URL = '/productos/img';
 
 export default function ClienteHome() {
   const [showMenu, setShowMenu] = useState(false);

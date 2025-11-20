@@ -42,7 +42,7 @@ API.interceptors.request.use(
 export const imgUrl = (imagenNombre) => {
   if (!imagenNombre) return '/default.png';
   const safe = encodeURIComponent(imagenNombre.replace(/^.*[\\/]/, ''));
-  return `${BASE_URL}/productos/img/${safe}`;
+  return `/productos/img/${safe}`;
 };
 
 export default API;
