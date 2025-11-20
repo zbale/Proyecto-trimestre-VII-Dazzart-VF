@@ -14,7 +14,7 @@ import Carrito from '../../components/cliente/carrito';
 import { API_URL } from '../../config/api';
 
 const API_BASE = `${API_URL}`;
-const IMG_BASE = `${API_URL}/productos/img`;
+const IMG_BASE = `/productos/img`;
 
 export default function VistaBusqueda() {
   const { termino: terminoUrl } = useParams();

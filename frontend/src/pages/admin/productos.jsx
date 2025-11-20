@@ -22,7 +22,7 @@ export default function ProductosAdmin() {
 
   const cargarProductos = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/productos/listar`);
+      const res = await axios.get(`/productos/listar`);
       if (Array.isArray(res.data)) {
         setProductos(res.data);
       } else {
@@ -95,7 +95,7 @@ export default function ProductosAdmin() {
     if (!confirm.isConfirmed) return;
 
     try {
-      const response = await axios.delete(`${BASE_URL}/productos/eliminar/${id}`);
+      const response = await axios.delete(`/productos/eliminar/${id}`);
       if (response.status === 200) {
         // Destruye DataTable para evitar duplicados
         if ($.fn.DataTable.isDataTable("#tablaProductos")) {

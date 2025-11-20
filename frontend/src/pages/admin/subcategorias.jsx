@@ -44,7 +44,7 @@ export default function SubcategoriasAdmin() {
 
   const cargarCategorias = async () => {
     try {
-  const res = await axios.get(`${API_URL}/categorias/listar`);
+  const res = await axios.get(`/categorias/listar`);
       if (Array.isArray(res.data)) setCategorias(res.data);
     } catch (error) {
       console.error(error);
@@ -53,7 +53,7 @@ export default function SubcategoriasAdmin() {
 
   const cargarSubcategorias = () => {
     axios
-      .get(`${API_URL}/subcategorias/listar`)
+      .get(`/subcategorias/listar`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setSubcategorias(res.data);
@@ -103,7 +103,7 @@ export default function SubcategoriasAdmin() {
       return;
     }
     try {
-  await axios.post(`${API_URL}/subcategorias/agregar`, form);
+  await axios.post(`/subcategorias/agregar`, form);
       Swal.fire("Agregado", "Subcategoría agregada con éxito", "success");
       setForm({ nombre_subcategoria: "", descripcion_subcategoria: "", id_categoria: "" });
       if ($.fn.DataTable.isDataTable("#tablaSubcategorias")) {
@@ -129,7 +129,7 @@ export default function SubcategoriasAdmin() {
     if (!confirm.isConfirmed) return;
 
     try {
-  const response = await axios.delete(`${API_URL}/subcategorias/eliminar/${id}`);
+  const response = await axios.delete(`/subcategorias/eliminar/${id}`);
       if (response.status === 200) {
         Swal.fire("Eliminado", "Subcategoría eliminada con éxito", "success");
         if ($.fn.DataTable.isDataTable("#tablaSubcategorias")) {
@@ -161,7 +161,7 @@ export default function SubcategoriasAdmin() {
     e.preventDefault();
     const { id_subcategoria, nombre_subcategoria, descripcion_subcategoria, id_categoria } = editForm;
     try {
-      await axios.put(`${API_URL}/subcategorias/editar/${id_subcategoria}`, {
+      await axios.put(`/subcategorias/editar/${id_subcategoria}`, {
         nombre_subcategoria,
         descripcion_subcategoria,
         id_categoria,

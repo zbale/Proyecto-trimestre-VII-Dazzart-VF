@@ -22,7 +22,7 @@ export default function PedidosUser() {
     const cargarPedidosUsuario = async () => {
       try {
         // Suponiendo que tu backend tiene ruta para pedidos por usuario
-  const res = await fetch(`${API_URL}/pedidos/usuario/${parsedUsuario.id_usuario}`);
+  const res = await fetch(`/pedidos/usuario/${parsedUsuario.id_usuario}`);
         const data = await res.json();
         if (Array.isArray(data)) {
           setPedidos(data);

@@ -15,7 +15,7 @@ import ModalProducto from '../../components/cliente/ModalProducto';
 import { API_URL } from '../../config/api';
 
 const API_BASE = `${API_URL}`;
-const IMG_BASE = `${API_URL}/productos/img`;
+const IMG_BASE = `/productos/img`;
 
 export default function VistaProductos() {
   const { id_categoria, id_subcategoria } = useParams();

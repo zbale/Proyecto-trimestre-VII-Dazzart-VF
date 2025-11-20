@@ -39,7 +39,7 @@ export default function ModalLogin({ visible, onClose, onLoginSuccess }) {
     setError('');
     setLoading(true);
     try {
-      const res = await axios.post(`${API_URL}/login/login`, {
+      const res = await axios.post(`/login/login`, {
         correo_electronico: correo,
         contrasena
       });
