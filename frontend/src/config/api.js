@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// Usar la URL del .env, con fallback a la URL relativa
+// Usar URL relativa para que funcione con proxy en producción
 const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 export { API_URL };
