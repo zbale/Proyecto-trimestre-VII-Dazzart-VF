@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// Usar URL relativa para que funcione con proxy en producción
-const API_URL = import.meta.env.VITE_API_URL || '/api';
+// URL base (sin /api) - será vacío para usar rutas relativas con /api
+const API_URL = import.meta.env.VITE_API_URL || '';
 
 export { API_URL };
 
