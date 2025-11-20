@@ -15,10 +15,9 @@ import '../../css/CSS/clienteHome.css';
 import '../../css/CSS/CardsProducto.css';
 import '../../css/CSS/ModalConfirmacion.css';
 import '../../css/CSS/ModalProducto.css';
-import { API_URL } from '../../config/api';
+import { API_URL, BASE_URL } from '../../config/api';
 
-const BASE_URL = `${API_URL}`;
-const IMG_URL = `${API_URL}/productos/img`;
+const IMG_URL = `${BASE_URL}/productos/img`;
 
 export default function ClienteHome() {
   const [showMenu, setShowMenu] = useState(false);

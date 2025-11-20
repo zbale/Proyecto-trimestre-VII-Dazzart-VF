@@ -2,8 +2,8 @@ import axios from 'axios';
 
 // URL base del servidor
 const BASE_URL = import.meta.env.VITE_API_URL || '';
-// URL sin /api para endpoints
-const API_URL = BASE_URL || '';
+// URL con /api para el baseURL
+const API_URL = BASE_URL ? `${BASE_URL}/api` : '/api';
 
 export { API_URL, BASE_URL };
 
@@ -42,7 +42,7 @@ API.interceptors.request.use(
 export const imgUrl = (imagenNombre) => {
   if (!imagenNombre) return '/default.png';
   const safe = encodeURIComponent(imagenNombre.replace(/^.*[\\/]/, ''));
-  return `/productos/img/${safe}`;
+  return `${BASE_URL}/productos/img/${safe}`;
 };
 
 export default API;
