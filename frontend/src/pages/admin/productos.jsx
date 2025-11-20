@@ -162,7 +162,7 @@ export default function ProductosAdmin() {
                       <img
                         src={
                           imagenNombre
-                            ? `${BASE_URL}/productos/img/${encodeURIComponent(imagenNombre)}?t=${Date.now()}`
+                            ? `/productos/img/${encodeURIComponent(imagenNombre)}?t=${Date.now()}`
                             : "/default.png"
                         }
                         alt={producto.nombre}

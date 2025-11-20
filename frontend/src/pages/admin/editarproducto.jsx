@@ -310,7 +310,7 @@ export default function EditarProducto() {
                 {imagenesExistentes.map((img) => (
                   <img
                     key={img}
-                    src={`${BASE_URL}/productos/img/${encodeURIComponent(img)}`}
+                    src={`/productos/img/${encodeURIComponent(img)}`}
                     onClick={() => handleImageSelect(img)}
                     alt={img}
                     style={{
@@ -352,7 +352,7 @@ export default function EditarProducto() {
                       imagenArchivo
                         ? previewUrlRef.current
                         : imagenSeleccionada
-                        ? `${BASE_URL}/productos/img/${encodeURIComponent(
+                        ? `/productos/img/${encodeURIComponent(
                             imagenSeleccionada
                           )}?t=${cacheBuster}`
                         : "/default.png"

@@ -45,7 +45,7 @@ export default function ProductoDetalle({
     }
     const fetchProducto = async () => {
       try {
-        const res = await fetch(`${BASE_URL}/productos/${params.id_producto}`);
+        const res = await fetch(`/productos/${params.id_producto}`);
         if (!res.ok) {
           const errorText = await res.text();
           throw new Error('Producto no encontrado: ' + errorText);
@@ -53,7 +53,7 @@ export default function ProductoDetalle({
         const data = await res.json();
         const nombreImg = data.imagen?.replace(/^\/?..*img\//, '') || '';
         const urlImagen = nombreImg
-          ? `${BASE_URL}/productos/img/${encodeURIComponent(nombreImg)}?t=${Date.now()}`
+          ? `/productos/img/${encodeURIComponent(nombreImg)}?t=${Date.now()}`
           : '/default.png';
         setProducto({ ...data, urlImagen });
       } catch (error) {
@@ -70,12 +70,12 @@ export default function ProductoDetalle({
     const handleFocus = async () => {
       if (!params.id_producto) return;
       try {
-        const res = await fetch(`${BASE_URL}/productos/${params.id_producto}`);
+        const res = await fetch(`/productos/${params.id_producto}`);
         if (!res.ok) return;
         const data = await res.json();
         const nombreImg = data.imagen?.replace(/^\/?..*img\//, '') || '';
         const urlImagen = nombreImg
-          ? `${BASE_URL}/productos/img/${encodeURIComponent(nombreImg)}?t=${Date.now()}`
+          ? `/productos/img/${encodeURIComponent(nombreImg)}?t=${Date.now()}`
           : '/default.png';
         setProducto({ ...data, urlImagen });
       } catch (error) {
@@ -99,7 +99,7 @@ export default function ProductoDetalle({
     if (onAgregarCarrito) {
       onAgregarCarrito(producto, cantidad);
     } else {
-      fetch(`${BASE_URL}/carrito`, {
+      fetch(`/carrito`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
