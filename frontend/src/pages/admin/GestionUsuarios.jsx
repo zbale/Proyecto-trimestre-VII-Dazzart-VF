@@ -11,15 +11,15 @@ import { useNavigate } from "react-router-dom";
 import SidebarAdmin from "../../components/SideBarAdmin";
 import { faEdit } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { API_URL } from '../../config/api';
+import { API } from '../../config/api';
 
 export default function UsuariosAdmin() {
   const [usuarios, setUsuarios] = useState([]);
   const navigate = useNavigate();
 
   const cargarUsuarios = () => {
-    axios
-      .get(`/api/usuarios`)
+    API
+      .get(`usuarios`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setUsuarios(res.data);

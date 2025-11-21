@@ -9,7 +9,7 @@ import SidebarAdmin from "../../components/SideBarAdmin.jsx";
 import { useNavigate } from "react-router-dom";
 import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { API_URL } from '../../config/api';
+import { API } from '../../config/api';
 
 export default function SubcategoriasAdmin() {
   const [subcategorias, setSubcategorias] = useState([]);
@@ -44,7 +44,7 @@ export default function SubcategoriasAdmin() {
 
   const cargarCategorias = async () => {
     try {
-  const res = await axios.get(`/api/categorias/listar`);
+  const res = await API.get(`categorias/listar`);
       if (Array.isArray(res.data)) setCategorias(res.data);
     } catch (error) {
       console.error(error);
@@ -53,7 +53,7 @@ export default function SubcategoriasAdmin() {
 
   const cargarSubcategorias = () => {
     axios
-      .get(`/api/subcategorias/listar`)
+      .get(`subcategorias/listar`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setSubcategorias(res.data);
@@ -103,7 +103,7 @@ export default function SubcategoriasAdmin() {
       return;
     }
     try {
-  await axios.post(`/api/subcategorias/agregar`, form);
+  await API.post(`subcategorias/agregar`, form);
       Swal.fire("Agregado", "Subcategoría agregada con éxito", "success");
       setForm({ nombre_subcategoria: "", descripcion_subcategoria: "", id_categoria: "" });
       if ($.fn.DataTable.isDataTable("#tablaSubcategorias")) {
@@ -129,7 +129,7 @@ export default function SubcategoriasAdmin() {
     if (!confirm.isConfirmed) return;
 
     try {
-  const response = await axios.delete(`/api/subcategorias/eliminar/${id}`);
+  const response = await API.delete(`subcategorias/eliminar/${id}`);
       if (response.status === 200) {
         Swal.fire("Eliminado", "Subcategoría eliminada con éxito", "success");
         if ($.fn.DataTable.isDataTable("#tablaSubcategorias")) {
@@ -161,7 +161,7 @@ export default function SubcategoriasAdmin() {
     e.preventDefault();
     const { id_subcategoria, nombre_subcategoria, descripcion_subcategoria, id_categoria } = editForm;
     try {
-      await axios.put(`/api/subcategorias/editar/${id_subcategoria}`, {
+      await API.put(`subcategorias/editar/${id_subcategoria}`, {
         nombre_subcategoria,
         descripcion_subcategoria,
         id_categoria,

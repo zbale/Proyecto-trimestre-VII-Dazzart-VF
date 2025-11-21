@@ -3,9 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate, useParams } from "react-router-dom";
 import SidebarAdmin from "../../components/SideBarAdmin.jsx";
-import { API_URL } from '../../config/api';
-
-const BASE_URL = API_URL;
+import { API } from '../../config/api';
 
 export default function EditarProducto() {
   const { id } = useParams();
@@ -43,7 +41,7 @@ export default function EditarProducto() {
 
   // Carga datos iniciales
   useEffect(() => {
-    axios.get(`/api/productos/${id}`).then((res) => {
+    API.get(`productos/${id}`).then((res) => {
       const data = res.data;
       setProducto(data);
       setForm({
@@ -60,11 +58,11 @@ export default function EditarProducto() {
       setCacheBuster(Date.now()); // Forzar recarga imagen inicial
     });
 
-    axios.get(`/api/categorias/listar`).then((res) => {
+    API.get(`categorias/listar`).then((res) => {
       setCategorias(res.data || []);
     });
 
-    axios.get(`/api/productos/listar-imagenes`).then((res) => {
+    API.get(`productos/listar-imagenes`).then((res) => {
       setImagenesExistentes(res.data.imagenes || []);
     });
   }, [id]);
@@ -72,7 +70,7 @@ export default function EditarProducto() {
   // Filtrar subcategorías cuando cambia la categoría seleccionada
   useEffect(() => {
     if (form.id_categoria) {
-      axios.get(`/api/subcategorias/listar`).then((res) => {
+      API.get(`subcategorias/listar`).then((res) => {
         const filtradas = res.data.filter(
           (s) => String(s.id_categoria) === String(form.id_categoria)
         );
@@ -137,7 +135,7 @@ export default function EditarProducto() {
     }
 
     try {
-      await axios.put(`/api/productos/editar/${id}`, fd, {
+      await API.put(`productos/editar/${id}`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       Swal.fire("Éxito", "Producto actualizado correctamente", "success");

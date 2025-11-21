@@ -4,7 +4,7 @@ import SidebarAdmin from "../../components/SideBarAdmin.jsx";
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "../../css/CSSA/formulariodescuento.css";
-import { API_URL } from '../../config/api';
+import { API } from '../../config/api';
 
 export default function FormularioDescuento() {
   const [tipoDescuento, setTipoDescuento] = useState("");
@@ -23,11 +23,11 @@ export default function FormularioDescuento() {
   const fechaHoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
   useEffect(() => {
-    axios.get(`/api/productos/listar`)
+    API.get(`productos/listar`)
       .then(res => setProductos(res.data))
       .catch(err => console.error("Error al cargar productos:", err));
 
-    axios.get(`/api/categorias/listar`)
+    API.get(`categorias/listar`)
       .then(res => setCategorias(res.data))
       .catch(err => console.error("Error al cargar categorías:", err));
   }, []);
@@ -56,7 +56,7 @@ export default function FormularioDescuento() {
       data.id_categoria = idCategoria;
     }
 
-    axios.post(`/api/descuentos`, data)
+    API.post(`descuentos`, data)
       .then(() => {
         alert("Descuento creado correctamente");
       })

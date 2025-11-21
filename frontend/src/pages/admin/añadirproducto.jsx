@@ -3,9 +3,7 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import SidebarAdmin from "../../components/SideBarAdmin.jsx";
-import { API_URL } from '../../config/api';
-
-const BASE_URL = API_URL;
+import { API } from '../../config/api';
 
 export default function AñadirProducto() {
   const navigate = useNavigate();
@@ -36,17 +34,17 @@ export default function AñadirProducto() {
   const [imagenesExistentes, setImagenesExistentes] = useState([]);
 
   useEffect(() => {
-    axios.get(`/api/categorias/listar`).then((res) => {
+    API.get(`categorias/listar`).then((res) => {
       setCategorias(res.data || []);
     });
-    axios.get(`/api/productos/listar-imagenes`).then((res) => {
+    API.get(`productos/listar-imagenes`).then((res) => {
       setImagenesExistentes(res.data.imagenes || []);
     });
   }, []);
 
   useEffect(() => {
     if (form.id_categoria) {
-      axios.get(`/api/subcategorias/listar`).then((res) => {
+      API.get(`subcategorias/listar`).then((res) => {
         const filtradas = res.data.filter(
           (s) => String(s.id_categoria) === String(form.id_categoria)
         );
@@ -92,7 +90,7 @@ export default function AñadirProducto() {
     }
 
     try {
-      await axios.post(`/api/productos/agregar`, fd, {
+      await API.post(`productos/agregar`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
