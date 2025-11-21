@@ -137,7 +137,7 @@ export default function VistaBusqueda() {
       return;
     }
 
-    fetch(`${API_BASE}/carrito`, {
+    fetch(`/api/carrito`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

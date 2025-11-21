@@ -53,7 +53,7 @@ export default function SubcategoriasAdmin() {
 
   const cargarSubcategorias = () => {
     axios
-      .get(`/subcategorias/listar`)
+      .get(`/api/subcategorias/listar`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setSubcategorias(res.data);

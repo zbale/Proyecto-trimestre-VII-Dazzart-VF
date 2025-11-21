@@ -19,7 +19,7 @@ export default function UsuariosAdmin() {
 
   const cargarUsuarios = () => {
     axios
-      .get(`/usuarios`)
+      .get(`/api/usuarios`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setUsuarios(res.data);

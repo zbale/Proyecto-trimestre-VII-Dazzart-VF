@@ -23,7 +23,7 @@ export default function CategoriasAdmin() {
 
   const cargarCategorias = () => {
     axios
-      .get(`/categorias/listar`)
+      .get(`/api/categorias/listar`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setCategorias(res.data);
