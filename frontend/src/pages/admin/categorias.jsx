@@ -82,7 +82,7 @@ export default function CategoriasAdmin() {
     if (!form.nombre || !form.descripcion) return;
 
     try {
-  await axios.post(`/categorias/agregar`, form);
+  await axios.post(`/api/categorias/agregar`, form);
       Swal.fire("Agregado", "Categoría agregada con éxito", "success");
       setForm({ nombre: "", descripcion: "" });
       if ($.fn.DataTable.isDataTable("#tablaCategorias")) {
@@ -108,7 +108,7 @@ export default function CategoriasAdmin() {
     if (!confirm.isConfirmed) return;
 
     try {
-  const response = await axios.delete(`/categorias/eliminar/${id}`);
+  const response = await axios.delete(`/api/categorias/eliminar/${id}`);
       if (response.status === 200) {
         await Swal.fire({
           icon: "success",
@@ -154,7 +154,7 @@ const guardarEdicion = async (e) => {
 
   try {
     // Enviamos las claves correctas según espera el backend
-    await axios.put(`/categorias/editar/${id_categoria}`, {
+    await axios.put(`/api/categorias/editar/${id_categoria}`, {
       nombre: nombre,
       descripcion: descripcion,
     });

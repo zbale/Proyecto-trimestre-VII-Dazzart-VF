@@ -23,11 +23,11 @@ export default function FormularioDescuento() {
   const fechaHoy = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
 
   useEffect(() => {
-    axios.get(`/productos/listar`)
+    axios.get(`/api/productos/listar`)
       .then(res => setProductos(res.data))
       .catch(err => console.error("Error al cargar productos:", err));
 
-    axios.get(`/categorias/listar`)
+    axios.get(`/api/categorias/listar`)
       .then(res => setCategorias(res.data))
       .catch(err => console.error("Error al cargar categorías:", err));
   }, []);
@@ -56,7 +56,7 @@ export default function FormularioDescuento() {
       data.id_categoria = idCategoria;
     }
 
-    axios.post(`/descuentos`, data)
+    axios.post(`/api/descuentos`, data)
       .then(() => {
         alert("Descuento creado correctamente");
       })
