@@ -35,7 +35,7 @@ export default function MisCompras() {
 
   const cargarCompras = () => {
     if (!usuario) return;
-      fetch(`/pedidos/usuario/${usuario.id_usuario}`)
+      fetch(`/api/pedidos/usuario/${usuario.id_usuario}`)
       .then(res => {
         if (!res.ok) throw new Error('Error al obtener las compras');
         return res.json();
@@ -59,7 +59,7 @@ export default function MisCompras() {
     if (!confirmacion) return;
 
     try {
-        const res = await fetch(`/pedidos/cancelar/${id_factura}`, { method: 'PUT' });
+        const res = await fetch(`/api/pedidos/cancelar/${id_factura}`, { method: 'PUT' });
       if (!res.ok) throw new Error();
 
       cargarCompras(); // Refrescar datos tras cancelación

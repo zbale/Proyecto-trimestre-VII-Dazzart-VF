@@ -20,7 +20,7 @@ export default function VerFactura() {
   }, []);
 
   const cargarFactura = () => {
-    fetch(`/pedidos/${id}`)
+    fetch(`/api/pedidos/${id}`)
       .then((res) => res.json())
       .then((data) => {
         setFactura(data);
@@ -41,7 +41,7 @@ export default function VerFactura() {
     }
 
     try {
-      const res = await fetch(`/pedidos/actualizar-estado/${id}`, {
+      const res = await fetch(`/api/pedidos/actualizar-estado/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ nuevo_estado: nuevoEstado }),
