@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SidebarAdmin from "../../components/SideBarAdmin.jsx";
-import { API_URL } from '../../config/api';
+import { API } from '../../config/api';
 
 export default function VerFactura() {
   const { id } = useParams();

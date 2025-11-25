@@ -3,7 +3,7 @@ import axios from "axios";
 import SidebarAdmin from '../../components/SideBarAdmin.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoneyBillWave, faShoppingCart, faUsers, faBoxOpen, faStar, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { API_URL } from '../../config/api';
+import { API } from '../../config/api';
 
 export default function EstadisticasAdmin() {
   const [estadisticas, setEstadisticas] = useState({

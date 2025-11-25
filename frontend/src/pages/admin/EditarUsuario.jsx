@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Swal from 'sweetalert2';
 
 import SidebarAdmin from '../../components/SideBarAdmin.jsx';
-import { API_URL } from '../../config/api';
+import { API } from '../../config/api';
 
 export default function EditarUsuario() {
   const { id } = useParams();

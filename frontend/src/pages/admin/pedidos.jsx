@@ -6,7 +6,7 @@ import SidebarAdmin from "../../components/SideBarAdmin.jsx";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
-import { API_URL } from '../../config/api';
+import { API } from '../../config/api';
 
 export default function Pedidos() {
   const [pedidos, setPedidos] = useState([]);

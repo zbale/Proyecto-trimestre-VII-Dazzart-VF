@@ -6,7 +6,7 @@ import '../../css/CSSA/añadirusuario.css';
 
 import SidebarAdmin from "../../components/SideBarAdmin.jsx";
 import { useNavigate, useParams } from "react-router-dom";
-import { API_URL } from '../../config/api';
+import { API } from '../../config/api';
 
 export default function AgregarUsuario() {
   const navigate = useNavigate();
