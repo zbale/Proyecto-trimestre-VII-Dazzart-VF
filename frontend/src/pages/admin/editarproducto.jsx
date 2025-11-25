@@ -55,6 +55,11 @@ export default function EditarProducto() {
         fecha_creacion: data.fecha_creacion?.split("T")[0] || "",
       });
       setImagenSeleccionada(data.imagen || "");
+      // Limpiar la imagen al cargar para eliminar /img/ si existe
+      if (data.imagen) {
+        const imagenLimpia = data.imagen.replace(/^\/img\/|^\/?\/?img\//, '');
+        setImagenSeleccionada(imagenLimpia);
+      }
       setCacheBuster(Date.now()); // Forzar recarga imagen inicial
     }).catch((err) => {
       console.error("Error cargando producto:", err);
@@ -138,7 +143,9 @@ export default function EditarProducto() {
     if (imagenArchivo) {
       fd.append("imagen", imagenArchivo);
     } else if (imagenSeleccionada) {
-      fd.append("imagen", imagenSeleccionada);
+      // Limpiar la imagen: eliminar /img/ si está incluido
+      const imagenLimpia = imagenSeleccionada.replace(/^\/img\/|^\/?\/?img\//, '');
+      fd.append("imagen", imagenLimpia);
     }
 
     try {

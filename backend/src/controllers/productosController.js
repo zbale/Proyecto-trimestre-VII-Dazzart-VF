@@ -210,7 +210,8 @@ exports.actualizarProducto = async (req, res) => {
       nuevaImagen = req.file.filename;
       // borrar imagen antigua si existe...
     } else if (imagen && imagen !== imagenActual) {
-      nuevaImagen = imagen;
+      // Limpiar la imagen para eliminar /img/ si está incluido
+      nuevaImagen = imagen.replace(/^\/img\/|^\/?\/?img\//, '');
     }
 
     // 3. Ejecutar UPDATE usando fechaCreacionActual para no enviarla null
