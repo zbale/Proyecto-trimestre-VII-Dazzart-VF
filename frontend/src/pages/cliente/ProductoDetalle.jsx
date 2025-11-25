@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import ReactDOM from 'react-dom';
 import { useParams, useNavigate } from 'react-router-dom';
 import Footer from '../../components/cliente/Footer';
 import Header from '../../components/cliente/Header';
@@ -35,6 +36,8 @@ export default function ProductoDetalle({
   const [mostrarLogin, setMostrarLogin] = useState(false); // <-- Modal login
   const [mostrarModalPedido, setMostrarModalPedido] = useState(false);
   const [direccion, setDireccion] = useState('');
+  const [mostrarErrorCantidad, setMostrarErrorCantidad] = useState(false);
+  const [errorMensaje, setErrorMensaje] = useState('');
 
   useEffect(() => {
     const stored = localStorage.getItem('usuario');
@@ -101,15 +104,15 @@ export default function ProductoDetalle({
 
     // Validar que hay stock disponible
     if (!producto.stock || producto.stock <= 0) {
-      setModalMensaje('Producto sin stock disponible');
-      setMostrarModal(true);
+      setErrorMensaje('Producto sin stock disponible');
+      setMostrarErrorCantidad(true);
       return;
     }
 
     // Validar que la cantidad no exceda el stock disponible
     if (cantidad > producto.stock) {
-      setModalMensaje(`Solo hay ${producto.stock} unidad(es) disponible(s)`);
-      setMostrarModal(true);
+      setErrorMensaje(`Solo hay ${producto.stock} unidad(es) disponible(s)`);
+      setMostrarErrorCantidad(true);
       return;
     }
 
@@ -144,15 +147,15 @@ export default function ProductoDetalle({
 
     // Validar que hay stock disponible
     if (!producto.stock || producto.stock <= 0) {
-      setModalMensaje('Producto sin stock disponible');
-      setMostrarModal(true);
+      setErrorMensaje('Producto sin stock disponible');
+      setMostrarErrorCantidad(true);
       return;
     }
 
     // Validar que la cantidad no exceda el stock disponible
     if (cantidad > producto.stock) {
-      setModalMensaje(`Solo hay ${producto.stock} unidad(es) disponible(s)`);
-      setMostrarModal(true);
+      setErrorMensaje(`Solo hay ${producto.stock} unidad(es) disponible(s)`);
+      setMostrarErrorCantidad(true);
       return;
     }
 
@@ -364,6 +367,48 @@ export default function ProductoDetalle({
             setMostrarLogin(false);
           }}
         />
+      )}
+
+      {/* Modal de error de cantidad */}
+      {mostrarErrorCantidad && ReactDOM.createPortal(
+        <div className="modal1" style={{ zIndex: 9999 }}>
+          <div
+            className="modal-contenido"
+            style={{
+              maxWidth: 400,
+              minHeight: 0,
+              flexDirection: 'column',
+              gap: '1.2rem',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <div className="cerrar" onClick={() => setMostrarErrorCantidad(false)}>&times;</div>
+            <div className="modal-title" style={{ fontWeight: 'bold', fontSize: '1.3rem', color: '#222' }}>
+              Cantidad Inválida
+            </div>
+            <div className="modal-message" style={{ color: '#444', fontSize: '1.05rem' }}>
+              {errorMensaje}
+            </div>
+            <button
+              className="agregar-carrito"
+              onClick={() => setMostrarErrorCantidad(false)}
+              style={{
+                background: '#0084ff',
+                color: 'white',
+                border: 'none',
+                padding: '0.6rem 2rem',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '0.95rem',
+                marginTop: '0.5rem',
+              }}
+            >
+              Entendido
+            </button>
+          </div>
+        </div>,
+        document.body
       )}
 
       <ModalConfirmarPedido
