@@ -59,7 +59,7 @@ module.exports = {
       eas: {
         projectId: '',
       },
-      EXPO_PUBLIC_API_URL: 'http://67.202.48.5:3001',
+      EXPO_PUBLIC_API_URL: 'http://100.30.49.76:3001',
     },
   },
 };

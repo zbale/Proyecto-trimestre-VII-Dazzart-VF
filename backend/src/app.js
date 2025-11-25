@@ -26,8 +26,8 @@ const createApp = () => {
         'http://localhost:3000',   // Frontend local alternativo
         'http://localhost:19000', // Expo Go
         'http://127.0.0.1:19000', // Expo Go local
-        'http://67.202.48.5:3001', // IP pública - APK
-        'http://67.202.48.5:5173', // Frontend IP pública
+        'http://100.30.49.76:3001', // IP pública - APK
+        'http://100.30.49.76:5173', // Frontend IP pública
         'http://172.31.29.194:3001', // IP privada - red local
         'http://192.168.1.3:3001'  // Desarrollo local
       ];
