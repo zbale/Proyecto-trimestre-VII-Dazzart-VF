@@ -56,14 +56,21 @@ export default function EditarProducto() {
       });
       setImagenSeleccionada(data.imagen || "");
       setCacheBuster(Date.now()); // Forzar recarga imagen inicial
+    }).catch((err) => {
+      console.error("Error cargando producto:", err);
     });
 
     API.get(`categorias/listar`).then((res) => {
       setCategorias(res.data || []);
+    }).catch((err) => {
+      console.error("Error cargando categorías:", err);
     });
 
     API.get(`productos/listar-imagenes`).then((res) => {
+      console.log("Imágenes cargadas:", res.data);
       setImagenesExistentes(res.data.imagenes || []);
+    }).catch((err) => {
+      console.error("Error cargando imágenes:", err);
     });
   }, [id]);
 
