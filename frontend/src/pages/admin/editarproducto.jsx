@@ -74,7 +74,9 @@ export default function EditarProducto() {
       console.log("Imágenes cargadas:", res.data);
       setImagenesExistentes(res.data.imagenes || []);
     }).catch((err) => {
-      console.error("Error cargando imágenes:", err);
+      console.warn("No se pudo cargar la lista de imágenes existentes:", err.message);
+      // No mostrar error, simplemente no se muestran las imágenes existentes
+      setImagenesExistentes([]);
     });
   }, [id]);
 
