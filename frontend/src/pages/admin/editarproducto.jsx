@@ -54,12 +54,11 @@ export default function EditarProducto() {
         id_subcategoria: data.id_subcategoria || "",
         fecha_creacion: data.fecha_creacion?.split("T")[0] || "",
       });
-      setImagenSeleccionada(data.imagen || "");
       // Limpiar la imagen al cargar para eliminar /img/ si existe
-      if (data.imagen) {
-        const imagenLimpia = data.imagen.replace(/^\/img\/|^\/?\/?img\//, '');
-        setImagenSeleccionada(imagenLimpia);
-      }
+      const imagenLimpia = data.imagen 
+        ? data.imagen.replace(/^\/img\/|^\/?\/?img\//, '')
+        : '';
+      setImagenSeleccionada(imagenLimpia);
       setCacheBuster(Date.now()); // Forzar recarga imagen inicial
     }).catch((err) => {
       console.error("Error cargando producto:", err);
@@ -346,44 +345,42 @@ export default function EditarProducto() {
             </div>
 
             {/* Vista previa */}
-            {(imagenArchivo || imagenSeleccionada) && (
-              <div className="mb-3">
-                <strong>Vista previa:</strong>
-                <div
+            <div className="mb-3">
+              <strong>Vista previa:</strong>
+              <div
+                style={{
+                  width: "150px",
+                  height: "150px",
+                  marginTop: "10px",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  overflow: "hidden",
+                  backgroundColor: "#f9f9f9",
+                }}
+              >
+                <img
+                  src={
+                    imagenArchivo
+                      ? previewUrlRef.current
+                      : imagenSeleccionada
+                      ? `/productos/img/${encodeURIComponent(
+                          imagenSeleccionada
+                        )}?t=${cacheBuster}`
+                      : "/default.png"
+                  }
+                  alt="preview"
                   style={{
-                    width: "150px",
-                    height: "150px",
-                    marginTop: "10px",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    overflow: "hidden",
-                    backgroundColor: "#f9f9f9",
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    objectFit: "contain",
                   }}
-                >
-                  <img
-                    src={
-                      imagenArchivo
-                        ? previewUrlRef.current
-                        : imagenSeleccionada
-                        ? `/productos/img/${encodeURIComponent(
-                            imagenSeleccionada
-                          )}?t=${cacheBuster}`
-                        : "/default.png"
-                    }
-                    alt="preview"
-                    style={{
-                      maxWidth: "100%",
-                      maxHeight: "100%",
-                      objectFit: "contain",
-                    }}
-                    onError={(e) => (e.target.src = "/default.png")}
-                  />
-                </div>
+                  onError={(e) => (e.target.src = "/default.png")}
+                />
               </div>
-            )}
+            </div>
 
             <button type="submit" className="btn btn-dark w-100">
               Guardar Cambios
