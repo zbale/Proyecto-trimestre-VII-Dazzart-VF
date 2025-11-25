@@ -139,7 +139,6 @@ export default function ModalConfirmarPedido({
               fontWeight: '600',
               cursor: cargando ? 'not-allowed' : 'pointer',
               opacity: cargando ? 0.6 : 1,
-              transition: 'all 0.2s'
             }} 
             onClick={handleClose}
             disabled={cargando}
@@ -162,23 +161,8 @@ export default function ModalConfirmarPedido({
             disabled={cargando}
             style={{
               flex: 1,
-              background: '#0084ff', 
-              color:'#fff', 
-              border:'none',
-              fontWeight: '600',
-              cursor: cargando ? 'not-allowed' : 'pointer',
               opacity: cargando ? 0.7 : 1,
-              transition: 'all 0.2s'
-            }}
-            onMouseEnter={(e) => {
-              if (!cargando) {
-                e.target.style.background = '#666';
-              }
-            }}
-            onMouseLeave={(e) => {
-              if (!cargando) {
-                e.target.style.background = '#0084ff';
-              }
+              cursor: cargando ? 'not-allowed' : 'pointer',
             }}
           >
             {cargando ? 'Procesando...' : textoConfirmar}
