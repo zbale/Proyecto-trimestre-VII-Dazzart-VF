@@ -116,25 +116,18 @@ export default function ProductoDetalle({
     if (onAgregarCarrito) {
       onAgregarCarrito(producto, cantidad);
     } else {
-      fetch(`/carrito`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id_usuario,
-          id_producto: producto.id_producto,
-          cantidad,
-        }),
+      API.post(`carrito`, {
+        id_usuario,
+        id_producto: producto.id_producto,
+        cantidad,
       })
         .then((res) => {
-          if (!res.ok) throw new Error('Error al agregar al carrito');
-          return res.json();
-        })
-        .then((data) => {
-          setModalMensaje(data.message || 'Producto agregado al carrito');
+          setModalMensaje(res.data.message || 'Producto agregado al carrito');
           setMostrarModal(true);
         })
-        .catch(() => {
-          setModalMensaje('Error al agregar al carrito');
+        .catch((error) => {
+          console.error('Error al agregar al carrito:', error);
+          setModalMensaje(error.response?.data?.error || 'Error al agregar al carrito');
           setMostrarModal(true);
         });
     }
@@ -187,12 +180,22 @@ export default function ProductoDetalle({
       });
 
       if (res.status === 201 || res.status === 200) {
-        sessionStorage.setItem('ultimaFactura', JSON.stringify(res.data));
-        navigate(`/factura/${res.data.id_factura || res.data.id_pedido}`);
+        const pedidoData = res.data;
+        sessionStorage.setItem('ultimaFactura', JSON.stringify(pedidoData));
+        
+        // El backend puede retornar id_pedido o id_factura
+        const factura_id = pedidoData.id_factura || pedidoData.id_pedido;
+        
+        if (factura_id) {
+          navigate(`/factura/${factura_id}`);
+        } else {
+          setModalMensaje('Pedido creado pero sin ID de factura');
+          setMostrarModal(true);
+        }
       }
     } catch (error) {
       console.error('Error al crear pedido:', error);
-      setModalMensaje('Error al realizar la compra');
+      setModalMensaje(error.response?.data?.message || 'Error al realizar la compra');
       setMostrarModal(true);
     }
   };
