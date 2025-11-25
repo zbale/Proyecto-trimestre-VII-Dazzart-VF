@@ -99,7 +99,7 @@ export default function ProductoDetalle({
     if (onAgregarCarrito) {
       onAgregarCarrito(producto, cantidad);
     } else {
-      fetch(`/api/carrito`, {
+      fetch(`/carrito`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

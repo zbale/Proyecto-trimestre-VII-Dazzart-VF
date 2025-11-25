@@ -89,7 +89,7 @@ export default function MisDatos() {
     };
 
     try {
-      const res = await fetch(`/api/usuarios/${usuario.id_usuario}`, {
+      const res = await fetch(`/usuarios/${usuario.id_usuario}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datosEnviar),
