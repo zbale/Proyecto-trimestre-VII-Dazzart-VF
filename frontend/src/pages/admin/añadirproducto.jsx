@@ -236,28 +236,30 @@ export default function AñadirProducto() {
             </div>
 
             {/* Subcategoría */}
-            {subcategorias.length > 0 && (
-              <div className="mb-3">
-                <label htmlFor="id_subcategoria" className="form-label">
-                  Subcategoría
-                </label>
-                <select
-                  id="id_subcategoria"
-                  name="id_subcategoria"
-                  value={form.id_subcategoria}
-                  onChange={handleChange}
-                  className="form-select"
-                  required
-                >
-                  <option value="">Selecciona subcategoría</option>
-                  {subcategorias.map((s) => (
-                    <option key={s.id_subcategoria} value={s.id_subcategoria}>
-                      {s.nombre_subcategoria}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
+            <div className="mb-3">
+              <label htmlFor="id_subcategoria" className="form-label">
+                Subcategoría
+              </label>
+              <select
+                id="id_subcategoria"
+                name="id_subcategoria"
+                value={form.id_subcategoria}
+                onChange={handleChange}
+                className="form-select"
+                disabled={subcategorias.length === 0}
+              >
+                <option value="">
+                  {subcategorias.length === 0 
+                    ? "Selecciona una categoría primero" 
+                    : "Selecciona subcategoría"}
+                </option>
+                {subcategorias.map((s) => (
+                  <option key={s.id_subcategoria} value={s.id_subcategoria}>
+                    {s.nombre_subcategoria}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             {/* Fecha de Creación */}
             <div className="mb-3">
