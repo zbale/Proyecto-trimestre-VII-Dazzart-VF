@@ -42,48 +42,37 @@ export default function ModalProducto({ producto, onClose, onAgregarCarrito }) {
     <>
       {/* Modal de error */}
       {mostrarError && ReactDOM.createPortal(
-        <div
-          className="modal-overlay"
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 9999,
-          }}
-          onClick={() => setMostrarError(false)}
-        >
+        <div className="modal1" style={{ zIndex: 9999 }}>
           <div
+            className="modal-contenido"
             style={{
-              backgroundColor: 'white',
-              borderRadius: '8px',
-              padding: '2rem',
-              maxWidth: '400px',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-              textAlign: 'center',
-              animation: 'slideIn 0.3s ease-out',
+              maxWidth: 400,
+              minHeight: 0,
+              flexDirection: 'column',
+              gap: '1.2rem',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
-            onClick={e => e.stopPropagation()}
           >
-            <h3 style={{ color: '#d32f2f', marginBottom: '1rem' }}>⚠️ Cantidad Inválida</h3>
-            <p style={{ color: '#333', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
+            <div className="cerrar" onClick={() => setMostrarError(false)}>&times;</div>
+            <div className="modal-title" style={{ fontWeight: 'bold', fontSize: '1.3rem', color: '#222' }}>
+              Cantidad Inválida
+            </div>
+            <div className="modal-message" style={{ color: '#444', fontSize: '1.05rem' }}>
               {mensajeError}
-            </p>
+            </div>
             <button
+              className="agregar-carrito"
               onClick={() => setMostrarError(false)}
               style={{
-                backgroundColor: '#d32f2f',
+                background: '#0084ff',
                 color: 'white',
                 border: 'none',
-                padding: '0.5rem 2rem',
+                padding: '0.6rem 2rem',
                 borderRadius: '4px',
                 cursor: 'pointer',
                 fontSize: '0.95rem',
+                marginTop: '0.5rem',
               }}
             >
               Entendido
