@@ -19,6 +19,9 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
   const [recomendados, setRecomendados] = useState([]);
   const [mostrarErrorCantidad, setMostrarErrorCantidad] = useState(false);
   const [errorMensaje, setErrorMensaje] = useState('');
+  const [direccionPedido, setDireccionPedido] = useState('');
+  const [mostrarModalEliminar, setMostrarModalEliminar] = useState(false);
+  const [productoAEliminar, setProductoAEliminar] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -57,13 +60,24 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
   }, [carrito]);
 
   const eliminarProducto = (id_carrito) => {
-  fetch(`/api/carrito/${id_carrito}`, { method: 'DELETE' })
+    setProductoAEliminar(id_carrito);
+    setMostrarModalEliminar(true);
+  };
+
+  const confirmarEliminar = () => {
+    if (!productoAEliminar) return;
+    
+    fetch(`/api/carrito/${productoAEliminar}`, { method: 'DELETE' })
       .then(() => {
-        setCarrito(carrito.filter(item => item.id_carrito !== id_carrito));
+        setCarrito(carrito.filter(item => item.id_carrito !== productoAEliminar));
+        setMostrarModalEliminar(false);
+        setProductoAEliminar(null);
       })
       .catch(() => {
         setModalMensaje('Error al eliminar el producto');
         setMostrarModal(true);
+        setMostrarModalEliminar(false);
+        setProductoAEliminar(null);
       });
   };
 
@@ -122,7 +136,10 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
     }
   };
 
-  const cancelarCompra = () => setMostrarModalPedido(false);
+  const cancelarCompra = () => {
+    setMostrarModalPedido(false);
+    setDireccionPedido('');
+  };
   const volver = () => navigate(-1);
 
   const agregarAlCarrito = (producto, cantidad = 1) => {
@@ -374,10 +391,63 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
 
       <ModalConfirmarPedido
         show={mostrarModalPedido}
-        mensaje={`¿Confirmas realizar la compra por un total de $${calcularTotalRaw().toLocaleString('es-CO')}?`}
+        onClose={cancelarCompra}
         onConfirm={confirmarCompra}
-        onCancel={cancelarCompra}
+        direccion={direccionPedido}
+        setDireccion={setDireccionPedido}
+        titulo="Confirmar Pedido"
+        textoConfirmar="Confirmar Compra"
+        textoCancelar="Cancelar"
       />
+
+      {/* Modal de confirmación para eliminar producto */}
+      {mostrarModalEliminar && ReactDOM.createPortal(
+        <div className="modal1" style={{ zIndex: 9999 }}>
+          <div
+            className="modal-contenido"
+            style={{
+              maxWidth: 400,
+              minHeight: 0,
+              flexDirection: 'column',
+              gap: '1.2rem',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <div className="cerrar" onClick={() => setMostrarModalEliminar(false)}>&times;</div>
+            <div className="modal-title" style={{ fontWeight: 'bold', fontSize: '1.3rem', color: '#222' }}>
+              Eliminar Producto
+            </div>
+            <div className="modal-message" style={{ color: '#444', fontSize: '1.05rem' }}>
+              ¿Deseas eliminar este producto del carrito?
+            </div>
+            <div className="d-flex gap-3 mt-3" style={{gap:'1rem', width: '100%'}}>
+              <button 
+                className="agregar-carrito" 
+                style={{
+                  flex: 1,
+                  background:'#fff', 
+                  color:'#0084ff', 
+                  border:'2px solid #0084ff',
+                }} 
+                onClick={() => setMostrarModalEliminar(false)}
+              >
+                Cancelar
+              </button>
+              <button 
+                className="agregar-carrito" 
+                onClick={confirmarEliminar}
+                style={{
+                  flex: 1,
+                }}
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </>
   );
 }
