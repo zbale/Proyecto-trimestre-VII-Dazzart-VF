@@ -306,11 +306,12 @@ export default function EditarProducto() {
 
             {/* Selección de imagen existente */}
             <div className="mb-3">
+              <label className="form-label">Imágenes existentes:</label>
               <div className="d-flex flex-wrap gap-2">
                 {imagenesExistentes.map((img) => (
                   <img
                     key={img}
-                    src={`/productos/img/${encodeURIComponent(img)}`}
+                    src={`/productos/img/${encodeURIComponent(img)}?t=${Date.now()}`}
                     onClick={() => handleImageSelect(img)}
                     alt={img}
                     style={{
@@ -324,6 +325,7 @@ export default function EditarProducto() {
                       objectFit: "cover",
                       borderRadius: "4px",
                     }}
+                    onError={(e) => (e.target.src = "/default.png")}
                   />
                 ))}
               </div>
