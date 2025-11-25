@@ -18,7 +18,7 @@ export default function DescuentosAdmin() {
 
   const cargarDescuentos = async () => {
     try {
-  const res = await axios.get(`/api/descuentos`);
+  const res = await API.get(`descuentos`);
       setDescuentos(Array.isArray(res.data) ? res.data : []);
 
       setTimeout(() => {
@@ -65,7 +65,7 @@ export default function DescuentosAdmin() {
     if (!confirm.isConfirmed) return;
 
     try {
-  await axios.delete(`/api/descuentos/${id}`);
+  await API.delete(`descuentos/${id}`);
       Swal.fire("Eliminado", "El descuento ha sido eliminado.", "success");
       if ($.fn.DataTable.isDataTable("#tablaDescuentos")) {
         $("#tablaDescuentos").DataTable().destroy();
