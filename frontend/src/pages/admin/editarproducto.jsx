@@ -73,9 +73,8 @@ export default function EditarProducto() {
     API.get(`productos/listar-imagenes`).then((res) => {
       console.log("Imágenes cargadas:", res.data);
       setImagenesExistentes(res.data.imagenes || []);
-    }).catch((err) => {
-      console.warn("No se pudo cargar la lista de imágenes existentes:", err.message);
-      // No mostrar error, simplemente no se muestran las imágenes existentes
+    }).catch(() => {
+      // Silenciosamente no cargar imágenes existentes si falla el endpoint
       setImagenesExistentes([]);
     });
   }, [id]);

@@ -39,8 +39,8 @@ export default function AñadirProducto() {
     });
     API.get(`productos/listar-imagenes`).then((res) => {
       setImagenesExistentes(res.data.imagenes || []);
-    }).catch((err) => {
-      console.warn("No se pudo cargar la lista de imágenes existentes:", err.message);
+    }).catch(() => {
+      // Silenciosamente no cargar imágenes existentes si falla el endpoint
       setImagenesExistentes([]);
     });
   }, []);
