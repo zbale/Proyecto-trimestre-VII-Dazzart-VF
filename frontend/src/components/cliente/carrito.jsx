@@ -20,7 +20,7 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
 
   useEffect(() => {
     if (!id_usuario) return;
-    fetch(`/carrito/${id_usuario}`)
+    fetch(`/api/carrito/${id_usuario}`)
       .then(res => res.json())
       .then(data => {
         const carritoConImagen = data.map(item => ({

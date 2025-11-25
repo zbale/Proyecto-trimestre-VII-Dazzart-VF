@@ -44,7 +44,7 @@ export default function VistaProductos() {
   useEffect(() => {
     async function fetchNombreCategoria() {
       try {
-        const resCat = await fetch(`/categorias/listar`);
+        const resCat = await fetch(`/api/categorias/listar`);
         const cats = await resCat.json();
         const cat = cats.find(c => c.id_categoria === parseInt(id_categoria));
         setNombreCategoria(cat?.nombre_categoria || 'Categoría desconocida');
@@ -164,7 +164,7 @@ export default function VistaProductos() {
       return;
     }
 
-    fetch(`/carrito`, {
+    fetch(`/api/carrito`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
