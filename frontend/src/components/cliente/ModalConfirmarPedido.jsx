@@ -36,7 +36,7 @@ export default function ModalConfirmarPedido({
 
   const handleConfirm = async () => {
     if (!direccion || !direccion.trim()) {
-      setErrorMsg('Por favor ingresa una dirección de entrega');
+      setErrorMsg('Verifique su dirección');
       return;
     }
     setCargando(true);
@@ -136,9 +136,9 @@ export default function ModalConfirmarPedido({
             className="agregar-carrito" 
             style={{
               flex: 1,
-              background:'#f5f5f5', 
-              color:'#666', 
-              border:'2px solid #ddd',
+              background:'#fff', 
+              color:'#0084ff', 
+              border:'2px solid #0084ff',
               fontWeight: '600',
               cursor: cargando ? 'not-allowed' : 'pointer',
               opacity: cargando ? 0.6 : 1,
@@ -148,14 +148,12 @@ export default function ModalConfirmarPedido({
             disabled={cargando}
             onMouseEnter={(e) => {
               if (!cargando) {
-                e.target.style.background = '#e9e9e9';
-                e.target.style.borderColor = '#bbb';
+                e.target.style.background = '#f0f8ff';
               }
             }}
             onMouseLeave={(e) => {
               if (!cargando) {
-                e.target.style.background = '#f5f5f5';
-                e.target.style.borderColor = '#ddd';
+                e.target.style.background = '#fff';
               }
             }}
           >
@@ -167,7 +165,7 @@ export default function ModalConfirmarPedido({
             disabled={cargando}
             style={{
               flex: 1,
-              background: cargando ? '#99d633' : '#4CAF50', 
+              background: '#0084ff', 
               color:'#fff', 
               border:'none',
               fontWeight: '600',
@@ -177,12 +175,12 @@ export default function ModalConfirmarPedido({
             }}
             onMouseEnter={(e) => {
               if (!cargando) {
-                e.target.style.background = '#45a049';
+                e.target.style.background = '#0066cc';
               }
             }}
             onMouseLeave={(e) => {
               if (!cargando) {
-                e.target.style.background = '#4CAF50';
+                e.target.style.background = '#0084ff';
               }
             }}
           >
