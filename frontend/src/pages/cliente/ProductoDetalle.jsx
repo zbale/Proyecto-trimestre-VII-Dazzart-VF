@@ -4,9 +4,10 @@ import Footer from '../../components/cliente/Footer';
 import Header from '../../components/cliente/Header';
 import MenuLateral from '../../components/cliente/MenuLateral';
 import ModalConfirmacion from '../../components/cliente/ModalConfirmacion';
+import ModalConfirmarPedido from '../../components/cliente/ModalConfirmarPedido';
 import ProductoCard from '../../components/cliente/ProductoCard';
 import ModalLogin from '../../components/cliente/ModalLogin'; // <-- Asegúrate de importarlo
-import { API_URL } from '../../config/api';
+import { API_URL, API } from '../../config/api';
 
 const BASE_URL = API_URL;
 
@@ -32,6 +33,8 @@ export default function ProductoDetalle({
   const [busqueda, setBusqueda] = useState('');
   const [usuario, setUsuario] = useState(null); // <-- Usuario local
   const [mostrarLogin, setMostrarLogin] = useState(false); // <-- Modal login
+  const [mostrarModalPedido, setMostrarModalPedido] = useState(false);
+  const [direccion, setDireccion] = useState('');
 
   useEffect(() => {
     const stored = localStorage.getItem('usuario');
@@ -160,31 +163,41 @@ export default function ProductoDetalle({
       return;
     }
 
-    if (onAgregarCarrito) {
-      onAgregarCarrito(producto, cantidad);
-    } else {
-      fetch(`/carrito`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          id_usuario,
-          id_producto: producto.id_producto,
-          cantidad,
-        }),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error('Error al agregar al carrito');
-          return res.json();
-        })
-        .then(() => {
-          navigate('/carrito');
-        })
-        .catch(() => {
-          setModalMensaje('Error al agregar al carrito');
-          setMostrarModal(true);
-        });
+    // Mostrar modal de confirmación de pedido
+    setMostrarModalPedido(true);
+  };
+
+  const confirmarCompraDirecta = async () => {
+    setMostrarModalPedido(false);
+    const id_usuario = idUsuarioProp || usuario?.id_usuario;
+
+    if (!direccion.trim()) {
+      setModalMensaje('Por favor ingresa una dirección de entrega');
+      setMostrarModal(true);
+      return;
+    }
+
+    try {
+      const res = await API.post(`pedidos`, {
+        id_usuario,
+        direccion,
+        productos: [{ ...producto, cantidad }],
+        total_productos: cantidad,
+        total: (producto.precio || 0) * cantidad,
+      });
+
+      if (res.status === 201 || res.status === 200) {
+        sessionStorage.setItem('ultimaFactura', JSON.stringify(res.data));
+        navigate(`/factura/${res.data.id_factura || res.data.id_pedido}`);
+      }
+    } catch (error) {
+      console.error('Error al crear pedido:', error);
+      setModalMensaje('Error al realizar la compra');
+      setMostrarModal(true);
     }
   };
+
+  const cancelarCompra = () => setMostrarModalPedido(false);
 
   const showModal = typeof mostrarModalProp !== "undefined" ? mostrarModalProp : mostrarModal;
   const mensajeModal = typeof modalMensajeProp !== "undefined" ? modalMensajeProp : modalMensaje;
@@ -349,6 +362,14 @@ export default function ProductoDetalle({
           }}
         />
       )}
+
+      <ModalConfirmarPedido
+        show={mostrarModalPedido}
+        onClose={cancelarCompra}
+        onConfirm={confirmarCompraDirecta}
+        direccion={direccion}
+        setDireccion={setDireccion}
+      />
 
       <Footer />
     </>
