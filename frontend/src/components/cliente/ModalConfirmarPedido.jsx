@@ -1,5 +1,5 @@
 import ReactDOM from 'react-dom';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../css/CSS/ModalProducto.css'; // Unificar estilos modernos
 
 export default function ModalConfirmarPedido({ 
@@ -14,6 +14,23 @@ export default function ModalConfirmarPedido({
 }) {
   const [cargando, setCargando] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Pre-llenar la dirección desde el perfil del usuario si no está definida
+  useEffect(() => {
+    if (show && !direccion) {
+      try {
+        const usuarioJSON = localStorage.getItem('usuario');
+        if (usuarioJSON) {
+          const usuario = JSON.parse(usuarioJSON);
+          if (usuario.direccion && usuario.direccion.trim()) {
+            setDireccion(usuario.direccion);
+          }
+        }
+      } catch (error) {
+        console.error('Error al leer dirección del usuario:', error);
+      }
+    }
+  }, [show, direccion, setDireccion]);
 
   if (!show) return null;
 
