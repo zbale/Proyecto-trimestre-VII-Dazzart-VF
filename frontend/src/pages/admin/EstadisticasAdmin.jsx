@@ -162,7 +162,7 @@ export default function EstadisticasAdmin() {
               width: '100vw',
               height: '100vh',
               background: 'rgba(0,0,0,0.4)',
-              zIndex: 9999,
+              zIndex: 999,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
