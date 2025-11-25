@@ -69,14 +69,7 @@ export default function EditarProducto() {
     }).catch((err) => {
       console.error("Error cargando categorías:", err);
     });
-
-    // Endpoint de imágenes existentes desactivado (no disponible en servidor)
-    // API.get(`productos/listar-imagenes`).then((res) => {
-    //   console.log("Imágenes cargadas:", res.data);
-    //   setImagenesExistentes(res.data.imagenes || []);
-    // }).catch(() => {
-    //   setImagenesExistentes([]);
-    // });
+  
   }, [id]);
 
   // Filtrar subcategorías cuando cambia la categoría seleccionada

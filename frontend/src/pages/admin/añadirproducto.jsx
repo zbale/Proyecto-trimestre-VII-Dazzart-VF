@@ -37,12 +37,7 @@ export default function AñadirProducto() {
     API.get(`categorias/listar`).then((res) => {
       setCategorias(res.data || []);
     });
-    // Endpoint de imágenes existentes desactivado (no disponible en servidor)
-    // API.get(`productos/listar-imagenes`).then((res) => {
-    //   setImagenesExistentes(res.data.imagenes || []);
-    // }).catch(() => {
-    //   setImagenesExistentes([]);
-    // });
+    
   }, []);
 
   useEffect(() => {
