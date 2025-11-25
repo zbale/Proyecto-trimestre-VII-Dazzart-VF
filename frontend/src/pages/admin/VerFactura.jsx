@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import SidebarAdmin from "../../components/SideBarAdmin.jsx";
 import { API } from '../../config/api';
+import Swal from "sweetalert2";
 
 export default function VerFactura() {
   const { id } = useParams();
@@ -36,7 +37,7 @@ export default function VerFactura() {
 
   const guardarCambioEstado = async () => {
     if (!nuevoEstado || nuevoEstado === estadoEditable) {
-      alert("No has realizado ningún cambio en el estado");
+      Swal.fire("Aviso", "No has realizado ningún cambio en el estado", "warning");
       return;
     }
 
@@ -51,9 +52,9 @@ export default function VerFactura() {
 
       setEstadoEditable(nuevoEstado);
       cargarFactura();
-      alert("Estado actualizado con éxito");
+      Swal.fire("Éxito", "Estado actualizado con éxito", "success");
     } catch (err) {
-      alert("Error al actualizar el estado del pedido");
+      Swal.fire("Error", "Error al actualizar el estado del pedido", "error");
     }
   };
 

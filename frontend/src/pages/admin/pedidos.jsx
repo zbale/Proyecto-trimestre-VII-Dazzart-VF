@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt, faEye } from '@fortawesome/free-solid-svg-icons';
 import { API } from '../../config/api';
+import Swal from "sweetalert2";
 
 export default function Pedidos() {
   const [pedidos, setPedidos] = useState([]);
@@ -201,7 +202,17 @@ const cargarPedidos = async () => {
               <button
                 className="btn btn-danger mb-3"
                 onClick={async () => {
-                  if (window.confirm('¿Vaciar papelera? Esta acción eliminará definitivamente los pedidos con más de 7 días.')) {
+                  const result = await Swal.fire({
+                    icon: "warning",
+                    title: "¿Vaciar papelera?",
+                    text: "Esta acción eliminará definitivamente los pedidos con más de 7 días.",
+                    showCancelButton: true,
+                    confirmButtonText: "Sí, vaciar",
+                    cancelButtonText: "Cancelar",
+                    confirmButtonColor: "#d33",
+                    cancelButtonColor: "#aaa",
+                  });
+                  if (result.isConfirmed) {
                     await fetch(`/api/pedidos/vaciar-papelera`, { method: 'DELETE' });
                     cargarPapelera();
                   }
