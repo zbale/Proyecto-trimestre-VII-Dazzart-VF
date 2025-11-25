@@ -37,7 +37,7 @@ export default function EditarUsuario() {
   useEffect(() => {
     const cargarUsuario = async () => {
       try {
-  const res = await API.get(`/api/usuarios/usuario/${id}`);
+  const res = await API.get(`usuarios/usuario/${id}`);
         setFormData({
           nombre: res.data.nombre,
           nombre_usuario: res.data.nombre_usuario,
@@ -79,7 +79,7 @@ export default function EditarUsuario() {
     }
 
     try {
-  const res = await API.put(`/api/usuarios/${id}`, formData);
+  const res = await API.put(`usuarios/${id}`, formData);
       if (res.status === 200) {
         Swal.fire({
           icon: 'success',
