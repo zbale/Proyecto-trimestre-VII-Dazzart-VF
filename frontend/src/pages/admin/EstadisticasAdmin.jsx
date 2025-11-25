@@ -20,8 +20,7 @@ export default function EstadisticasAdmin() {
   const [mostrarStock, setMostrarStock] = useState(false);
   const [productos, setProductos] = useState([]);
 
-  useEffect(() => {
-    const cargarEstadisticas = async () => {
+  const cargarEstadisticas = async () => {
       try {
         const [productosRes, pedidosRes] = await Promise.all([
           API.get(`productos/listar`),
@@ -81,6 +80,7 @@ export default function EstadisticasAdmin() {
       }
     };
 
+  useEffect(() => {
     cargarEstadisticas();
   }, []);
 
@@ -115,8 +115,8 @@ export default function EstadisticasAdmin() {
       try {
         await API.delete(`productos/eliminar/${id}`);
         Swal.fire("Eliminado", "Producto eliminado correctamente.", "success");
-        // Recargar estadísticas
-        window.location.reload();
+        // Recargar solo las estadísticas sin refrescar la página
+        cargarEstadisticas();
       } catch (error) {
         console.error("Error al eliminar:", error);
         Swal.fire("Error", "No se pudo eliminar el producto.", "error");
