@@ -113,7 +113,7 @@ export default function EstadisticasAdmin() {
 
     if (result.isConfirmed) {
       try {
-        await API.delete(`productos/${id}`);
+        await API.delete(`productos/eliminar/${id}`);
         Swal.fire("Eliminado", "Producto eliminado correctamente.", "success");
         // Recargar estadísticas
         window.location.reload();

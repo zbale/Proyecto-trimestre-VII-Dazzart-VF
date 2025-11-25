@@ -292,7 +292,7 @@ export default function AñadirProducto() {
                 {imagenesExistentes.map((img) => (
                   <img
                     key={img}
-                    src={`http://100.30.49.76/productos/img/${img}`}
+                    src={`/productos/img/${img}`}
                     onClick={() => handleImageSelect(img)}
                     alt={img}
                     style={{
@@ -320,7 +320,7 @@ export default function AñadirProducto() {
                     src={
                       imagenNueva
                         ? URL.createObjectURL(imagenNueva)
-                        : `http://100.30.49.76/productos/img/${imagenSeleccionada}`
+                        : `/productos/img/${imagenSeleccionada}`
                     }
                     alt="preview"
                     style={{
