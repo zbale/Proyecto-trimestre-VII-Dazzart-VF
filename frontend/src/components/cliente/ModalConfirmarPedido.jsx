@@ -87,13 +87,10 @@ export default function ModalConfirmarPedido({
         
         <div style={{textAlign: 'center'}}>
           <div className="modal-message" style={{color:'#666', fontSize:'1.05rem', marginBottom: '1.5rem'}}>
-            Por favor ingresa tu dirección de entrega
+            Verifique su dirección
           </div>
           
           <div style={{textAlign: 'left'}}>
-            <label style={{fontWeight: '600', color: '#333', marginBottom: '0.7rem', display: 'block', fontSize: '0.95rem'}}>
-              Dirección de entrega:
-            </label>
             <textarea
               value={direccion || ''}
               onChange={handleDireccionChange}
@@ -175,7 +172,7 @@ export default function ModalConfirmarPedido({
             }}
             onMouseEnter={(e) => {
               if (!cargando) {
-                e.target.style.background = '#0066cc';
+                e.target.style.background = '#666';
               }
             }}
             onMouseLeave={(e) => {
