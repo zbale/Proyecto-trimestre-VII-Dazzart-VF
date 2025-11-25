@@ -1,35 +1,181 @@
-import React from 'react';
+import ReactDOM from 'react-dom';
+import React, { useState } from 'react';
+import '../../css/CSS/ModalProducto.css'; // Unificar estilos modernos
 
-export default function ModalConfirmarPedido({ show, mensaje, onConfirm, onCancel }) {
+export default function ModalConfirmarPedido({ 
+  show, 
+  onConfirm, 
+  onClose,
+  direccion,
+  setDireccion,
+  textoConfirmar = "Confirmar Compra",
+  textoCancelar = "Cancelar",
+  titulo = "Confirmar Pedido"
+}) {
+  const [cargando, setCargando] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
   if (!show) return null;
 
-  return (
-    <div
-      className="modal fade show"
-      style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}
-      tabIndex="-1"
-      role="dialog"
-      aria-modal="true"
-    >
-      <div className="modal-dialog modal-dialog-centered" role="document">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h5 className="modal-title">Confirmar Pedido</h5>
-            <button type="button" className="btn-close" aria-label="Close" onClick={onCancel}></button>
+  const handleConfirm = async () => {
+    if (!direccion || !direccion.trim()) {
+      setErrorMsg('Por favor ingresa una dirección de entrega');
+      return;
+    }
+    setCargando(true);
+    try {
+      await onConfirm();
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const handleClose = () => {
+    if (!cargando) {
+      setErrorMsg('');
+      onClose();
+    }
+  };
+
+  const handleDireccionChange = (e) => {
+    setDireccion(e.target.value);
+    setErrorMsg('');
+  };
+
+  const modal = (
+    <div className="modal1" style={{zIndex: 9999}}>
+      <div className="modal-contenido" style={{maxWidth: 550, minHeight: 0, flexDirection: 'column', gap: '1.5rem', alignItems: 'stretch', justifyContent: 'flex-start'}}>
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '1rem', borderBottom: '2px solid #f0f0f0'}}>
+          <div className="modal-title" style={{fontWeight:'bold', fontSize:'1.4rem', color:'#222', margin: 0}}>
+            {titulo}
           </div>
-          <div className="modal-body">
-            <p>{mensaje}</p>
+          <button 
+            onClick={handleClose}
+            disabled={cargando}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: '1.8rem',
+              cursor: cargando ? 'not-allowed' : 'pointer',
+              color: '#999',
+              padding: '0',
+              width: '30px',
+              height: '30px',
+              opacity: cargando ? 0.5 : 1
+            }}
+          >
+            ✕
+          </button>
+        </div>
+        
+        <div style={{textAlign: 'center'}}>
+          <div className="modal-message" style={{color:'#666', fontSize:'1.05rem', marginBottom: '1.5rem'}}>
+            Por favor ingresa tu dirección de entrega
           </div>
-          <div className="modal-footer">
-            <button type="button" className="btn btn-secondary" onClick={onCancel}>
-              Cancelar
-            </button>
-            <button type="button" className="btn btn-primary" onClick={onConfirm}>
-              Confirmar
-            </button>
+          
+          <div style={{textAlign: 'left'}}>
+            <label style={{fontWeight: '600', color: '#333', marginBottom: '0.7rem', display: 'block', fontSize: '0.95rem'}}>
+              Dirección de entrega:
+            </label>
+            <textarea
+              value={direccion || ''}
+              onChange={handleDireccionChange}
+              placeholder="Ej: Calle 123 #45-67, Apartamento 8B"
+              disabled={cargando}
+              style={{
+                width: '100%',
+                padding: '0.9rem',
+                border: errorMsg ? '2px solid #d32f2f' : '2px solid #ddd',
+                borderRadius: '6px',
+                minHeight: '100px',
+                fontFamily: 'inherit',
+                fontSize: '0.95rem',
+                resize: 'vertical',
+                boxSizing: 'border-box',
+                opacity: cargando ? 0.6 : 1,
+                transition: 'border-color 0.2s'
+              }}
+              onFocus={(e) => !errorMsg && (e.target.style.borderColor = '#3483fa')}
+              onBlur={(e) => !errorMsg && (e.target.style.borderColor = '#ddd')}
+            />
+            {errorMsg && (
+              <div style={{
+                color: '#d32f2f',
+                fontSize: '0.85rem',
+                marginTop: '0.5rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem'
+              }}>
+                <span>⚠️</span>
+                <span>{errorMsg}</span>
+              </div>
+            )}
           </div>
+        </div>
+        
+        <div className="d-flex gap-3 mt-3" style={{gap:'1rem'}}>
+          <button 
+            className="agregar-carrito" 
+            style={{
+              flex: 1,
+              background:'#f5f5f5', 
+              color:'#666', 
+              border:'2px solid #ddd',
+              fontWeight: '600',
+              cursor: cargando ? 'not-allowed' : 'pointer',
+              opacity: cargando ? 0.6 : 1,
+              transition: 'all 0.2s'
+            }} 
+            onClick={handleClose}
+            disabled={cargando}
+            onMouseEnter={(e) => {
+              if (!cargando) {
+                e.target.style.background = '#e9e9e9';
+                e.target.style.borderColor = '#bbb';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!cargando) {
+                e.target.style.background = '#f5f5f5';
+                e.target.style.borderColor = '#ddd';
+              }
+            }}
+          >
+            {textoCancelar}
+          </button>
+          <button 
+            className="agregar-carrito" 
+            onClick={handleConfirm}
+            disabled={cargando}
+            style={{
+              flex: 1,
+              background: cargando ? '#99d633' : '#4CAF50', 
+              color:'#fff', 
+              border:'none',
+              fontWeight: '600',
+              cursor: cargando ? 'not-allowed' : 'pointer',
+              opacity: cargando ? 0.7 : 1,
+              transition: 'all 0.2s'
+            }}
+            onMouseEnter={(e) => {
+              if (!cargando) {
+                e.target.style.background = '#45a049';
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (!cargando) {
+                e.target.style.background = '#4CAF50';
+              }
+            }}
+          >
+            {cargando ? 'Procesando...' : textoConfirmar}
+          </button>
         </div>
       </div>
     </div>
   );
+
+  // Usa React Portal para evitar conflictos con la estructura del DOM
+  return ReactDOM.createPortal(modal, document.body);
 }
