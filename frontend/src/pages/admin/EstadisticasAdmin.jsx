@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import SidebarAdmin from '../../components/SideBarAdmin.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faMoneyBillWave, faShoppingCart, faUsers, faBoxOpen, faStar, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { API } from '../../config/api';
+import Swal from "sweetalert2";
 
 export default function EstadisticasAdmin() {
+  const navigate = useNavigate();
   const [estadisticas, setEstadisticas] = useState({
     totalVentas: 0,
     totalPedidos: 0,
@@ -91,6 +94,35 @@ export default function EstadisticasAdmin() {
 
   // Modal de stock por producto
   const cerrarModalStock = () => setMostrarStock(false);
+
+  const editarProducto = (id) => {
+    navigate(`/editar-producto/${id}`);
+  };
+
+  const eliminarProducto = async (id) => {
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "¿Estás seguro?",
+      text: "Esta acción no se puede deshacer.",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#aaa",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await API.delete(`productos/${id}`);
+        Swal.fire("Eliminado", "Producto eliminado correctamente.", "success");
+        // Recargar estadísticas
+        window.location.reload();
+      } catch (error) {
+        console.error("Error al eliminar:", error);
+        Swal.fire("Error", "No se pudo eliminar el producto.", "error");
+      }
+    }
+  };
 
   return (
     <div style={{ display: "flex" }}>
@@ -178,10 +210,19 @@ export default function EstadisticasAdmin() {
                       <td>{prod.stock}</td>
                       <td>{formatoDinero(prod.precio_final ?? prod.precio)}</td>
                       <td style={{ width: 100, textAlign: 'center' }}>
-                        <button className="btn btn-sm btn-outline-primary" title="Editar producto" style={{ marginRight: 5 }}>
+                        <button 
+                          className="btn btn-sm btn-outline-primary" 
+                          title="Editar producto" 
+                          style={{ marginRight: 5 }}
+                          onClick={() => editarProducto(prod.id_producto)}
+                        >
                           <FontAwesomeIcon icon={faEdit} />
                         </button>
-                        <button className="btn btn-sm btn-outline-danger" title="Eliminar producto">
+                        <button 
+                          className="btn btn-sm btn-outline-danger" 
+                          title="Eliminar producto"
+                          onClick={() => eliminarProducto(prod.id_producto)}
+                        >
                           <FontAwesomeIcon icon={faTrash} />
                         </button>
                       </td>
