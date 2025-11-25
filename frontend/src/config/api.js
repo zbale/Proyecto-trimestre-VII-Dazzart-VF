@@ -2,12 +2,12 @@ import axios from 'axios';
 
 // URL base del servidor
 const BASE_URL = import.meta.env.VITE_API_URL || '';
-// URL con /api para el baseURL
-const API_URL = BASE_URL ? `${BASE_URL}/api` : '/api';
+// Sin /api aquí - las rutas ya lo incluyen
+const API_URL = BASE_URL || '';
 
 export { API_URL, BASE_URL };
 
-// Instancia Axios
+// Instancia Axios - SIN baseURL
 export const API = axios.create({
   baseURL: API_URL,
   headers: {
