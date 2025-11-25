@@ -21,8 +21,8 @@ export default function EstadisticasAdmin() {
     const cargarEstadisticas = async () => {
       try {
         const [productosRes, pedidosRes] = await Promise.all([
-          API.get(`productos/listar`),
-          API.get(`pedidos`),
+          API.get(`/api/productos/listar`),
+          API.get(`/api/pedidos`),
         ]);
 
         const productos = productosRes.data;

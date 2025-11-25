@@ -34,17 +34,17 @@ export default function AñadirProducto() {
   const [imagenesExistentes, setImagenesExistentes] = useState([]);
 
   useEffect(() => {
-    API.get(`categorias/listar`).then((res) => {
+    API.get(`/api/categorias/listar`).then((res) => {
       setCategorias(res.data || []);
     });
-    API.get(`productos/listar-imagenes`).then((res) => {
+    API.get(`/api/productos/listar-imagenes`).then((res) => {
       setImagenesExistentes(res.data.imagenes || []);
     });
   }, []);
 
   useEffect(() => {
     if (form.id_categoria) {
-      API.get(`subcategorias/listar`).then((res) => {
+      API.get(`/api/subcategorias/listar`).then((res) => {
         const filtradas = res.data.filter(
           (s) => String(s.id_categoria) === String(form.id_categoria)
         );
@@ -90,7 +90,7 @@ export default function AñadirProducto() {
     }
 
     try {
-      await API.post(`productos/agregar`, fd, {
+      await API.post(`/api/productos/agregar`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

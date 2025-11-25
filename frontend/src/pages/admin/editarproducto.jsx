@@ -41,7 +41,7 @@ export default function EditarProducto() {
 
   // Carga datos iniciales
   useEffect(() => {
-    API.get(`productos/${id}`).then((res) => {
+    API.get(`/api/productos/${id}`).then((res) => {
       const data = res.data;
       setProducto(data);
       setForm({
@@ -58,11 +58,11 @@ export default function EditarProducto() {
       setCacheBuster(Date.now()); // Forzar recarga imagen inicial
     });
 
-    API.get(`categorias/listar`).then((res) => {
+    API.get(`/api/categorias/listar`).then((res) => {
       setCategorias(res.data || []);
     });
 
-    API.get(`productos/listar-imagenes`).then((res) => {
+    API.get(`/api/productos/listar-imagenes`).then((res) => {
       setImagenesExistentes(res.data.imagenes || []);
     });
   }, [id]);
@@ -70,7 +70,7 @@ export default function EditarProducto() {
   // Filtrar subcategorías cuando cambia la categoría seleccionada
   useEffect(() => {
     if (form.id_categoria) {
-      API.get(`subcategorias/listar`).then((res) => {
+      API.get(`/api/subcategorias/listar`).then((res) => {
         const filtradas = res.data.filter(
           (s) => String(s.id_categoria) === String(form.id_categoria)
         );
@@ -135,7 +135,7 @@ export default function EditarProducto() {
     }
 
     try {
-      await API.put(`productos/editar/${id}`, fd, {
+      await API.put(`/api/productos/editar/${id}`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       Swal.fire("Éxito", "Producto actualizado correctamente", "success");

@@ -19,7 +19,7 @@ export default function EditarDescuento() {
   });
 
   useEffect(() => {
-    API.get(`descuentos/${id}`)
+    API.get(`/api/descuentos/${id}`)
       .then(res => {
         const descuento = res.data;
         setForm({
@@ -57,7 +57,7 @@ export default function EditarDescuento() {
       return;
     }
 
-    API.put(`descuentos/${id}`, form)
+    API.put(`/api/descuentos/${id}`, form)
       .then(() => {
         alert("Descuento actualizado correctamente.");
         navigate("/admin-descuento");
