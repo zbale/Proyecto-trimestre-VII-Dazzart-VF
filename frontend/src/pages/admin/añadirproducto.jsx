@@ -294,9 +294,12 @@ export default function AñadirProducto() {
                 {imagenesExistentes.map((img) => (
                   <img
                     key={img}
-                    src={`/productos/img/${img}`}
+                    src={`/api/productos/imagen/${img}`}
                     onClick={() => handleImageSelect(img)}
                     alt={img}
+                    onError={(e) => {
+                      e.target.src = `/productos/img/${img}`;
+                    }}
                     style={{
                       width: "80px",
                       height: "80px",
@@ -322,9 +325,16 @@ export default function AñadirProducto() {
                     src={
                       imagenNueva
                         ? URL.createObjectURL(imagenNueva)
-                        : `/productos/img/${imagenSeleccionada}`
+                        : `/api/productos/imagen/${imagenSeleccionada}`
                     }
                     alt="preview"
+                    onError={(e) => {
+                      if (!e.target.src.includes('/productos/img/')) {
+                        e.target.src = `/productos/img/${imagenSeleccionada}`;
+                      } else {
+                        e.target.src = "/default.png";
+                      }
+                    }}
                     style={{
                       width: "150px",
                       height: "150px",

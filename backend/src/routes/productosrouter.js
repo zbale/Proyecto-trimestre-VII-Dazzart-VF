@@ -8,6 +8,23 @@ const path = require('path');
 // Obtener todos los productos
 router.get('/listar', productoController.listarProductos);
 
+// Servir imagen individual
+router.get('/imagen/:nombre', (req, res) => {
+  const imgDir = path.join(__dirname, '../public/img');
+  const imagenPath = path.join(imgDir, req.params.nombre);
+  
+  // Seguridad: evitar path traversal
+  if (!imagenPath.startsWith(imgDir)) {
+    return res.status(403).json({ error: 'Acceso denegado' });
+  }
+  
+  res.sendFile(imagenPath, (err) => {
+    if (err) {
+      res.status(404).json({ error: 'Imagen no encontrada' });
+    }
+  });
+});
+
 // Obtener un producto por ID
 router.get('/:id', productoController.obtenerProducto);
 
