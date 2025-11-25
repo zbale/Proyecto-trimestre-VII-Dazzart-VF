@@ -8,6 +8,19 @@ const path = require('path');
 // Obtener todos los productos
 router.get('/listar', productoController.listarProductos);
 
+// Listar imágenes existentes en la carpeta pública (DEBE IR ANTES DE /:id)
+router.get('/listar-imagenes', (req, res) => {
+  const imgDir = path.join(__dirname, '../public/img');
+  fs.readdir(imgDir, (err, files) => {
+    if (err) {
+      console.error("Error leyendo la carpeta de imágenes:", err);
+      return res.status(500).json({ error: 'No se pudo leer la carpeta de imágenes' });
+    }
+    const imagenes = files.filter(f => /\.(png|jpe?g|gif|webp)$/i.test(f));
+    res.json({ imagenes });
+  });
+});
+
 // Servir imagen individual
 router.get('/imagen/:nombre', (req, res) => {
   const imgDir = path.join(__dirname, '../public/img');
@@ -36,18 +49,5 @@ router.put('/editar/:id', upload.single('imagen'), productoController.actualizar
 
 // Eliminar producto y su imagen si existe
 router.delete('/eliminar/:id', productoController.eliminarProducto);
-
-// Listar imágenes existentes en la carpeta pública
-router.get('/listar-imagenes', (req, res) => {
-  const imgDir = path.join(__dirname, '../public/img');
-  fs.readdir(imgDir, (err, files) => {
-    if (err) {
-      console.error("Error leyendo la carpeta de imágenes:", err);
-      return res.status(500).json({ error: 'No se pudo leer la carpeta de imágenes' });
-    }
-    const imagenes = files.filter(f => /\.(png|jpe?g|gif|webp)$/i.test(f));
-    res.json({ imagenes });
-  });
-});
 
 module.exports = router;
