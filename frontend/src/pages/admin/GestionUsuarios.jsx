@@ -81,8 +81,8 @@ export default function UsuariosAdmin() {
     if (!confirm.isConfirmed) return;
 
     try {
-      const response = await axios.put(
-        `/usuarios/${id}/estado`,
+      const response = await API.put(
+        `usuarios/${id}/estado`,
         { estado: nuevoEstado }
       );
 

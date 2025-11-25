@@ -22,8 +22,8 @@ export default function CategoriasAdmin() {
   const navigate = useNavigate();
 
   const cargarCategorias = () => {
-    axios
-      .get(`/api/categorias/listar`)
+    API
+      .get(`categorias/listar`)
       .then((res) => {
         if (Array.isArray(res.data)) {
           setCategorias(res.data);
