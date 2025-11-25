@@ -5,7 +5,7 @@ import ModalConfirmarPedido from './ModalConfirmarPedido';
 import ModalConfirmacion from './ModalConfirmacion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faLightbulb } from '@fortawesome/free-solid-svg-icons';
-import { API_URL } from '../../config/api';
+import { API_URL, API } from '../../config/api';
 
 const IMG_BASE = `/productos/img`;
 
@@ -123,23 +123,32 @@ export default function Carrito({ id_usuario, direccion, onOpenLogin }) {
   const volver = () => navigate(-1);
 
   const agregarAlCarrito = (producto, cantidad = 1) => {
-  fetch(`/api/carrito`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id_usuario, id_producto: producto.id_producto, cantidad })
+    // Validar que hay stock disponible
+    if (!producto.stock || producto.stock <= 0) {
+      setModalMensaje('Producto sin stock disponible');
+      setMostrarModal(true);
+      return;
+    }
+
+    // Validar que la cantidad no exceda el stock disponible
+    if (cantidad > producto.stock) {
+      setModalMensaje(`Solo hay ${producto.stock} unidad(es) disponible(s)`);
+      setMostrarModal(true);
+      return;
+    }
+
+    API.post(`carrito`, {
+      id_usuario,
+      id_producto: producto.id_producto,
+      cantidad
     })
       .then(res => {
-        if (!res.ok) throw new Error('Error al agregar al carrito');
-        return res.json();
-      })
-      .then(data => {
-        setModalMensaje(data.message || 'Producto agregado al carrito');
+        setModalMensaje(res.data.message || 'Producto agregado al carrito');
         setMostrarModal(true);
-  return fetch(`/api/carrito/${id_usuario}`);
+        return API.get(`carrito/${id_usuario}`);
       })
-      .then(res => res.json())
-      .then(data => {
-        const carritoConImagen = data.map(item => ({
+      .then(res => {
+        const carritoConImagen = res.data.map(item => ({
           ...item,
           urlImagen: item.imagen
             ? `${IMG_BASE}/${encodeURIComponent(item.imagen.replace(/^.*[\\/]/, ''))}?t=${Date.now()}`

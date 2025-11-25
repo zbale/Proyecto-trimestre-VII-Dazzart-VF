@@ -12,7 +12,7 @@ import ModalLogin from '../../components/cliente/ModalLogin';
 // using the exact casing to avoid build errors.
 import Carrito from '../../components/cliente/carrito';
 import ModalProducto from '../../components/cliente/ModalProducto';
-import { API_URL } from '../../config/api';
+import { API_URL, API } from '../../config/api';
 
 const API_BASE = `/api`;
 const IMG_BASE = `/productos/img`;
@@ -164,21 +164,27 @@ export default function VistaProductos() {
       return;
     }
 
-    fetch(`/api/carrito`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id_usuario: usuario.id_usuario,
-        id_producto: producto.id_producto,
-        cantidad,
-      }),
+    // Validar que hay stock disponible
+    if (!producto.stock || producto.stock <= 0) {
+      setModalMensaje('Producto sin stock disponible');
+      setMostrarModal(true);
+      return;
+    }
+
+    // Validar que la cantidad no exceda el stock disponible
+    if (cantidad > producto.stock) {
+      setModalMensaje(`Solo hay ${producto.stock} unidad(es) disponible(s)`);
+      setMostrarModal(true);
+      return;
+    }
+
+    API.post(`carrito`, {
+      id_usuario: usuario.id_usuario,
+      id_producto: producto.id_producto,
+      cantidad,
     })
       .then(res => {
-        if (!res.ok) throw new Error('Error al agregar al carrito');
-        return res.json();
-      })
-      .then(data => {
-        setModalMensaje(data.message || 'Producto agregado al carrito');
+        setModalMensaje(res.data.message || 'Producto agregado al carrito');
         setMostrarModal(true);
       })
       .catch(() => {

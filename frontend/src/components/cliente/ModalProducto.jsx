@@ -9,6 +9,18 @@ export default function ModalProducto({ producto, onClose, onAgregarCarrito }) {
   const decrementar = () => setCantidad(prev => (prev > 1 ? prev - 1 : 1));
 
   const handleAgregar = () => {
+    // Validar que hay stock disponible
+    if (!producto.stock || producto.stock <= 0) {
+      alert('Producto sin stock disponible');
+      return;
+    }
+
+    // Validar que la cantidad no exceda el stock disponible
+    if (cantidad > producto.stock) {
+      alert(`Solo hay ${producto.stock} unidad(es) disponible(s)`);
+      return;
+    }
+
     onAgregarCarrito(producto, cantidad);
     onClose();
   };

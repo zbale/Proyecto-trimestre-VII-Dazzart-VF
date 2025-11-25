@@ -96,6 +96,20 @@ export default function ProductoDetalle({
       return;
     }
 
+    // Validar que hay stock disponible
+    if (!producto.stock || producto.stock <= 0) {
+      setModalMensaje('Producto sin stock disponible');
+      setMostrarModal(true);
+      return;
+    }
+
+    // Validar que la cantidad no exceda el stock disponible
+    if (cantidad > producto.stock) {
+      setModalMensaje(`Solo hay ${producto.stock} unidad(es) disponible(s)`);
+      setMostrarModal(true);
+      return;
+    }
+
     if (onAgregarCarrito) {
       onAgregarCarrito(producto, cantidad);
     } else {
@@ -115,6 +129,55 @@ export default function ProductoDetalle({
         .then((data) => {
           setModalMensaje(data.message || 'Producto agregado al carrito');
           setMostrarModal(true);
+        })
+        .catch(() => {
+          setModalMensaje('Error al agregar al carrito');
+          setMostrarModal(true);
+        });
+    }
+  };
+
+  const handleComprarAhora = () => {
+    const id_usuario = idUsuarioProp || usuario?.id_usuario;
+
+    if (!id_usuario) {
+      if (onOpenLogin) onOpenLogin();
+      else setMostrarLogin(true);
+      return;
+    }
+
+    // Validar que hay stock disponible
+    if (!producto.stock || producto.stock <= 0) {
+      setModalMensaje('Producto sin stock disponible');
+      setMostrarModal(true);
+      return;
+    }
+
+    // Validar que la cantidad no exceda el stock disponible
+    if (cantidad > producto.stock) {
+      setModalMensaje(`Solo hay ${producto.stock} unidad(es) disponible(s)`);
+      setMostrarModal(true);
+      return;
+    }
+
+    if (onAgregarCarrito) {
+      onAgregarCarrito(producto, cantidad);
+    } else {
+      fetch(`/carrito`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          id_usuario,
+          id_producto: producto.id_producto,
+          cantidad,
+        }),
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error('Error al agregar al carrito');
+          return res.json();
+        })
+        .then(() => {
+          navigate('/carrito');
         })
         .catch(() => {
           setModalMensaje('Error al agregar al carrito');
@@ -245,7 +308,7 @@ export default function ProductoDetalle({
               <button
                 className="btn btn-outline-primary px-4"
                 style={{ fontWeight: '600' }}
-                onClick={() => alert('Funcionalidad "Comprar ahora" no implementada')}
+                onClick={handleComprarAhora}
               >
                 Comprar ahora
               </button>
