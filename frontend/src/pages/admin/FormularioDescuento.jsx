@@ -5,6 +5,7 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "../../css/CSSA/formulariodescuento.css";
 import { API } from '../../config/api';
+import Swal from "sweetalert2";
 
 export default function FormularioDescuento() {
   const [tipoDescuento, setTipoDescuento] = useState("");
@@ -37,7 +38,7 @@ export default function FormularioDescuento() {
 
     // Validar fechas
     if (fechaFin < fechaInicio) {
-      alert("La fecha de fin no puede ser anterior a la fecha de inicio.");
+      Swal.fire("Error", "La fecha de fin no puede ser anterior a la fecha de inicio.", "error");
       return;
     }
 
@@ -58,11 +59,11 @@ export default function FormularioDescuento() {
 
     API.post(`descuentos`, data)
       .then(() => {
-        alert("Descuento creado correctamente");
+        Swal.fire("Éxito", "Descuento creado correctamente", "success");
       })
       .catch((err) => {
         console.error("Error al crear descuento:", err);
-        alert("Hubo un error al crear el descuento.");
+        Swal.fire("Error", "Hubo un error al crear el descuento.", "error");
       });
   };
 

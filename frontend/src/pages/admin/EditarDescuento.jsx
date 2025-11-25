@@ -6,6 +6,7 @@ import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import "../../css/CSSA/actualizardescuento.css";
 import { API } from '../../config/api';
+import Swal from "sweetalert2";
 
 export default function EditarDescuento() {
   const { id } = useParams();
@@ -32,7 +33,7 @@ export default function EditarDescuento() {
       })
       .catch(err => {
         console.error("Error al cargar el descuento:", err);
-        alert("No se pudo cargar el descuento.");
+        Swal.fire("Error", "No se pudo cargar el descuento.", "error");
       });
   }, [id]);
 
@@ -47,24 +48,24 @@ export default function EditarDescuento() {
 
     // Validación de fechas
     if (form.fecha_fin < form.fecha_inicio) {
-      alert("La fecha de fin no puede ser anterior a la de inicio.");
+      Swal.fire("Error", "La fecha de fin no puede ser anterior a la de inicio.", "error");
       return;
     }
 
     // 🚩 Validación especial: si la fecha ya expiró no puede reactivarse
     if (form.fecha_fin < hoy && form.estado_descuento === "Activo") {
-      alert("El descuento ya expiró. Debe actualizar las fechas a un rango válido antes de poder activarlo.");
+      Swal.fire("Error", "El descuento ya expiró. Debe actualizar las fechas a un rango válido antes de poder activarlo.", "error");
       return;
     }
 
     API.put(`descuentos/${id}`, form)
       .then(() => {
-        alert("Descuento actualizado correctamente.");
+        Swal.fire("Éxito", "Descuento actualizado correctamente.", "success");
         navigate("/admin-descuento");
       })
       .catch(err => {
         console.error("Error al actualizar descuento:", err);
-        alert("Error al actualizar el descuento.");
+        Swal.fire("Error", "Error al actualizar el descuento.", "error");
       });
   };
 
