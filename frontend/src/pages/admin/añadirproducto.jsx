@@ -34,17 +34,17 @@ export default function AñadirProducto() {
   const [imagenesExistentes, setImagenesExistentes] = useState([]);
 
   useEffect(() => {
-    API.get(`/api/categorias/listar`).then((res) => {
+    API.get(`categorias/listar`).then((res) => {
       setCategorias(res.data || []);
     });
-    API.get(`/api/productos/listar-imagenes`).then((res) => {
+    API.get(`productos/listar-imagenes`).then((res) => {
       setImagenesExistentes(res.data.imagenes || []);
     });
   }, []);
 
   useEffect(() => {
     if (form.id_categoria) {
-      API.get(`/api/subcategorias/listar`).then((res) => {
+      API.get(`subcategorias/listar`).then((res) => {
         const filtradas = res.data.filter(
           (s) => String(s.id_categoria) === String(form.id_categoria)
         );
@@ -90,7 +90,7 @@ export default function AñadirProducto() {
     }
 
     try {
-      await API.post(`/api/productos/agregar`, fd, {
+      await API.post(`productos/agregar`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -106,6 +106,7 @@ export default function AñadirProducto() {
     <div className="d-flex">
       <SidebarAdmin />
       <div
+        className="main-content"
         style={{
           flexGrow: 1,
           display: "flex",
@@ -113,6 +114,7 @@ export default function AñadirProducto() {
           padding: "20px",
           minHeight: "100vh",
           backgroundColor: "#f8f9fa",
+          marginLeft: "280px",
         }}
       >
         <div
