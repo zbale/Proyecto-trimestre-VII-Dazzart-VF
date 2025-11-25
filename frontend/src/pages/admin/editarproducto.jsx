@@ -310,12 +310,9 @@ export default function EditarProducto() {
                 {imagenesExistentes.map((img) => (
                   <img
                     key={img}
-                    src={`/api/productos/imagen/${encodeURIComponent(img)}`}
+                    src={`/productos/img/${encodeURIComponent(img)}`}
                     onClick={() => handleImageSelect(img)}
                     alt={img}
-                    onError={(e) => {
-                      e.target.src = `/productos/img/${encodeURIComponent(img)}`;
-                    }}
                     style={{
                       width: "80px",
                       height: "80px",
@@ -355,24 +352,18 @@ export default function EditarProducto() {
                       imagenArchivo
                         ? previewUrlRef.current
                         : imagenSeleccionada
-                        ? `/api/productos/imagen/${encodeURIComponent(
+                        ? `/productos/img/${encodeURIComponent(
                             imagenSeleccionada
                           )}?t=${cacheBuster}`
                         : "/default.png"
                     }
                     alt="preview"
-                    onError={(e) => {
-                      if (!e.target.src.includes('/productos/img/')) {
-                        e.target.src = `/productos/img/${imagenSeleccionada}`;
-                      } else {
-                        e.target.src = "/default.png";
-                      }
-                    }}
                     style={{
                       maxWidth: "100%",
                       maxHeight: "100%",
                       objectFit: "contain",
                     }}
+                    onError={(e) => (e.target.src = "/default.png")}
                   />
                 </div>
               </div>
