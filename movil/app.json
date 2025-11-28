@@ -53,12 +53,7 @@
     "experiments": {
       "typedRoutes": true
     },
-    "extra": {
-      "router": {},
-      "eas": {
-        "projectId": "dd4ecc33-9460-4f98-afa7-fb5a5dc21fca"
-      }
-    },
+   
     "owner": "zbale"
   }
 }
