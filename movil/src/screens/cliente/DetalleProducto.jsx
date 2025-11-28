@@ -2,7 +2,7 @@ import ModalLogin from '../../Components/ModalLogin';
 import API from '../../config/api';
 
 import React, { useState } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, Alert, useWindowDimensions, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, Image, ScrollView, TouchableOpacity, Alert, useWindowDimensions, TouchableWithoutFeedback, Modal, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import styles from '../../css/DetalleProducto';
 import ModalFeedback from '../../Components/ModalFeedback';
@@ -20,7 +20,11 @@ export default function DetalleProducto() {
         const unsubscribe = navigation.addListener('focus', async () => {
             const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
             const userStr = await AsyncStorage.getItem('usuario');
-            if (userStr) setUsuario(JSON.parse(userStr));
+            if (userStr) {
+                const user = JSON.parse(userStr);
+                setUsuario(user);
+                setDireccionPedido(user.direccion || '');
+            }
             else setUsuario(null);
         });
         return unsubscribe;
@@ -31,6 +35,9 @@ export default function DetalleProducto() {
     const [mensajeModal, setMensajeModal] = useState('');
     const [modalCarrito, setModalCarrito] = useState(false);
     const [modalRestringido, setModalRestringido] = useState(false);
+    const [modalDireccionVisible, setModalDireccionVisible] = useState(false);
+    const [direccionPedido, setDireccionPedido] = useState('');
+    const [modalPedidoExito, setModalPedidoExito] = useState(false);
 
     const { width } = useWindowDimensions();
     const isLargeScreen = width > 600;
@@ -63,6 +70,55 @@ export default function DetalleProducto() {
         setModalVisible(true);
     }
 })();
+    };
+
+    const handleComprarAhora = (producto, cantidad = 1) => {
+        if (!usuario) {
+            setShowLogin(true);
+            return;
+        }
+        // SI ES ADMIN, MOSTRAR MODAL Y NO COMPRAR
+        if (usuario.id_rol === 1) {
+            setModalRestringido(true);
+            return;
+        }
+        setModalDireccionVisible(true);
+    };
+
+    const confirmarCompra = async () => {
+        if (!direccionPedido.trim()) {
+            Alert.alert('Error', 'Por favor ingresa una dirección de entrega');
+            return;
+        }
+
+        setModalDireccionVisible(false);
+        try {
+            const precioFinal = producto.precio_final || producto.precio;
+            const productos = [{
+                id_producto: producto._id || producto.id || producto.id_producto,
+                nombre: producto.nombre,
+                cantidad: cantidad,
+                precio: precioFinal,
+                descuento_aplicado: !!producto.descuento_aplicado,
+                precio_original: producto.precio || 0
+            }];
+            
+            await API.post('/pedidos/', {
+                id_usuario: usuario.id_usuario,
+                direccion: direccionPedido.trim(),
+                productos,
+                total_productos: cantidad,
+                total: precioFinal * cantidad
+            });
+            setModalPedidoExito(true);
+        } catch (err) {
+            setModalPedidoExito(true);
+        }
+    };
+
+    const cerrarModalExito = () => {
+        setModalPedidoExito(false);
+        navigation.goBack();
     };
 
     return (
@@ -220,7 +276,7 @@ export default function DetalleProducto() {
                                     <Text style={styles.btnCarritoTxtMobile}>+ Añadir al carrito</Text>
                                 </TouchableOpacity>
 
-                                <TouchableOpacity style={styles.btnComprarMobile} onPress={() => Alert.alert('Funcionalidad \"Comprar ahora\" no implementada')}>
+                                <TouchableOpacity style={styles.btnComprarMobile} onPress={() => handleComprarAhora(producto, cantidad)}>
                                     <Text style={styles.btnComprarTxtMobile}>Comprar ahora</Text>
                                 </TouchableOpacity>
                             </View>
@@ -252,6 +308,95 @@ export default function DetalleProducto() {
                             setModalCarrito(false);
                             navigation.navigate('Carrito', { usuario });
                         }}
+                    />
+                    {/* MODAL DE ACCESO RESTRINGIDO */}
+                    <ModalFeedback
+                        visible={modalRestringido}
+                        onClose={() => setModalRestringido(false)}
+                        titulo="Acceso restringido"
+                        mensaje="Solo los usuarios pueden agregar productos al carrito. El administrador no puede hacer compras."
+                        icono="error-outline"
+                        colorTitulo="#000000FF"
+                        textoBoton="Cerrar"
+                        onBoton={() => setModalRestringido(false)}
+                    />
+                    
+                    {/* MODAL DE DIRECCIÓN PARA COMPRAR AHORA */}
+                    <Modal
+                        visible={modalDireccionVisible}
+                        transparent={true}
+                        animationType="slide"
+                        onRequestClose={() => setModalDireccionVisible(false)}
+                    >
+                        <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'flex-end' }}>
+                            <View style={{
+                                backgroundColor: '#fff',
+                                borderTopLeftRadius: 16,
+                                borderTopRightRadius: 16,
+                                paddingHorizontal: 20,
+                                paddingTop: 20,
+                                paddingBottom: 30,
+                                maxHeight: '80%'
+                            }}>
+                                <TouchableOpacity onPress={() => setModalDireccionVisible(false)} style={{ alignSelf: 'flex-end', marginBottom: 16 }}>
+                                    <FontAwesome name="close" size={24} color="#000" />
+                                </TouchableOpacity>
+                                <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#000', marginBottom: 12 }}>
+                                    Confirmar Dirección de Entrega
+                                </Text>
+                                <Text style={{ fontSize: 14, color: '#666', marginBottom: 16 }}>
+                                    Por favor revisa y confirma tu dirección de entrega:
+                                </Text>
+                                <TextInput
+                                    style={{
+                                        borderWidth: 1,
+                                        borderColor: '#ddd',
+                                        borderRadius: 8,
+                                        paddingHorizontal: 14,
+                                        paddingVertical: 12,
+                                        fontSize: 14,
+                                        backgroundColor: '#f9f9f9',
+                                        marginBottom: 16,
+                                        minHeight: 100,
+                                        textAlignVertical: 'top'
+                                    }}
+                                    placeholder="Ingresa tu dirección de entrega completa"
+                                    value={direccionPedido}
+                                    onChangeText={setDireccionPedido}
+                                    multiline={true}
+                                    numberOfLines={4}
+                                />
+                                <View style={{ flexDirection: 'row', gap: 12 }}>
+                                    <TouchableOpacity
+                                        style={{ flex: 1, paddingVertical: 14, borderRadius: 8, backgroundColor: '#f0f0f0', alignItems: 'center' }}
+                                        onPress={() => setModalDireccionVisible(false)}
+                                    >
+                                        <Text style={{ color: '#000', fontWeight: 'bold', fontSize: 14 }}>Cancelar</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={{ flex: 1, paddingVertical: 14, borderRadius: 8, backgroundColor: '#000', alignItems: 'center' }}
+                                        onPress={confirmarCompra}
+                                    >
+                                        <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>Confirmar Compra</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+
+                    {/* MODAL DE COMPRA EXITOSA */}
+                    <ModalFeedback
+                        visible={modalPedidoExito}
+                        icono="check"
+                        titulo="¡Compra realizada!"
+                        mensaje="Tu pedido fue registrado exitosamente."
+                        colorFondo="#fff"
+                        colorTitulo="#010101FF"
+                        colorMensaje="#444"
+                        textoBoton="Volver"
+                        outlineBoton={false}
+                        onBoton={cerrarModalExito}
+                        showClose={false}
                     />
                     {/* MODAL DE ACCESO RESTRINGIDO */}
                     <ModalFeedback
