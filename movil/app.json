@@ -53,7 +53,12 @@
     "experiments": {
       "typedRoutes": true
     },
-    "owner": "jopse120"
+    "owner": "jopse120",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "d7899db8-225b-4248-8de8-42360e35a233"
+      }
+    }
   }
 }
-
