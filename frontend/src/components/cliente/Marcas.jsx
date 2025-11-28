@@ -48,19 +48,19 @@ export default function Marcas() {
             carouselRef.current.style.transform = `translateX(-${nextIndex * itemWidth}%)`;
             setTimeout(() => {
               if (carouselRef.current) {
-                carouselRef.current.style.transition = 'transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                carouselRef.current.style.transition = 'transform 0.8s ease-in-out';
               }
-            }, 50);
+            }, 10);
           }
         } else {
           if (carouselRef.current) {
-            carouselRef.current.style.transition = 'transform 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            carouselRef.current.style.transition = 'transform 0.8s ease-in-out';
             carouselRef.current.style.transform = `translateX(-${nextIndex * itemWidth}%)`;
           }
         }
         return nextIndex;
       });
-    }, 2500); // Cada 2.5 segundos (desfiladero continuo sin pausas)
+    }, 1800); // Cada 1.8 segundos (flujo continuo sin pausas)
 
     return () => clearInterval(interval);
   }, []);
