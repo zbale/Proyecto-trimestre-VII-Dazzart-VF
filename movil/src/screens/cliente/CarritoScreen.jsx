@@ -203,54 +203,53 @@ const CarritoScreen = ({ navigation, route }) => {
           </View>
         </ScrollView>
       ) : (
-        <FlatList
-          style={preciosStyles.scroll}
-          data={productosState}
-          keyExtractor={item => item._id?.toString() || item.id?.toString() || Math.random().toString()}
-          ListHeaderComponent={renderHeader}
-          renderItem={({ item }) => (
-            <View style={preciosStyles.itemRow}>
-              {(() => {
-                let imgUrl = item?.imagen;
-                if (imgUrl && (imgUrl.startsWith('/img/') || imgUrl.startsWith('img/'))) {
-                  imgUrl = imgUrl.replace(/^\/?.*img\//, '');
-                }
-                if (imgUrl && !imgUrl.startsWith('http')) {
-                  imgUrl = `${API.defaults.baseURL.replace(/\/api$/, '')}/productos/img/${imgUrl}`;
-                }
-                return imgUrl ? (
-                  <Image source={{ uri: imgUrl }} style={preciosStyles.itemImage} />
-                ) : (
-                  <View style={preciosStyles.noImage}><FontAwesome name="image" size={48} color="#aaa" /></View>
-                );
-              })()}
-              <View style={preciosStyles.itemInfo}>
-                <Text style={preciosStyles.itemName}>{item.nombre}</Text>
-                <View style={preciosStyles.preciosContainer}>
-                  {(item.precio_original && item.precio_final && Number(item.precio_final) < Number(item.precio_original)) ? (
-                    <>
-                      <Text style={preciosStyles.precioTachado}>
-                        ${Number(item.precio_original).toLocaleString('es-CO')}
-                      </Text>
-                      <Text style={preciosStyles.precioDescuento}>
-                        ${Number(item.precio_final).toLocaleString('es-CO')}
-                      </Text>
-                    </>
+        <View style={{ flex: 1 }}>
+          <ScrollView style={{ flex: 1 }}>
+            <Text style={preciosStyles.title}>Tu Carrito de Compras</Text>
+            {productosState.map((item) => (
+              <View key={item._id?.toString() || item.id?.toString() || Math.random().toString()} style={preciosStyles.itemRow}>
+                {(() => {
+                  let imgUrl = item?.imagen;
+                  if (imgUrl && (imgUrl.startsWith('/img/') || imgUrl.startsWith('img/'))) {
+                    imgUrl = imgUrl.replace(/^\/?.*img\//, '');
+                  }
+                  if (imgUrl && !imgUrl.startsWith('http')) {
+                    imgUrl = `${API.defaults.baseURL.replace(/\/api$/, '')}/productos/img/${imgUrl}`;
+                  }
+                  return imgUrl ? (
+                    <Image source={{ uri: imgUrl }} style={preciosStyles.itemImage} />
                   ) : (
-                    <Text style={preciosStyles.precioNormal}>
-                      ${Number(item.precio_final || item.precio_original).toLocaleString('es-CO')}
-                    </Text>
-                  )}
+                    <View style={preciosStyles.noImage}><FontAwesome name="image" size={48} color="#aaa" /></View>
+                  );
+                })()}
+                <View style={preciosStyles.itemInfo}>
+                  <Text style={preciosStyles.itemName}>{item.nombre}</Text>
+                  <View style={preciosStyles.preciosContainer}>
+                    {(item.precio_original && item.precio_final && Number(item.precio_final) < Number(item.precio_original)) ? (
+                      <>
+                        <Text style={preciosStyles.precioTachado}>
+                          ${Number(item.precio_original).toLocaleString('es-CO')}
+                        </Text>
+                        <Text style={preciosStyles.precioDescuento}>
+                          ${Number(item.precio_final).toLocaleString('es-CO')}
+                        </Text>
+                      </>
+                    ) : (
+                      <Text style={preciosStyles.precioNormal}>
+                        ${Number(item.precio_final || item.precio_original).toLocaleString('es-CO')}
+                      </Text>
+                    )}
+                  </View>
+                  <Text style={preciosStyles.cantidad}>Cantidad: {item.cantidad || 1}</Text>
                 </View>
-                <Text style={preciosStyles.cantidad}>Cantidad: {item.cantidad || 1}</Text>
+                <TouchableOpacity onPress={() => handleRemovePress(item)} style={preciosStyles.trashBtn}>
+                  <FontAwesome name="trash" size={32} color="#d32f2f" />
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity onPress={() => handleRemovePress(item)} style={preciosStyles.trashBtn}>
-                <FontAwesome name="trash" size={32} color="#d32f2f" />
-              </TouchableOpacity>
-            </View>
-          )}
-          ListFooterComponent={renderResumen}
-        />
+            ))}
+          </ScrollView>
+          {renderResumen()}
+        </View>
       )}
 
       <ModalFeedback
