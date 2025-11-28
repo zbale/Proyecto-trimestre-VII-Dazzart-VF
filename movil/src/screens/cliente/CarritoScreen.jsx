@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert } from 'react-native';
 import preciosStyles from '../../css/CarritoScreen';
 import ModalFeedback from '../../Components/ModalFeedback';
 import API from '../../config/api';
@@ -15,6 +15,10 @@ const CarritoScreen = ({ navigation, route }) => {
   const [modalPedidoVisible, setModalPedidoVisible] = useState(false);
   // MODAL DE FEEDBACK DE PEDIDO EXITOSO
   const [modalPedidoExito, setModalPedidoExito] = useState(false);
+  // Estados para descuentos
+  const [codigoDescuento, setCodigoDescuento] = useState('');
+  const [descuentoAplicado, setDescuentoAplicado] = useState(null);
+  const [cargandoDescuento, setCargandoDescuento] = useState(false);
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
       const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
@@ -39,6 +43,10 @@ const CarritoScreen = ({ navigation, route }) => {
   const envio = subtotal > 0 ? 0 : 0; 
   const pago = 'Pago ContraEntrega';
   const total = subtotal + envio;
+
+  // Calcular descuento total aplicado
+  const precioOriginalTotal = productosState.reduce((sum, p) => sum + (p.precio || 0) * (p.cantidad || 1), 0);
+  const descuentoTotal = precioOriginalTotal - subtotal;
 
 
   // HANDLER PARA MOSTRAR MODAL DE CONFIRMACION DE ELIMINACION
@@ -83,6 +91,30 @@ const CarritoScreen = ({ navigation, route }) => {
   // HANDLER PARA INICIAR PEDIDO
   function handleRealizarPedido() {
     setModalPedidoVisible(true);
+  }
+
+  // FUNCIÓN PARA APLICAR CÓDIGO DE DESCUENTO
+  async function aplicarCodigoDescuento() {
+    if (!codigoDescuento.trim()) {
+      Alert.alert('Error', 'Por favor ingresa un código de descuento');
+      return;
+    }
+
+    setCargandoDescuento(true);
+    try {
+      const response = await API.get(`/descuentos/codigo/${codigoDescuento.trim()}`);
+      if (response.data && response.data.success) {
+        setDescuentoAplicado(response.data.descuento);
+        Alert.alert('Éxito', `Código "${codigoDescuento}" aplicado correctamente`);
+        setCodigoDescuento('');
+      } else {
+        Alert.alert('Error', response.data?.message || 'Código de descuento inválido');
+      }
+    } catch (error) {
+      Alert.alert('Error', 'El código de descuento no es válido o ha expirado');
+    } finally {
+      setCargandoDescuento(false);
+    }
   }
 
   // CONFIRMAR PEDIDO
@@ -240,12 +272,63 @@ const CarritoScreen = ({ navigation, route }) => {
             showClose={true}
             onClose={onCancelarEliminarProducto}
           />
+          {/* SECCIÓN DE CÓDIGO DE DESCUENTO */}
+          <View style={[preciosStyles.resumenPago, { marginBottom: 16 }]}>
+            <Text style={preciosStyles.resumenTitle}>Aplicar Código de Descuento</Text>
+            <View style={{ flexDirection: 'row', gap: 8, marginVertical: 12 }}>
+              <TextInput
+                style={{
+                  flex: 1,
+                  borderWidth: 1,
+                  borderColor: '#ddd',
+                  borderRadius: 6,
+                  paddingHorizontal: 12,
+                  paddingVertical: 10,
+                  fontSize: 14,
+                  backgroundColor: '#f9f9f9'
+                }}
+                placeholder="Ingresa tu código"
+                value={codigoDescuento}
+                onChangeText={setCodigoDescuento}
+                editable={!cargandoDescuento}
+              />
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#000000FF',
+                  paddingVertical: 10,
+                  paddingHorizontal: 16,
+                  borderRadius: 6,
+                  justifyContent: 'center'
+                }}
+                onPress={aplicarCodigoDescuento}
+                disabled={cargandoDescuento}
+              >
+                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
+                  {cargandoDescuento ? 'Validando...' : 'Aplicar'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            {descuentoAplicado && (
+              <View style={{ backgroundColor: '#e8f5e9', padding: 10, borderRadius: 6, marginVertical: 8 }}>
+                <Text style={{ color: '#2e7d32', fontWeight: 'bold', fontSize: 12 }}>
+                  ✓ Descuento aplicado: {descuentoAplicado.nombre}
+                </Text>
+              </View>
+            )}
+          </View>
+
           <View style={preciosStyles.resumenPago}>
             <Text style={preciosStyles.resumenTitle}>Información de Pago</Text>
             <View style={preciosStyles.resumenRow}>
               <Text style={preciosStyles.resumenLabel}>SubTotal:</Text>
               <Text style={preciosStyles.resumenValor}>${subtotal.toLocaleString('es-CO')}</Text>
             </View>
+            {descuentoTotal > 0 && (
+              <View style={[preciosStyles.resumenRow, { backgroundColor: '#e8f5e9', paddingVertical: 8, paddingHorizontal: 8, borderRadius: 4, marginVertical: 4 }]}>
+                <Text style={[preciosStyles.resumenLabel, { color: '#2e7d32', fontWeight: 'bold' }]}>Descuento Aplicado:</Text>
+                <Text style={[preciosStyles.resumenValor, { color: '#2e7d32', fontWeight: 'bold' }]}>-${descuentoTotal.toLocaleString('es-CO')}</Text>
+              </View>
+            )}
             <View style={preciosStyles.resumenRow}>
               <Text style={preciosStyles.resumenLabel}>Envío:</Text>
               <Text style={preciosStyles.resumenValor}>Envío Gratuito a Distrito Capital</Text>
