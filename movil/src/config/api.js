@@ -1,9 +1,12 @@
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import Constants from "expo-constants";
 
-// BACKEND URL - Hardcoded para garantizar que funciona en APK
-const BACKEND_URL = "http://100.30.49.76:3001";
+// BACKEND URL - Lee del .env o usa la IP pública por defecto
+const BACKEND_URL = process.env.EXPO_PUBLIC_API_URL || "http://100.30.49.76:3001";
 const BASE = BACKEND_URL;
+
+console.log("[API CONFIG] BACKEND_URL:", BASE);
 
 // Instancia de Axios
 const API = axios.create({
