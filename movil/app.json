@@ -7,7 +7,7 @@
     "icon": "./src/assets/logo.png",
     "scheme": "dazzart-components",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.zbale.movil"
