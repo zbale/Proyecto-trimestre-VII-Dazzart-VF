@@ -60,7 +60,7 @@ export default function Marcas() {
         }
         return nextIndex;
       });
-    }, 3500); // Cambiar cada 3.5 segundos (transición de 1.2s + pausa)
+    }, 2500); // Cada 2.5 segundos (desfiladero continuo sin pausas)
 
     return () => clearInterval(interval);
   }, []);
