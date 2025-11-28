@@ -39,7 +39,7 @@ export const ProductoCard = ({ producto, onVerDetalle, onAgregarCarrito, showIco
             position: 'absolute',
             top: 8,
             left: 8,
-            backgroundColor: '#ff6f00',
+            backgroundColor: '#43a047',
             paddingHorizontal: 10,
             paddingVertical: 6,
             borderRadius: 4,
@@ -70,8 +70,8 @@ export const ProductoCard = ({ producto, onVerDetalle, onAgregarCarrito, showIco
           <View style={{ marginTop: 8 }}>
             {/* Precio original tachado */}
             <Text style={styles.precioTachado}>{precioOriginalStr}</Text>
-            {/* Precio con descuento en azul */}
-            <Text style={{ ...styles.precioDescuento, color: '#1976d2', fontWeight: 'bold', fontSize: 16 }}>{precioFinalStr}</Text>
+            {/* Precio con descuento en azul (igual que DetalleProducto) */}
+            <Text style={{ ...styles.precioDescuento, color: '#3483fa', fontWeight: 'bold', fontSize: 16 }}>{precioFinalStr}</Text>
           </View>
         ) : (
           <Text style={styles.precioNormal}>{precioOriginalStr}</Text>
