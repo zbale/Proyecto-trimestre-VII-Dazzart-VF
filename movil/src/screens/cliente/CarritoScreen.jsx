@@ -177,6 +177,10 @@ const CarritoScreen = ({ navigation, route }) => {
     </View>
   );
 
+  const renderHeader = () => (
+    <Text style={preciosStyles.title}>Tu Carrito de Compras</Text>
+  );
+
   return (
     <>
       {productosState.length === 0 ? (
@@ -203,6 +207,7 @@ const CarritoScreen = ({ navigation, route }) => {
           style={preciosStyles.scroll}
           data={productosState}
           keyExtractor={item => item._id?.toString() || item.id?.toString() || Math.random().toString()}
+          ListHeaderComponent={renderHeader}
           renderItem={({ item }) => (
             <View style={preciosStyles.itemRow}>
               {(() => {
