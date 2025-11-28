@@ -27,6 +27,9 @@ export default function CategoriasAdmin() {
   const [showEditModal, setShowEditModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const itemsPorPagina = 10;
 
   useFocusEffect(
     React.useCallback(() => {
@@ -46,6 +49,8 @@ export default function CategoriasAdmin() {
           }))
         : [];
       setCategorias(categoriasMapeadas);
+      setTotalPaginas(Math.ceil(categoriasMapeadas.length / itemsPorPagina));
+      setPagina(1);
     } catch (err) {
       console.error(
         "Error al listar:",
@@ -159,7 +164,7 @@ export default function CategoriasAdmin() {
 
       {/* Lista de categorías */}
       <FlatList
-        data={categorias}
+        data={categorias.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina)}
         keyExtractor={(item) => item.id_categoria.toString()}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={cargarCategorias} />
@@ -205,6 +210,29 @@ export default function CategoriasAdmin() {
             </View>
           </View>
         )}
+        ListFooterComponent={
+          <View style={{ padding: 16, alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
+              <TouchableOpacity 
+                style={[styles.paginationBtn, pagina === 1 && styles.paginationBtnDisabled]}
+                disabled={pagina === 1}
+                onPress={() => setPagina(pagina - 1)}
+              >
+                <Text style={styles.paginationBtnText}>← Anterior</Text>
+              </TouchableOpacity>
+              <View style={styles.paginationInfo}>
+                <Text style={styles.paginationText}>{pagina} / {totalPaginas}</Text>
+              </View>
+              <TouchableOpacity 
+                style={[styles.paginationBtn, pagina === totalPaginas && styles.paginationBtnDisabled]}
+                disabled={pagina === totalPaginas}
+                onPress={() => setPagina(pagina + 1)}
+              >
+                <Text style={styles.paginationBtnText}>Siguiente →</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        }
       />
 
       {/* Modal edición */}
@@ -344,4 +372,26 @@ const styles = StyleSheet.create({
   },
   saveButton: { backgroundColor: "#0d6efd", padding: 14, borderRadius: 8, flex: 1 },
   buttonText: { color: "#fff", fontWeight: "bold", textAlign: "center" },
+  paginationBtn: {
+    backgroundColor: "#0d6efd",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  paginationBtnDisabled: {
+    backgroundColor: "#ccc",
+  },
+  paginationBtnText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  paginationInfo: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  paginationText: {
+    fontWeight: "bold",
+    fontSize: 14,
+  },
 });

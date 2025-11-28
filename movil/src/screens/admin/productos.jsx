@@ -20,6 +20,9 @@ export default function ProductosAdmin() {
   const [categorias, setCategorias] = useState([]);
   const [subcategorias, setSubcategorias] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
+  const [pagina, setPagina] = useState(1);
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const itemsPorPagina = 10;
   const navigation = useNavigation();
 
   // Cargar productos desde backend
@@ -34,11 +37,15 @@ export default function ProductosAdmin() {
 
       if (Array.isArray(resProductos.data)) {
         setProductos(resProductos.data);
+        setTotalPaginas(Math.ceil(resProductos.data.length / itemsPorPagina));
       } else {
         setProductos([]);
+        setTotalPaginas(1);
       }
+      setPagina(1);
     } catch {
       setProductos([]);
+      setTotalPaginas(1);
     }
   };
 
@@ -169,7 +176,7 @@ export default function ProductosAdmin() {
 
       {/* Lista de productos */}
       <FlatList
-        data={productos}
+        data={productos.slice((pagina - 1) * itemsPorPagina, pagina * itemsPorPagina)}
         keyExtractor={(item) => item.id_producto?.toString()}
         renderItem={renderItem}
         contentContainerStyle={{ padding: 12, paddingBottom: 40 }}
@@ -179,6 +186,29 @@ export default function ProductosAdmin() {
           <Text style={{ textAlign: "center", marginTop: 40, color: "#888" }}>
             No hay productos para mostrar.
           </Text>
+        }
+        ListFooterComponent={
+          <View style={{ padding: 16, alignItems: 'center' }}>
+            <View style={{ flexDirection: 'row', gap: 8, marginTop: 10 }}>
+              <TouchableOpacity 
+                style={[styles.paginationBtn, pagina === 1 && styles.paginationBtnDisabled]}
+                disabled={pagina === 1}
+                onPress={() => setPagina(pagina - 1)}
+              >
+                <Text style={styles.paginationBtnText}>← Anterior</Text>
+              </TouchableOpacity>
+              <View style={styles.paginationInfo}>
+                <Text style={styles.paginationText}>{pagina} / {totalPaginas}</Text>
+              </View>
+              <TouchableOpacity 
+                style={[styles.paginationBtn, pagina === totalPaginas && styles.paginationBtnDisabled]}
+                disabled={pagina === totalPaginas}
+                onPress={() => setPagina(pagina + 1)}
+              >
+                <Text style={styles.paginationBtnText}>Siguiente →</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         }
       />
     </SafeAreaView>
@@ -298,5 +328,27 @@ const styles = StyleSheet.create({
     backgroundColor: "#dc3545",
     padding: 8,
     borderRadius: 6,
+  },
+  paginationBtn: {
+    backgroundColor: "#0d6efd",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 8,
+  },
+  paginationBtnDisabled: {
+    backgroundColor: "#ccc",
+  },
+  paginationBtnText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 12,
+  },
+  paginationInfo: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  paginationText: {
+    fontWeight: "bold",
+    fontSize: 14,
   },
 });
