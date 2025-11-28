@@ -14,12 +14,21 @@
 
 .marcas-carousel-track {
   display: flex;
-  transition: transform 0.8s ease-in-out;
+  animation: scroll-marcas 60s linear infinite;
   gap: 0;
 }
 
+@keyframes scroll-marcas {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 .marca-item {
-  min-width: calc(100% / 3);
+  min-width: calc(100% / 6);
   flex-shrink: 0;
   display: flex;
   justify-content: center;

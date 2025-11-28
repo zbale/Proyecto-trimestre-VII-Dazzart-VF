@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, TouchableOpacity, Linking, Animated, StyleSheet, FlatList } from 'react-native';
+import React from 'react';
+import { View, Image, TouchableOpacity, Linking, StyleSheet, Animated } from 'react-native';
 
 // IMPORTAR IMAGENES
 import marca1 from '../assets/MSI.webp';
@@ -17,70 +17,41 @@ const marcasOriginal = [
 ];
 
 // Repetir marcas para carrusel infinito
-const marcas = Array(21).fill(marcasOriginal).flat();
+const marcas = Array(20).fill(marcasOriginal).flat();
 
 const Marcas = () => {
-  const flatListRef = useRef(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const itemWidth = 220; // width del item
-  const middleIndex = marcasOriginal.length * Math.floor(21 / 2);
+  const scrollX = React.useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    // Posicionar en el medio al montar
-    setTimeout(() => {
-      flatListRef.current?.scrollToIndex({ index: middleIndex, animated: false });
-    }, 300);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex(prev => {
-        const nextIndex = prev + 1;
-        flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
-        return nextIndex;
-      });
-    }, 1800); // Cada 1.8 segundos (sin pausas, flujo continuo)
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleScroll = (event) => {
-    const contentOffsetX = event.nativeEvent.contentOffset.x;
-    const index = Math.round(contentOffsetX / itemWidth);
-    
-    // Si llegamos al final o casi al inicio, reiniciar en el medio
-    if (index >= marcas.length - marcasOriginal.length) {
-      flatListRef.current?.scrollToIndex({ index: middleIndex, animated: false });
-      setCurrentIndex(middleIndex);
-    }
-  };
+  React.useEffect(() => {
+    Animated.loop(
+      Animated.timing(scrollX, {
+        toValue: -marcasOriginal.length * 220, // Desplazar una vuelta completa
+        duration: 30000, // 30 segundos para una vuelta completa (continuo)
+        useNativeDriver: true,
+      })
+    ).start();
+  }, [scrollX]);
 
   return (
     <View style={marcasStyles.section}>
-      <FlatList
-        ref={flatListRef}
-        data={marcas}
-        keyExtractor={(item, index) => `${item.id}-${index}`}
-        renderItem={({ item }) => (
+      <Animated.View
+        style={[
+          marcasStyles.scrollContent,
+          {
+            transform: [{ translateX: scrollX }],
+          },
+        ]}
+      >
+        {marcas.map(({ id, img, alt, url }, index) => (
           <TouchableOpacity
+            key={`${id}-${index}`}
             style={marcasStyles.item}
-            onPress={() => item.url && Linking.openURL(item.url)}
+            onPress={() => url && Linking.openURL(url)}
           >
-            <Image source={item.img} style={marcasStyles.img} accessibilityLabel={item.alt} />
+            <Image source={img} style={marcasStyles.img} accessibilityLabel={alt} />
           </TouchableOpacity>
-        )}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
-        scrollEventThrottle={16}
-        contentContainerStyle={marcasStyles.scrollContent}
-        getItemLayout={(data, index) => ({
-          length: itemWidth,
-          offset: itemWidth * index,
-          index,
-        })}
-      />
+        ))}
+      </Animated.View>
     </View>
   );
 };
@@ -94,10 +65,11 @@ const marcasStyles = StyleSheet.create({
     height: 100,
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   scrollContent: {
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 0,
   },
   item: {
     paddingHorizontal: 10,

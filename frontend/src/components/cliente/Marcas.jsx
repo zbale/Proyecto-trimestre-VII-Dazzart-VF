@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import '../../css/CSS/Marcas.css';
 
 // Importación de imágenes
@@ -18,57 +18,14 @@ const marcasOriginal = [
   { id: 6, img: marca6, alt: 'VSG', url: 'https://www.marca6.com' },
 ];
 
-// Repetir marcas para carrusel infinito (21 veces)
-const marcas = Array(21).fill(marcasOriginal).flat();
+// Repetir marcas para carrusel infinito (20 veces)
+const marcas = Array(20).fill(marcasOriginal).flat();
 
 export default function Marcas() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const carouselRef = useRef(null);
-  const itemWidth = 16.66; // 100% / 6 marcas por fila en desktop
-
-  useEffect(() => {
-    // Posicionar en el medio al montar
-    const middleIndex = marcasOriginal.length * Math.floor(21 / 2);
-    setCurrentIndex(middleIndex);
-    if (carouselRef.current) {
-      carouselRef.current.style.transform = `translateX(-${middleIndex * itemWidth}%)`;
-    }
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentIndex(prev => {
-        let nextIndex = prev + 1;
-
-        // Si llegamos al final, reiniciar desde el medio
-        if (nextIndex >= marcas.length - marcasOriginal.length) {
-          nextIndex = marcasOriginal.length * Math.floor(21 / 2);
-          if (carouselRef.current) {
-            carouselRef.current.style.transition = 'none';
-            carouselRef.current.style.transform = `translateX(-${nextIndex * itemWidth}%)`;
-            setTimeout(() => {
-              if (carouselRef.current) {
-                carouselRef.current.style.transition = 'transform 0.8s ease-in-out';
-              }
-            }, 10);
-          }
-        } else {
-          if (carouselRef.current) {
-            carouselRef.current.style.transition = 'transform 0.8s ease-in-out';
-            carouselRef.current.style.transform = `translateX(-${nextIndex * itemWidth}%)`;
-          }
-        }
-        return nextIndex;
-      });
-    }, 1800); // Cada 1.8 segundos (flujo continuo sin pausas)
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <section className="marcas-section">
       <div className="marcas-carousel-container">
-        <div className="marcas-carousel-track" ref={carouselRef}>
+        <div className="marcas-carousel-track">
           {marcas.map(({ id, img, alt, url }, index) => (
             <div
               key={`${id}-${index}`}

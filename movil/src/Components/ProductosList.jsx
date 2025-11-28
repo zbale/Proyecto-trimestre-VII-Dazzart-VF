@@ -67,9 +67,17 @@ export const ProductoCard = ({ producto, onVerDetalle, onAgregarCarrito, showIco
         <Text style={styles.nombre} numberOfLines={2}>{producto?.nombre || ''}</Text>
         <Text style={styles.descripcion} numberOfLines={2}>{producto?.descripcion || ''}</Text>
         {producto?.descuento_aplicado ? (
-          <View style={{ alignItems: 'center', marginTop: 8 }}>
+          <View style={{ marginTop: 8 }}>
+            {/* Descuento en verde */}
+            <Text style={{ color: '#2e7d32', fontWeight: 'bold', fontSize: 12, marginBottom: 4 }}>
+              {producto.descuento_aplicado.tipo_descuento?.toLowerCase() === 'porcentaje' 
+                ? `Descuento: ${producto.descuento_aplicado.valor}%` 
+                : `Descuento: $${Number(producto.descuento_aplicado.valor).toLocaleString('es-CO')}`}
+            </Text>
+            {/* Precio original tachado */}
             <Text style={styles.precioTachado}>{precioOriginalStr}</Text>
-            <Text style={styles.precioDescuento}>{precioFinalStr}</Text>
+            {/* Precio con descuento en azul */}
+            <Text style={{ ...styles.precioDescuento, color: '#1976d2', fontWeight: 'bold', fontSize: 16 }}>{precioFinalStr}</Text>
           </View>
         ) : (
           <Text style={styles.precioNormal}>{precioOriginalStr}</Text>
