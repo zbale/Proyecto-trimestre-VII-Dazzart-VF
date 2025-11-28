@@ -33,6 +33,25 @@ export const ProductoCard = ({ producto, onVerDetalle, onAgregarCarrito, showIco
             <FontAwesome name="image" size={60} color="#aaa" />
           </View>
         )}
+        {/* BADGE DE DESCUENTO */}
+        {producto?.descuento_aplicado && (
+          <View style={{
+            position: 'absolute',
+            top: 8,
+            right: 8,
+            backgroundColor: '#d32f2f',
+            paddingHorizontal: 10,
+            paddingVertical: 6,
+            borderRadius: 4,
+            zIndex: 10
+          }}>
+            <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
+              {producto.descuento_aplicado.tipo_descuento?.toLowerCase() === 'porcentaje' 
+                ? `-${producto.descuento_aplicado.valor}%` 
+                : `-$${Number(producto.descuento_aplicado.valor).toLocaleString('es-CO')}`}
+            </Text>
+          </View>
+        )}
       </TouchableOpacity>
       {showIcons && (
         <View style={{ position: 'absolute', top: 10, right: 10, flexDirection: 'row', zIndex: 2 }}>

@@ -1,30 +1,58 @@
 .marcas-section {
   background-color: #fff;
-  padding: 0.5rem 1rem 2rem 1rem; /* padding lateral para que no toque bordes */
+  padding: 1rem 0;
   box-sizing: border-box;
-  width: 100%; /* que ocupe todo el ancho del contenedor padre sin overflow */
-  overflow-x: hidden; /* evita scroll horizontal */
+  width: 100%;
+  overflow: hidden;
 }
 
-
-.marcas-grid .marca-item {
-  padding: 8px; /* menos padding para que ocupe menos vertical */
-  transition: transform 0.2s ease;
+.marcas-carousel {
+  width: 100%;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 }
 
-.marcas-grid .marca-item:hover {
+.marcas-carousel-track {
+  display: flex;
+  gap: 0;
+}
+
+.marca-item {
+  min-width: calc(100% / 3);
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px;
+  transition: transform 0.3s ease;
+}
+
+.marca-item:hover {
+  transform: scale(1.08);
+}
+
+.marca-item img {
+  max-height: 80px;
+  width: auto;
+  object-fit: contain;
+  filter: grayscale(0.3);
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.marca-item:hover img {
+  filter: grayscale(0);
   transform: scale(1.05);
 }
 
-.marcas-grid img {
-  max-height: 70px;
-  width: auto;
-  object-fit: contain;
-  padding: 5px; /* menos padding para reducir espacio */
-  filter: grayscale(0.3);
-  transition: filter 0.3s ease;
+/* Responsive */
+@media (min-width: 768px) {
+  .marca-item {
+    min-width: calc(100% / 4);
+  }
 }
 
-.marcas-grid img:hover {
-  filter: grayscale(0);
+@media (min-width: 1024px) {
+  .marca-item {
+    min-width: calc(100% / 6);
+  }
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import '../../css/CSS/Marcas.css';
 
 // Importación de imágenes
@@ -19,29 +19,45 @@ const marcas = [
 ];
 
 export default function Marcas() {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const carouselRef = useRef(null);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex(prev => (prev + 1) % marcas.length);
+    }, 3000); // Cambiar cada 3 segundos
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (carouselRef.current) {
+      const itemWidth = carouselRef.current.querySelector('.marca-item')?.offsetWidth || 0;
+      carouselRef.current.scrollLeft = currentIndex * itemWidth;
+    }
+  }, [currentIndex]);
+
   return (
-<section className="marcas-section">
-  <div className="container-fluid">
-    <div className="row marcas-grid justify-content-center align-items-center g-4">
-      {marcas.map(({ id, img, alt, url }) => (
-        <div
-          key={id}
-          className="col-6 col-sm-4 col-md-3 col-lg-2 d-flex justify-content-center marca-item"
-        >
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="d-block text-center"
-          >
-            <img src={img} alt={alt} className="img-fluid" />
-          </a>
+    <section className="marcas-section">
+      <div className="marcas-carousel" ref={carouselRef}>
+        <div className="marcas-carousel-track">
+          {marcas.map(({ id, img, alt, url }) => (
+            <div
+              key={id}
+              className="marca-item"
+            >
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="d-block text-center"
+              >
+                <img src={img} alt={alt} className="img-fluid" />
+              </a>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
-  </div>
-</section>
-
-
+      </div>
+    </section>
   );
 }
