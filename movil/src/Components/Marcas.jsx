@@ -39,7 +39,7 @@ const Marcas = () => {
         flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
         return nextIndex;
       });
-    }, 3000); // Cambiar cada 3 segundos
+    }, 3500); // Cambiar cada 3.5 segundos (transición visible de 0.8s + espera)
 
     return () => clearInterval(interval);
   }, []);
