@@ -9,7 +9,7 @@ import marca4 from '../../../../backend/public/img/ASTRO-1.webp';
 import marca5 from '../../../../backend/public/img/LG-ULTRAGEAR-1.webp';
 import marca6 from '../../../../backend/public/img/VSG.webp';
 
-const marcas = [
+const marcasOriginal = [
   { id: 1, img: marca1, alt: 'MSI', url: 'https://latam.msi.com/' },
   { id: 2, img: marca2, alt: 'Fantech', url: 'https://fantechworld.com/' },
   { id: 3, img: marca3, alt: 'Logitech', url: 'https://www.logitechstore.com.co/' },
@@ -18,32 +18,60 @@ const marcas = [
   { id: 6, img: marca6, alt: 'VSG', url: 'https://www.marca6.com' },
 ];
 
+// Repetir marcas para carrusel infinito (21 veces)
+const marcas = Array(21).fill(marcasOriginal).flat();
+
 export default function Marcas() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const carouselRef = useRef(null);
+  const itemWidth = 16.66; // 100% / 6 marcas por fila en desktop
+
+  useEffect(() => {
+    // Posicionar en el medio al montar
+    const middleIndex = marcasOriginal.length * Math.floor(21 / 2);
+    setCurrentIndex(middleIndex);
+    if (carouselRef.current) {
+      carouselRef.current.style.transform = `translateX(-${middleIndex * itemWidth}%)`;
+    }
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex(prev => (prev + 1) % marcas.length);
+      setCurrentIndex(prev => {
+        let nextIndex = prev + 1;
+
+        // Si llegamos al final, reiniciar desde el medio
+        if (nextIndex >= marcas.length - marcasOriginal.length) {
+          nextIndex = marcasOriginal.length * Math.floor(21 / 2);
+          if (carouselRef.current) {
+            carouselRef.current.style.transition = 'none';
+            carouselRef.current.style.transform = `translateX(-${nextIndex * itemWidth}%)`;
+            setTimeout(() => {
+              if (carouselRef.current) {
+                carouselRef.current.style.transition = 'transform 0.8s ease-in-out';
+              }
+            }, 50);
+          }
+        } else {
+          if (carouselRef.current) {
+            carouselRef.current.style.transition = 'transform 0.8s ease-in-out';
+            carouselRef.current.style.transform = `translateX(-${nextIndex * itemWidth}%)`;
+          }
+        }
+        return nextIndex;
+      });
     }, 3000); // Cambiar cada 3 segundos
 
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    if (carouselRef.current) {
-      const itemWidth = carouselRef.current.querySelector('.marca-item')?.offsetWidth || 0;
-      carouselRef.current.scrollLeft = currentIndex * itemWidth;
-    }
-  }, [currentIndex]);
-
   return (
     <section className="marcas-section">
-      <div className="marcas-carousel" ref={carouselRef}>
-        <div className="marcas-carousel-track">
-          {marcas.map(({ id, img, alt, url }) => (
+      <div className="marcas-carousel-container">
+        <div className="marcas-carousel-track" ref={carouselRef}>
+          {marcas.map(({ id, img, alt, url }, index) => (
             <div
-              key={id}
+              key={`${id}-${index}`}
               className="marca-item"
             >
               <a

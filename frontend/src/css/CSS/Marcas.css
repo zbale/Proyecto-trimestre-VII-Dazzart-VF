@@ -6,14 +6,15 @@
   overflow: hidden;
 }
 
-.marcas-carousel {
+.marcas-carousel-container {
   width: 100%;
-  overflow-x: hidden;
-  scroll-behavior: smooth;
+  overflow: hidden;
+  position: relative;
 }
 
 .marcas-carousel-track {
   display: flex;
+  transition: transform 0.8s ease-in-out;
   gap: 0;
 }
 
@@ -29,6 +30,15 @@
 
 .marca-item:hover {
   transform: scale(1.08);
+}
+
+.marca-item a {
+  text-decoration: none;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .marca-item img {

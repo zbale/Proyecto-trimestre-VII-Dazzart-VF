@@ -38,7 +38,7 @@ export const ProductoCard = ({ producto, onVerDetalle, onAgregarCarrito, showIco
           <View style={{
             position: 'absolute',
             top: 8,
-            right: 8,
+            left: 8,
             backgroundColor: '#d32f2f',
             paddingHorizontal: 10,
             paddingVertical: 6,

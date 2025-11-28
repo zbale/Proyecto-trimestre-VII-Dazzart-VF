@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { View, Image, TouchableOpacity, Linking, Animated, StyleSheet } from 'react-native';
+import { View, Image, TouchableOpacity, Linking, Animated, StyleSheet, FlatList } from 'react-native';
 
 // IMPORTAR IMAGENES
 import marca1 from '../assets/MSI.webp';
@@ -8,7 +8,7 @@ import marca3 from '../assets/High_Resolution_PNG-LogitechG_horz_RGB_cyan_SM-102
 import marca4 from '../assets/ASTRO-1.webp';
 import marca5 from '../assets/LG-ULTRAGEAR-1.webp';
 
-const marcas = [
+const marcasOriginal = [
   { id: 1, img: marca1, alt: 'MSI', url: 'https://latam.msi.com/' },
   { id: 2, img: marca2, alt: 'Fantech', url: 'https://fantechworld.com/' },
   { id: 3, img: marca3, alt: 'Logitech', url: 'https://www.logitechstore.com.co/' },
@@ -16,22 +16,27 @@ const marcas = [
   { id: 5, img: marca5, alt: 'LG', url: 'https://www.marca5.com' },
 ];
 
+// Repetir marcas para carrusel infinito
+const marcas = Array(21).fill(marcasOriginal).flat();
+
 const Marcas = () => {
-  const scrollViewRef = useRef(null);
+  const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollX = useRef(new Animated.Value(0)).current;
+  const itemWidth = 220; // width del item
+  const middleIndex = marcasOriginal.length * Math.floor(21 / 2);
 
   useEffect(() => {
-    const itemWidth = 220; // width + margin (200 + 20)
-    const totalWidth = itemWidth * marcas.length;
+    // Posicionar en el medio al montar
+    setTimeout(() => {
+      flatListRef.current?.scrollToIndex({ index: middleIndex, animated: false });
+    }, 300);
+  }, []);
 
+  useEffect(() => {
     const interval = setInterval(() => {
       setCurrentIndex(prev => {
-        const nextIndex = (prev + 1) % marcas.length;
-        scrollViewRef.current?.scrollTo({
-          x: nextIndex * itemWidth,
-          animated: true,
-        });
+        const nextIndex = prev + 1;
+        flatListRef.current?.scrollToIndex({ index: nextIndex, animated: true });
         return nextIndex;
       });
     }, 3000); // Cambiar cada 3 segundos
@@ -39,27 +44,43 @@ const Marcas = () => {
     return () => clearInterval(interval);
   }, []);
 
+  const handleScroll = (event) => {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const index = Math.round(contentOffsetX / itemWidth);
+    
+    // Si llegamos al final o casi al inicio, reiniciar en el medio
+    if (index >= marcas.length - marcasOriginal.length) {
+      flatListRef.current?.scrollToIndex({ index: middleIndex, animated: false });
+      setCurrentIndex(middleIndex);
+    }
+  };
+
   return (
     <View style={marcasStyles.section}>
-      <Animated.ScrollView
-        ref={scrollViewRef}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={marcasStyles.scrollContent}
-        scrollEventThrottle={16}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false })}
-        pagingEnabled
-      >
-        {marcas.map(({ id, img, alt, url }) => (
+      <FlatList
+        ref={flatListRef}
+        data={marcas}
+        keyExtractor={(item, index) => `${item.id}-${index}`}
+        renderItem={({ item }) => (
           <TouchableOpacity
-            key={id}
             style={marcasStyles.item}
-            onPress={() => url && Linking.openURL(url)}
+            onPress={() => item.url && Linking.openURL(item.url)}
           >
-            <Image source={img} style={marcasStyles.img} accessibilityLabel={alt} />
+            <Image source={item.img} style={marcasStyles.img} accessibilityLabel={item.alt} />
           </TouchableOpacity>
-        ))}
-      </Animated.ScrollView>
+        )}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        contentContainerStyle={marcasStyles.scrollContent}
+        getItemLayout={(data, index) => ({
+          length: itemWidth,
+          offset: itemWidth * index,
+          index,
+        })}
+      />
     </View>
   );
 };
@@ -68,7 +89,7 @@ const marcasStyles = StyleSheet.create({
   section: {
     backgroundColor: '#fff',
     paddingVertical: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 0,
     width: '100%',
     height: 100,
     justifyContent: 'center',
@@ -83,6 +104,7 @@ const marcasStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     width: 220,
+    height: 100,
   },
   img: {
     height: 80,
