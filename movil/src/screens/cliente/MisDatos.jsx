@@ -81,7 +81,8 @@ export default function MisDatos({ navigation }) {
     try {
       const datosEnviar = {
         nombre: form.nombre.trim() || usuario.nombre,
-        correo_electronico: form.correo_electronico.trim() || usuario.correo_electronico,
+        nombre_usuario: usuario.nombre_usuario,
+        correo: form.correo_electronico.trim() || usuario.correo_electronico,
         telefono: form.telefono.trim() || usuario.telefono,
         direccion: form.direccion.trim() || usuario.direccion,
         contrasena: form.contrasena.trim(),
@@ -89,7 +90,7 @@ export default function MisDatos({ navigation }) {
       const res = await API.put(`/usuarios/${usuario.id_usuario}`, datosEnviar);
       if (res.data && !res.data.error) {
         setMensaje('Datos actualizados correctamente');
-        const nuevoUsuario = { ...usuario, ...datosEnviar };
+        const nuevoUsuario = { ...usuario, nombre: datosEnviar.nombre, correo_electronico: datosEnviar.correo, telefono: datosEnviar.telefono, direccion: datosEnviar.direccion };
         await AsyncStorage.setItem('usuario', JSON.stringify(nuevoUsuario));
         setUsuario(nuevoUsuario);
         setForm(f => ({ ...f, contrasena: '' }));
