@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, ScrollView, TextInput, Alert, Modal } from 'react-native';
 import preciosStyles from '../../css/CarritoScreen';
 import ModalFeedback from '../../Components/ModalFeedback';
 import API from '../../config/api';
@@ -13,18 +13,24 @@ const CarritoScreen = ({ navigation, route }) => {
   const [usuarioState, setUsuarioState] = useState(usuario);
   // MODAL DE CONFIRMACION DE PEDIDO
   const [modalPedidoVisible, setModalPedidoVisible] = useState(false);
+  // MODAL DE CONFIRMACION DE DIRECCIÓN
+  const [modalDireccionVisible, setModalDireccionVisible] = useState(false);
   // MODAL DE FEEDBACK DE PEDIDO EXITOSO
   const [modalPedidoExito, setModalPedidoExito] = useState(false);
-  // Estados para descuentos
-  const [codigoDescuento, setCodigoDescuento] = useState('');
-  const [descuentoAplicado, setDescuentoAplicado] = useState(null);
-  const [cargandoDescuento, setCargandoDescuento] = useState(false);
+  // Estado para la dirección del pedido
+  const [direccionPedido, setDireccionPedido] = useState('');
   React.useEffect(() => {
     const unsubscribe = navigation.addListener('focus', async () => {
       const AsyncStorage = (await import('@react-native-async-storage/async-storage')).default;
       const userStr = await AsyncStorage.getItem('usuario');
-      if (userStr) setUsuarioState(JSON.parse(userStr));
-      else setUsuarioState(null);
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        setUsuarioState(user);
+        // Cargar dirección guardada
+        setDireccionPedido(user.direccion || '');
+      } else {
+        setUsuarioState(null);
+      }
     });
     return unsubscribe;
   }, [navigation]);
@@ -90,43 +96,29 @@ const CarritoScreen = ({ navigation, route }) => {
 
   // HANDLER PARA INICIAR PEDIDO
   function handleRealizarPedido() {
-    setModalPedidoVisible(true);
+    setModalDireccionVisible(true);
   }
 
-  // FUNCIÓN PARA APLICAR CÓDIGO DE DESCUENTO
+  // FUNCIÓN PARA APLICAR CÓDIGO DE DESCUENTO - YA NO SE USA
   async function aplicarCodigoDescuento() {
-    if (!codigoDescuento.trim()) {
-      Alert.alert('Error', 'Por favor ingresa un código de descuento');
-      return;
-    }
-
-    setCargandoDescuento(true);
-    try {
-      const response = await API.get(`/descuentos/codigo/${codigoDescuento.trim()}`);
-      if (response.data && response.data.success) {
-        setDescuentoAplicado(response.data.descuento);
-        Alert.alert('Éxito', `Código "${codigoDescuento}" aplicado correctamente`);
-        setCodigoDescuento('');
-      } else {
-        Alert.alert('Error', response.data?.message || 'Código de descuento inválido');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'El código de descuento no es válido o ha expirado');
-    } finally {
-      setCargandoDescuento(false);
-    }
+    return;
   }
 
   // CONFIRMAR PEDIDO
   async function confirmarPedido() {
-    setModalPedidoVisible(false);
+    // Validar que la dirección no esté vacía
+    if (!direccionPedido.trim()) {
+      Alert.alert('Error', 'Por favor ingresa una dirección de entrega');
+      return;
+    }
+
+    setModalDireccionVisible(false);
     if (!usuarioState || !usuarioState.id_usuario || productosState.length === 0) {
       setModalPedidoExito(true);
       return;
     }
     try {
-      // 1. CREAR EL PEDIDO
-      const direccion = usuarioState.direccion || 'Sin dirección';
+      // 1. CREAR EL PEDIDO CON LA DIRECCIÓN INGRESADA
       const productos = productosState.map(p => ({
         id_producto: p.id_producto || p._id || p.id,
         nombre: p.nombre,
@@ -139,7 +131,7 @@ const CarritoScreen = ({ navigation, route }) => {
       const total = productos.reduce((sum, p) => sum + (p.precio || 0) * (p.cantidad || 1), 0);
       await API.post('/pedidos/', {
         id_usuario: usuarioState.id_usuario,
-        direccion,
+        direccion: direccionPedido.trim(),
         productos,
         total_productos,
         total
@@ -272,50 +264,6 @@ const CarritoScreen = ({ navigation, route }) => {
             showClose={true}
             onClose={onCancelarEliminarProducto}
           />
-          {/* SECCIÓN DE CÓDIGO DE DESCUENTO */}
-          <View style={[preciosStyles.resumenPago, { marginBottom: 16 }]}>
-            <Text style={preciosStyles.resumenTitle}>Aplicar Código de Descuento</Text>
-            <View style={{ flexDirection: 'row', gap: 8, marginVertical: 12 }}>
-              <TextInput
-                style={{
-                  flex: 1,
-                  borderWidth: 1,
-                  borderColor: '#ddd',
-                  borderRadius: 6,
-                  paddingHorizontal: 12,
-                  paddingVertical: 10,
-                  fontSize: 14,
-                  backgroundColor: '#f9f9f9'
-                }}
-                placeholder="Ingresa tu código"
-                value={codigoDescuento}
-                onChangeText={setCodigoDescuento}
-                editable={!cargandoDescuento}
-              />
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#000000FF',
-                  paddingVertical: 10,
-                  paddingHorizontal: 16,
-                  borderRadius: 6,
-                  justifyContent: 'center'
-                }}
-                onPress={aplicarCodigoDescuento}
-                disabled={cargandoDescuento}
-              >
-                <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 12 }}>
-                  {cargandoDescuento ? 'Validando...' : 'Aplicar'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-            {descuentoAplicado && (
-              <View style={{ backgroundColor: '#e8f5e9', padding: 10, borderRadius: 6, marginVertical: 8 }}>
-                <Text style={{ color: '#2e7d32', fontWeight: 'bold', fontSize: 12 }}>
-                  ✓ Descuento aplicado: {descuentoAplicado.nombre}
-                </Text>
-              </View>
-            )}
-          </View>
 
           <View style={preciosStyles.resumenPago}>
             <Text style={preciosStyles.resumenTitle}>Información de Pago</Text>
@@ -344,9 +292,101 @@ const CarritoScreen = ({ navigation, route }) => {
             <TouchableOpacity style={preciosStyles.btnPedido} onPress={handleRealizarPedido} disabled={productosState.length === 0}>
               <Text style={preciosStyles.btnPedidoText}>Realizar Un Pedido</Text>
             </TouchableOpacity>
-          {/* MODAL DE CONFIRMACION DE PEDIDO */}
+          {/* MODAL DE CONFIRMACION DE DIRECCIÓN */}
+          <Modal
+            visible={modalDireccionVisible}
+            transparent={true}
+            animationType="slide"
+            onRequestClose={() => setModalDireccionVisible(false)}
+          >
+            <View style={{ flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'flex-end' }}>
+              <View style={{
+                backgroundColor: '#fff',
+                borderTopLeftRadius: 16,
+                borderTopRightRadius: 16,
+                paddingHorizontal: 20,
+                paddingTop: 20,
+                paddingBottom: 30,
+                maxHeight: '80%'
+              }}>
+                <TouchableOpacity
+                  onPress={() => setModalDireccionVisible(false)}
+                  style={{ alignSelf: 'flex-end', marginBottom: 16 }}
+                >
+                  <FontAwesome name="close" size={24} color="#000" />
+                </TouchableOpacity>
+
+                <Text style={{
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                  color: '#000',
+                  marginBottom: 12
+                }}>
+                  Confirmar Dirección de Entrega
+                </Text>
+
+                <Text style={{
+                  fontSize: 14,
+                  color: '#666',
+                  marginBottom: 16
+                }}>
+                  Por favor revisa y confirma tu dirección de entrega:
+                </Text>
+
+                <TextInput
+                  style={{
+                    borderWidth: 1,
+                    borderColor: '#ddd',
+                    borderRadius: 8,
+                    paddingHorizontal: 14,
+                    paddingVertical: 12,
+                    fontSize: 14,
+                    backgroundColor: '#f9f9f9',
+                    marginBottom: 16,
+                    minHeight: 100,
+                    textAlignVertical: 'top'
+                  }}
+                  placeholder="Ingresa tu dirección de entrega completa"
+                  value={direccionPedido}
+                  onChangeText={setDireccionPedido}
+                  multiline={true}
+                  numberOfLines={4}
+                />
+
+                <View style={{ flexDirection: 'row', gap: 12 }}>
+                  <TouchableOpacity
+                    style={{
+                      flex: 1,
+                      paddingVertical: 14,
+                      borderRadius: 8,
+                      backgroundColor: '#f0f0f0',
+                      alignItems: 'center'
+                    }}
+                    onPress={() => setModalDireccionVisible(false)}
+                  >
+                    <Text style={{ color: '#000', fontWeight: 'bold', fontSize: 14 }}>Cancelar</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    style={{
+                      flex: 1,
+                      paddingVertical: 14,
+                      borderRadius: 8,
+                      backgroundColor: '#000',
+                      alignItems: 'center'
+                    }}
+                    onPress={confirmarPedido}
+                  >
+                    <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 14 }}>Confirmar Pedido</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </Modal>
+
+          {/* MODAL DE CONFIRMACION DE PEDIDO - YA NO SE USA */}
           <ModalFeedback
-            visible={modalPedidoVisible}
+            visible={false}
             icono="check"
             titulo="¿Confirmar pedido?"
             mensaje="¿Deseas realizar tu pedido con los productos actuales?"
@@ -355,11 +395,11 @@ const CarritoScreen = ({ navigation, route }) => {
             colorMensaje="#444"
             textoBoton="Cancelar"
             outlineBoton={true}
-            onBoton={() => setModalPedidoVisible(false)}
+            onBoton={() => {}}
             textoBotonSecundario="Confirmar"
-            onBotonSecundario={confirmarPedido}
+            onBotonSecundario={() => {}}
             showClose={true}
-            onClose={() => setModalPedidoVisible(false)}
+            onClose={() => {}}
           />
             <TouchableOpacity style={preciosStyles.btnVolver} onPress={() => navigation.goBack()}>
               <Text style={preciosStyles.btnVolverText}>Volver</Text>
