@@ -2,7 +2,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // BACKEND URL - Hardcoded para garantizar que funciona en APK
-const BACKEND_URL = "http://100.30.49.76:3001";
+const BACKEND_URL = "http://34.204.198.90:3001";
 const BASE = BACKEND_URL;
 
 // Instancia de Axios

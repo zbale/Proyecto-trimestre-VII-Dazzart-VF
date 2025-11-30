@@ -10,8 +10,8 @@ const PORT = process.env.PORT || 3001;
 const server = app.listen(PORT, '0.0.0.0', () => {
   console.log('\n╔════════════════════════════════════════════════════╗');
   console.log('║         🚀 BACKEND DAZZART INICIADO');
-  console.log(`║         🌐 URL Publica: http://100.30.49.76:${PORT}`);
-  console.log(`║         🔒 URL Privada: http://172.31.29.194:${PORT}`);
+  console.log(`║         🌐 URL Publica: http://34.204.198.90:${PORT}`);
+  console.log(`║         🔒 URL Privada: http://172.31.72.190   :${PORT}`);
   console.log('║         ✅ Status: ESCUCHANDO');
   console.log('╚════════════════════════════════════════════════════╝\n');
 });
