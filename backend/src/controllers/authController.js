@@ -7,7 +7,7 @@ const SECRET = 'jose';
 exports.login = async (req, res) => {
   const { correo_electronico, contrasena } = req.body;
 
-  console.log(" Body recibido:", req.body); //  log de entrada
+  console.log(" Body recibido:", req.body); 
 
   if (!correo_electronico || !contrasena) {
     console.warn(" Faltan credenciales:", { correo_electronico, contrasena });
